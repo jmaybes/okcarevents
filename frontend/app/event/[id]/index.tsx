@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,10 @@ import {
   Linking,
   Alert,
   Pressable,
+  Modal,
+  Image,
+  Dimensions,
+  Platform,
 } from 'react-native';
 import Animated, { 
   FadeInDown, 
@@ -25,9 +29,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, router } from 'expo-router';
 import axios from 'axios';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import { useAuth } from '../../../contexts/AuthContext';
 
 import { API_URL } from '../../../utils/api';
+
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface Event {
   id: string;
@@ -81,6 +89,9 @@ export default function EventDetailScreen() {
   const [isRSVPed, setIsRSVPed] = useState(false);
   const [rsvpLoading, setRsvpLoading] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [flyerModalVisible, setFlyerModalVisible] = useState(false);
+  const [flyerLoading, setFlyerLoading] = useState(false);
+  const [flyerUri, setFlyerUri] = useState<string | null>(null);
 
   useEffect(() => {
     fetchEventDetails();
@@ -196,6 +207,55 @@ export default function EventDetailScreen() {
       console.error('Error sharing:', error);
     }
   };
+
+  const handleViewFlyer = useCallback(async () => {
+    if (!id) return;
+    setFlyerLoading(true);
+    setFlyerModalVisible(true);
+
+    try {
+      const flyerUrl = `${API_URL}/api/events/${id}/flyer`;
+      const fileUri = `${FileSystem.cacheDirectory}flyer-${id}.jpg`;
+
+      const downloadResult = await FileSystem.downloadAsync(flyerUrl, fileUri);
+
+      if (downloadResult.status === 200) {
+        setFlyerUri(downloadResult.uri);
+      } else {
+        Alert.alert('Error', 'Failed to generate flyer. Please try again.');
+        setFlyerModalVisible(false);
+      }
+    } catch (error) {
+      console.error('Error generating flyer:', error);
+      Alert.alert('Error', 'Failed to generate flyer. Please try again.');
+      setFlyerModalVisible(false);
+    } finally {
+      setFlyerLoading(false);
+    }
+  }, [id]);
+
+  const handleShareFlyer = useCallback(async () => {
+    if (!flyerUri) return;
+
+    try {
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (isAvailable) {
+        await Sharing.shareAsync(flyerUri, {
+          mimeType: 'image/jpeg',
+          dialogTitle: `${event?.title || 'Event'} Flyer`,
+          UTI: 'public.jpeg',
+        });
+      } else {
+        // Fallback: share text
+        await Share.share({
+          message: `Check out this event: ${event?.title}\n${formatEventDate(event?.date || '')} at ${event?.time}\n${event?.city}`,
+          title: event?.title,
+        });
+      }
+    } catch (error) {
+      console.error('Error sharing flyer:', error);
+    }
+  }, [flyerUri, event]);
 
   const openWebsite = (url: string) => {
     Linking.openURL(url).catch((err) =>
@@ -396,6 +456,23 @@ export default function EventDetailScreen() {
           </View>
         </TouchableOpacity>
 
+        {/* View Flyer Button */}
+        <TouchableOpacity
+          style={styles.flyerButton}
+          onPress={handleViewFlyer}
+        >
+          <View style={styles.galleryButtonContent}>
+            <View style={[styles.galleryIconContainer, { backgroundColor: '#E91E63' }]}>
+              <Ionicons name="document-text" size={24} color="#fff" />
+            </View>
+            <View style={styles.galleryButtonText}>
+              <Text style={styles.galleryTitle}>Event Flyer</Text>
+              <Text style={styles.gallerySubtitle}>View & share auto-generated flyer</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={24} color="#666" />
+          </View>
+        </TouchableOpacity>
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Comments ({comments.length})</Text>
           {comments.length === 0 ? (
@@ -451,6 +528,82 @@ export default function EventDetailScreen() {
           )}
         </TouchableOpacity>
       </View>
+
+      {/* Flyer Modal */}
+      <Modal
+        visible={flyerModalVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setFlyerModalVisible(false)}
+      >
+        <View style={styles.flyerModalOverlay}>
+          <View style={[styles.flyerModalContainer, { paddingTop: insets.top }]}>
+            {/* Modal Header */}
+            <View style={styles.flyerModalHeader}>
+              <TouchableOpacity
+                style={styles.flyerModalCloseBtn}
+                onPress={() => {
+                  setFlyerModalVisible(false);
+                  setFlyerUri(null);
+                }}
+              >
+                <Ionicons name="close" size={28} color="#fff" />
+              </TouchableOpacity>
+              <Text style={styles.flyerModalTitle}>Event Flyer</Text>
+              {flyerUri && (
+                <TouchableOpacity
+                  style={styles.flyerShareBtn}
+                  onPress={handleShareFlyer}
+                >
+                  <Ionicons name="share-outline" size={24} color="#FF5500" />
+                  <Text style={styles.flyerShareText}>Share</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {/* Flyer Content */}
+            <View style={styles.flyerContentContainer}>
+              {flyerLoading ? (
+                <View style={styles.flyerLoadingContainer}>
+                  <ActivityIndicator size="large" color="#FF5500" />
+                  <Text style={styles.flyerLoadingText}>Generating flyer...</Text>
+                </View>
+              ) : flyerUri ? (
+                <ScrollView
+                  contentContainerStyle={styles.flyerScrollContent}
+                  maximumZoomScale={3}
+                  minimumZoomScale={0.5}
+                  showsVerticalScrollIndicator={false}
+                >
+                  <Image
+                    source={{ uri: flyerUri }}
+                    style={styles.flyerImage}
+                    resizeMode="contain"
+                  />
+                </ScrollView>
+              ) : (
+                <View style={styles.flyerLoadingContainer}>
+                  <Ionicons name="alert-circle" size={48} color="#666" />
+                  <Text style={styles.flyerLoadingText}>Failed to load flyer</Text>
+                </View>
+              )}
+            </View>
+
+            {/* Bottom action bar */}
+            {flyerUri && (
+              <View style={[styles.flyerBottomBar, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+                <TouchableOpacity
+                  style={styles.flyerActionBtn}
+                  onPress={handleShareFlyer}
+                >
+                  <Ionicons name="share-social" size={22} color="#fff" />
+                  <Text style={styles.flyerActionText}>Share Flyer</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -684,5 +837,101 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#fff',
     fontSize: 16,
+  },
+  flyerButton: {
+    backgroundColor: '#1a1a1a',
+    marginHorizontal: 20,
+    borderRadius: 16,
+    marginBottom: 24,
+    overflow: 'hidden',
+  },
+  flyerModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.95)',
+  },
+  flyerModalContainer: {
+    flex: 1,
+  },
+  flyerModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#222',
+  },
+  flyerModalCloseBtn: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  flyerModalTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  flyerShareBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: '#1a1a1a',
+    gap: 6,
+  },
+  flyerShareText: {
+    color: '#FF5500',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  flyerContentContainer: {
+    flex: 1,
+  },
+  flyerScrollContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  flyerImage: {
+    width: SCREEN_WIDTH - 32,
+    height: (SCREEN_WIDTH - 32) * 1.25,
+    borderRadius: 12,
+  },
+  flyerLoadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  flyerLoadingText: {
+    color: '#888',
+    fontSize: 16,
+  },
+  flyerBottomBar: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#222',
+  },
+  flyerActionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FF5500',
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 12,
+    gap: 8,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  flyerActionText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
