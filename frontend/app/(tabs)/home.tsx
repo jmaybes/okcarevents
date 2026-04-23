@@ -1172,6 +1172,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
     paddingHorizontal: 14,
     justifyContent: 'center',
+    alignItems: 'stretch',
   },
   heroBadge: {
     flexDirection: 'row',
