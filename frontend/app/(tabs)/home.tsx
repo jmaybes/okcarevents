@@ -714,17 +714,10 @@ export default function HomeScreen() {
         />
         {/* Hero text content with parallax */}
         <Animated.View style={[styles.heroContent, heroContentStyle, { paddingTop: insets.top + 16 }]}>
-          <View style={styles.heroBadge}>
-            <Ionicons name="flame" size={14} color="#FF5500" />
-            <Text style={styles.heroBadgeText}>OKC's #1 Car Community</Text>
-          </View>
-          <View style={styles.heroTitleRow}>
-            <View>
-              <Text style={styles.heroTitle}>Oklahoma</Text>
-              <View style={styles.droppingRow}>
-                <Text style={styles.heroTitle}>Car </Text>
-                <DroppingText />
-              </View>
+          <View style={styles.heroBadgeRow}>
+            <View style={styles.heroBadge}>
+              <Ionicons name="flame" size={14} color="#FF5500" />
+              <Text style={styles.heroBadgeText}>OKC's #1 Car Community</Text>
             </View>
             <TouchableOpacity
               style={styles.facebookButton}
@@ -739,6 +732,15 @@ export default function HomeScreen() {
                 resizeMode="contain"
               />
             </TouchableOpacity>
+          </View>
+          <View style={styles.heroTitleRow}>
+            <View>
+              <Text style={styles.heroTitle}>Oklahoma</Text>
+              <View style={styles.droppingRow}>
+                <Text style={styles.heroTitle}>Car </Text>
+                <DroppingText />
+              </View>
+            </View>
           </View>
           <Text style={styles.heroSubtitle}>Discover events near you!</Text>
           <View style={styles.heroStats}>
@@ -1215,10 +1217,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-between',
   },
+  heroBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
   facebookButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 4,
     marginRight: '7%',
   },
   facebookIcon: {
