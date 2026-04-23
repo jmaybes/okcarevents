@@ -1171,7 +1171,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 3,
-    paddingHorizontal: 24,
+    paddingHorizontal: 14,
     justifyContent: 'center',
   },
   heroBadge: {
