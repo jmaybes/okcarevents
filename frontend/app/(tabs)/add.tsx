@@ -12,6 +12,8 @@ import {
   ActivityIndicator,
   Image,
   Switch,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -47,6 +49,7 @@ export default function AddEventScreen() {
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurrenceDay, setRecurrenceDay] = useState<number | null>(null);
   const [recurrenceEndDate, setRecurrenceEndDate] = useState('');
+  const [showTypeModal, setShowTypeModal] = useState(false);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -64,7 +67,33 @@ export default function AddEventScreen() {
     website: '',
   });
 
-  const eventTypes = ['Car Meet', 'Car Show', 'Cruise', 'Race', 'Pop Up Race', 'Other'];
+  const eventTypes = ['Car Meet', 'Car Show', 'Cruise', 'Race', 'Pop Up Race', 'Drift Event', 'Drag Race', 'Swap Meet', 'Charity Event', 'Other'];
+
+  const eventTypeIcons: Record<string, string> = {
+    'Car Meet': 'car-sport',
+    'Car Show': 'trophy',
+    'Cruise': 'navigate',
+    'Race': 'speedometer',
+    'Pop Up Race': 'flash',
+    'Drift Event': 'analytics',
+    'Drag Race': 'rocket',
+    'Swap Meet': 'swap-horizontal',
+    'Charity Event': 'heart',
+    'Other': 'ellipsis-horizontal-circle',
+  };
+
+  const eventTypeColors: Record<string, string> = {
+    'Car Meet': '#FF5500',
+    'Car Show': '#FFC107',
+    'Cruise': '#4FC3F7',
+    'Race': '#F44336',
+    'Pop Up Race': '#E91E63',
+    'Drift Event': '#FF9800',
+    'Drag Race': '#F44336',
+    'Swap Meet': '#9C27B0',
+    'Charity Event': '#4CAF50',
+    'Other': '#9E9E9E',
+  };
   
   const daysOfWeek = [
     { label: 'Sunday', value: 0 },
@@ -395,27 +424,23 @@ export default function AddEventScreen() {
             />
 
             <Text style={styles.label}>Event Type</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.typeList}>
-              {eventTypes.map((type) => (
-                <TouchableOpacity
-                  key={type}
-                  style={[
-                    styles.typeChip,
-                    formData.eventType === type && styles.typeChipActive,
-                  ]}
-                  onPress={() => setFormData({ ...formData, eventType: type })}
-                >
-                  <Text
-                    style={[
-                      styles.typeChipText,
-                      formData.eventType === type && styles.typeChipTextActive,
-                    ]}
-                  >
-                    {type}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+            <TouchableOpacity
+              style={styles.dropdownButton}
+              onPress={() => setShowTypeModal(true)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.dropdownContent}>
+                <View style={[styles.dropdownIconCircle, { backgroundColor: (eventTypeColors[formData.eventType] || '#FF5500') + '22' }]}>
+                  <Ionicons
+                    name={(eventTypeIcons[formData.eventType] || 'car-sport') as any}
+                    size={20}
+                    color={eventTypeColors[formData.eventType] || '#FF5500'}
+                  />
+                </View>
+                <Text style={styles.dropdownText}>{formData.eventType}</Text>
+              </View>
+              <Ionicons name="chevron-down" size={20} color="#888" />
+            </TouchableOpacity>
 
             <View style={styles.row}>
               <View style={styles.halfInput}>
@@ -646,6 +671,69 @@ export default function AddEventScreen() {
         </ScrollView>
       </KeyboardAvoidingView>
 
+      {/* Event Type Selection Modal */}
+      <Modal
+        visible={showTypeModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowTypeModal(false)}
+      >
+        <View style={styles.typeModalOverlay}>
+          <View style={styles.typeModalContainer}>
+            <View style={styles.typeModalHandle} />
+            <View style={styles.typeModalHeader}>
+              <Text style={styles.typeModalTitle}>Select Event Type</Text>
+              <TouchableOpacity
+                onPress={() => setShowTypeModal(false)}
+                style={styles.typeModalCloseBtn}
+              >
+                <Ionicons name="close" size={24} color="#888" />
+              </TouchableOpacity>
+            </View>
+
+            <FlatList
+              data={eventTypes}
+              keyExtractor={(item) => item}
+              contentContainerStyle={{ paddingBottom: 30 }}
+              renderItem={({ item: type }) => {
+                const isSelected = formData.eventType === type;
+                const color = eventTypeColors[type] || '#FF5500';
+                const icon = eventTypeIcons[type] || 'car-sport';
+
+                return (
+                  <TouchableOpacity
+                    style={[
+                      styles.typeModalItem,
+                      isSelected && styles.typeModalItemSelected,
+                    ]}
+                    onPress={() => {
+                      setFormData({ ...formData, eventType: type });
+                      setShowTypeModal(false);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[styles.typeModalIconCircle, { backgroundColor: color + '22' }]}>
+                      <Ionicons name={icon as any} size={24} color={color} />
+                    </View>
+                    <Text style={[
+                      styles.typeModalItemText,
+                      isSelected && { color: '#fff', fontWeight: '700' },
+                    ]}>
+                      {type}
+                    </Text>
+                    {isSelected && (
+                      <View style={styles.typeModalCheck}>
+                        <Ionicons name="checkmark-circle" size={24} color="#FF5500" />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
+
       <NotificationModal
         visible={notif.showModal}
         onClose={() => notif.setShowModal(false)}
@@ -773,6 +861,105 @@ const styles = StyleSheet.create({
   },
   typeChipTextActive: {
     color: '#fff',
+  },
+  dropdownButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  dropdownContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  dropdownIconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  dropdownText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  typeModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'flex-end',
+  },
+  typeModalContainer: {
+    backgroundColor: '#1a1a1a',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: '70%',
+    paddingBottom: Platform.OS === 'ios' ? 34 : 16,
+  },
+  typeModalHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#444',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  typeModalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#2a2a2a',
+  },
+  typeModalTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  typeModalCloseBtn: {
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  typeModalItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#2a2a2a',
+  },
+  typeModalItemSelected: {
+    backgroundColor: '#FF550011',
+  },
+  typeModalIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  typeModalItemText: {
+    color: '#ccc',
+    fontSize: 16,
+    fontWeight: '500',
+    flex: 1,
+  },
+  typeModalCheck: {
+    marginLeft: 8,
   },
   row: {
     flexDirection: 'row',
