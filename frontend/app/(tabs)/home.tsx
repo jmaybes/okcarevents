@@ -1199,6 +1199,7 @@ const styles = StyleSheet.create({
     lineHeight: 42,
     letterSpacing: -0.5,
     textShadow: '1px 5px #000',
+    textAlign: 'center',
   },
   droppingContainer: {
     height: 46,
@@ -1222,7 +1223,7 @@ const styles = StyleSheet.create({
   heroTitleRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
   heroBadgeRow: {
     flexDirection: 'row',
