@@ -1252,7 +1252,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.08)',
     borderRadius: 16,
     padding: 12,
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
     gap: 16,
   },
   heroStatItem: {
