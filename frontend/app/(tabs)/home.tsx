@@ -720,6 +720,11 @@ export default function HomeScreen() {
               <Text style={styles.heroBadgeText}>OKC's #1 Car Community</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginRight: '7%' }}>
+              <NotificationBell
+                unreadCount={notif.unreadCount}
+                onPress={() => notif.setShowModal(true)}
+                size={22}
+              />
               <TouchableOpacity
                 style={styles.facebookButton}
                 onPress={() => {
@@ -733,11 +738,6 @@ export default function HomeScreen() {
                   resizeMode="contain"
                 />
               </TouchableOpacity>
-              <NotificationBell
-                unreadCount={notif.unreadCount}
-                onPress={() => notif.setShowModal(true)}
-                size={22}
-              />
             </View>
           </View>
           <View style={styles.heroTitleRow}>
