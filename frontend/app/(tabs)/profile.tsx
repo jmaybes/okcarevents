@@ -935,6 +935,22 @@ export default function ProfileScreen() {
           )}
         </View>
 
+        {/* Browse Public Garages - prominent placement */}
+        <TouchableOpacity
+          style={styles.publicGarageButton}
+          onPress={() => router.push('/garage')}
+          activeOpacity={0.7}
+        >
+          <View style={styles.publicGarageIconCircle}>
+            <Ionicons name="car-sport" size={22} color="#4CAF50" />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.publicGarageTitle}>Browse Public Garages</Text>
+            <Text style={styles.publicGarageSub}>See what others are driving</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={22} color="#666" />
+        </TouchableOpacity>
+
         {/* ===== EVENTS & RSVPs ===== */}
         <View style={styles.menuSection}>
           <View style={styles.sectionHeader}>
@@ -982,11 +998,6 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/crews')}>
             <Ionicons name="shield" size={24} color="#FFE707" />
             <Text style={styles.menuItemText}>My Crews</Text>
-            <Ionicons name="chevron-forward" size={24} color="#666" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/garage')}>
-            <Ionicons name="car-sport" size={24} color="#4CAF50" />
-            <Text style={styles.menuItemText}>Browse Public Garages</Text>
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/garage/tagged-photos')}>
@@ -2154,6 +2165,37 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#2a2a2a',
+  },
+  publicGarageButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1a1a1a',
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#4CAF5033',
+  },
+  publicGarageIconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#4CAF5018',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  publicGarageTitle: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  publicGarageSub: {
+    color: '#888',
+    fontSize: 12,
+    marginTop: 2,
   },
   publicGarageLinkGradient: {
     paddingHorizontal: 16,
