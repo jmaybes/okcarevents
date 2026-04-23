@@ -1245,6 +1245,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
     letterSpacing: 0.3,
     marginTop: 8,
+    textAlign: 'center',
   },
   heroStats: {
     flexDirection: 'row',
