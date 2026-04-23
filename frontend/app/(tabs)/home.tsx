@@ -793,7 +793,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity style={styles.calendarViewButton} onPress={() => router.push('/events/calendar')}>
           <Ionicons name="calendar" size={14} color="#FF5500" />
-          <Text style={styles.calendarViewButtonText}>View Calendar</Text>
+          <Text style={styles.calendarViewButtonText}>CALENDAR VIEW</Text>
         </TouchableOpacity>
       </View>
 
