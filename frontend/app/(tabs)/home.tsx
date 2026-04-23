@@ -1379,6 +1379,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FF5500',
     gap: 6,
+    marginLeft: 10,
   },
   calendarViewButtonText: {
     color: '#FF5500',
