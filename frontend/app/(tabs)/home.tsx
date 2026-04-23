@@ -1332,6 +1332,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FF5500',
     gap: 6,
+    marginLeft: 15,
   },
   sortByButtonText: {
     color: '#FF5500',
