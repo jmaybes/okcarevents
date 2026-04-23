@@ -1179,7 +1179,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   heroBadgeText: {
-    color: '#FF5500',
+    color: 'rgb(215, 202, 195)',
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 0.5,
