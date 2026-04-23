@@ -742,12 +742,11 @@ export default function HomeScreen() {
           </View>
           <View style={styles.heroTitleRow}>
             <View>
-              <Text style={styles.heroTitle}>Oklahoma</Text>
-              <View style={styles.droppingRow}>
-                <Text style={styles.heroTitle}>Car </Text>
-                <DroppingText />
-              </View>
+              <Text style={styles.heroTitle}>Oklahoma Car</Text>
             </View>
+          </View>
+          <View style={styles.droppingRow}>
+            <DroppingText />
           </View>
           <Text style={styles.heroSubtitle}>Discover events near you!</Text>
           <View style={styles.heroStats}>
@@ -1218,6 +1217,7 @@ const styles = StyleSheet.create({
   droppingRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   heroTitleRow: {
     flexDirection: 'row',
