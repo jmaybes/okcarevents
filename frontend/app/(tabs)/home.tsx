@@ -719,19 +719,26 @@ export default function HomeScreen() {
               <Ionicons name="flame" size={14} color="#FF5500" />
               <Text style={styles.heroBadgeText}>OKC's #1 Car Community</Text>
             </View>
-            <TouchableOpacity
-              style={styles.facebookButton}
-              onPress={() => {
-                // Facebook link placeholder
-              }}
-              activeOpacity={0.7}
-            >
-              <Image
-                source={require('../../assets/images/facebook-icon.png')}
-                style={styles.facebookIcon}
-                resizeMode="contain"
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginRight: '7%' }}>
+              <TouchableOpacity
+                style={styles.facebookButton}
+                onPress={() => {
+                  // Facebook link placeholder
+                }}
+                activeOpacity={0.7}
+              >
+                <Image
+                  source={require('../../assets/images/facebook-icon.png')}
+                  style={styles.facebookIcon}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+              <NotificationBell
+                unreadCount={notif.unreadCount}
+                onPress={() => notif.setShowModal(true)}
+                size={22}
               />
-            </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.heroTitleRow}>
             <View>
@@ -1225,7 +1232,6 @@ const styles = StyleSheet.create({
   facebookButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: '7%',
   },
   facebookIcon: {
     width: 40,
