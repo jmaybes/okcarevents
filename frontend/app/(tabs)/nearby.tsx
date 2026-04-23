@@ -25,6 +25,9 @@ import { API_URL } from '../../utils/api';
 import { router } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import MapErrorBoundary from '../../components/MapErrorBoundary';
+import NotificationBell from '../../components/NotificationBell';
+import NotificationModal from '../../components/NotificationModal';
+import { useNotifications } from '../../hooks/useNotifications';
 
 // Lazy-load NearbyMapView to prevent crashes on import
 let NearbyMapView: React.ComponentType<any> | null = null;
@@ -47,6 +50,7 @@ interface NearbyUser {
 export default function NearbyScreen() {
   const { user, updateUser } = useAuth();
   const insets = useSafeAreaInsets();
+  const notif = useNotifications(user?.id);
 
   const [location, setLocation] = useState<{latitude: number; longitude: number} | null>(null);
   const [loading, setLoading] = useState(true);
@@ -98,6 +102,7 @@ export default function NearbyScreen() {
       if (locationRef.current && user) {
         fetchNearbyUsers();
       }
+      if (user?.id) notif.fetchNotifications();
     }, [user, radius])
   );
 
@@ -481,6 +486,11 @@ export default function NearbyScreen() {
             >
               <Ionicons name={showMap ? "list" : "map"} size={20} color="#fff" />
             </TouchableOpacity>
+            <NotificationBell
+              unreadCount={notif.unreadCount}
+              onPress={() => notif.setShowModal(true)}
+              size={20}
+            />
           </View>
         </View>
       </LinearGradient>
@@ -1029,6 +1039,17 @@ export default function NearbyScreen() {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
+      />
     </View>
   );
 }

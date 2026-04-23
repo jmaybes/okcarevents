@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
@@ -24,11 +24,21 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as Location from 'expo-location';
 
 import { API_URL } from '../../utils/api';
+import NotificationBell from '../../components/NotificationBell';
+import NotificationModal from '../../components/NotificationModal';
+import { useNotifications } from '../../hooks/useNotifications';
 
 export default function AddEventScreen() {
   const { user, isAuthenticated } = useAuth();
   const insets = useSafeAreaInsets();
+  const notif = useNotifications(user?.id);
   const [loading, setLoading] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (user?.id) notif.fetchNotifications();
+    }, [user?.id])
+  );
   const [photos, setPhotos] = useState<string[]>([]);
   const [isPopUp, setIsPopUp] = useState(false);
   const [useMyLocation, setUseMyLocation] = useState(false);
@@ -318,6 +328,10 @@ export default function AddEventScreen() {
                 </Text>
               </View>
               <Ionicons name="add-circle" size={32} color="#fff" />
+              <NotificationBell
+                unreadCount={notif.unreadCount}
+                onPress={() => notif.setShowModal(true)}
+              />
             </View>
           </LinearGradient>
 
@@ -631,6 +645,17 @@ export default function AddEventScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
+      />
     </View>
   );
 }

@@ -31,6 +31,9 @@ import api from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
 
 import { API_URL } from '../../utils/api';
+import NotificationBell from '../../components/NotificationBell';
+import NotificationModal from '../../components/NotificationModal';
+import { useNotifications } from '../../hooks/useNotifications';
 
 interface Club {
   id: string;
@@ -47,6 +50,7 @@ interface Club {
 export default function ClubsScreen() {
   const insets = useSafeAreaInsets();
   const { user, isAuthenticated } = useAuth();
+  const notif = useNotifications(user?.id);
   const [clubs, setClubs] = useState<Club[]>([]);
   const [filteredClubs, setFilteredClubs] = useState<Club[]>([]);
   const [loading, setLoading] = useState(true);
@@ -78,7 +82,8 @@ export default function ClubsScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchClubs();
-    }, [])
+      if (user?.id) notif.fetchNotifications();
+    }, [user?.id])
   );
 
   useEffect(() => {
@@ -329,6 +334,10 @@ export default function ClubsScreen() {
             <Text style={styles.headerSubtitle}>{clubs.length} clubs in Oklahoma</Text>
           </View>
           <Ionicons name="people-circle" size={32} color="#fff" />
+          <NotificationBell
+            unreadCount={notif.unreadCount}
+            onPress={() => notif.setShowModal(true)}
+          />
         </View>
       </LinearGradient>
 
@@ -543,6 +552,17 @@ export default function ClubsScreen() {
           </KeyboardAvoidingView>
         </View>
       </Modal>
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
+      />
     </View>
   );
 }

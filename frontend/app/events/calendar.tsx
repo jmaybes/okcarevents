@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,11 +12,15 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 
 import { API_URL } from '../../utils/api';
+import { useAuth } from '../../contexts/AuthContext';
+import NotificationBell from '../../components/NotificationBell';
+import NotificationModal from '../../components/NotificationModal';
+import { useNotifications } from '../../hooks/useNotifications';
 
 interface Event {
   id: string;
@@ -56,6 +60,8 @@ function formatEventDate(dateStr: string): string {
 
 export default function CalendarViewScreen() {
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
+  const notif = useNotifications(user?.id);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -63,6 +69,7 @@ export default function CalendarViewScreen() {
 
   useEffect(() => {
     fetchEvents();
+    if (user?.id) notif.fetchNotifications();
   }, []);
 
   const fetchEvents = async () => {
@@ -217,9 +224,16 @@ export default function CalendarViewScreen() {
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Calendar View</Text>
-        <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
-          <Text style={styles.todayButtonText}>Today</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+          <NotificationBell
+            unreadCount={notif.unreadCount}
+            onPress={() => notif.setShowModal(true)}
+            size={22}
+          />
+          <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
+            <Text style={styles.todayButtonText}>Today</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -332,6 +346,17 @@ export default function CalendarViewScreen() {
 
         <View style={{ height: 100 }} />
       </ScrollView>
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
+      />
     </View>
   );
 }

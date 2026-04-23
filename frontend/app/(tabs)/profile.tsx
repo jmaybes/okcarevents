@@ -29,6 +29,7 @@ import axios from 'axios';
 import { useFonts, RockSalt_400Regular } from '@expo-google-fonts/rock-salt';
 
 import { API_URL } from '../../utils/api';
+import NotificationBell from '../../components/NotificationBell';
 
 interface Modification {
   category: string;
@@ -753,28 +754,11 @@ export default function ProfileScreen() {
               <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
               <Text style={styles.headerSubtitle}>{user?.name}</Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-              <TouchableOpacity onPress={() => setShowNotifModal(true)} style={{ position: 'relative' }}>
-                <Ionicons name="notifications-outline" size={24} color="#fff" />
-                {allNotifications.length > 0 && (
-                  <View style={{
-                    position: 'absolute',
-                    top: -6,
-                    right: -8,
-                    backgroundColor: '#FF5252',
-                    borderRadius: 10,
-                    minWidth: 18,
-                    height: 18,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    paddingHorizontal: 4,
-                  }}>
-                    <Text style={{ color: '#fff', fontSize: 10, fontWeight: 'bold' }}>
-                      {allNotifications.length}
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <NotificationBell
+                unreadCount={allNotifications.length}
+                onPress={() => setShowNotifModal(true)}
+              />
               <TouchableOpacity onPress={() => { fetchUserCar(true); setShowCarModal(true); }}>
                 <Ionicons name="settings-outline" size={24} color="#fff" />
               </TouchableOpacity>

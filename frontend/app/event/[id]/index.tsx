@@ -34,6 +34,9 @@ import * as Sharing from 'expo-sharing';
 import { useAuth } from '../../../contexts/AuthContext';
 
 import { API_URL } from '../../../utils/api';
+import NotificationBell from '../../../components/NotificationBell';
+import NotificationModal from '../../../components/NotificationModal';
+import { useNotifications } from '../../../hooks/useNotifications';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -83,6 +86,7 @@ export default function EventDetailScreen() {
   const { id } = useLocalSearchParams();
   const { user, isAuthenticated } = useAuth();
   const insets = useSafeAreaInsets();
+  const notif = useNotifications(user?.id);
   const [event, setEvent] = useState<Event | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,6 +103,7 @@ export default function EventDetailScreen() {
     if (isAuthenticated && user) {
       checkRSVPStatus();
     }
+    if (user?.id) notif.fetchNotifications();
   }, [id, isAuthenticated, user]);
 
   const fetchEventDetails = async () => {
@@ -325,6 +330,11 @@ export default function EventDetailScreen() {
           <TouchableOpacity onPress={handleShare}>
             <Ionicons name="share-social" size={24} color="#fff" />
           </TouchableOpacity>
+          <NotificationBell
+            unreadCount={notif.unreadCount}
+            onPress={() => notif.setShowModal(true)}
+            size={22}
+          />
         </View>
       </View>
 
@@ -604,6 +614,17 @@ export default function EventDetailScreen() {
           </View>
         </View>
       </Modal>
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
+      />
     </View>
   );
 }

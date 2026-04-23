@@ -18,6 +18,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 
 import { API_URL } from '../../utils/api';
+import NotificationBell from '../../components/NotificationBell';
+import NotificationModal from '../../components/NotificationModal';
+import { useNotifications } from '../../hooks/useNotifications';
 
 // Get WebSocket URL from API URL
 const getWebSocketUrl = () => {
@@ -46,6 +49,7 @@ interface User {
 export default function MessagesScreen() {
   const { user, isAuthenticated } = useAuth();
   const insets = useSafeAreaInsets();
+  const notif = useNotifications(user?.id);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -160,6 +164,7 @@ export default function MessagesScreen() {
       if (isAuthenticated && user?.id) {
         connectWebSocket();
         fetchOnlineUsers();
+        notif.fetchNotifications();
       }
 
       return () => {
@@ -347,12 +352,19 @@ export default function MessagesScreen() {
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Messages</Text>
-          <TouchableOpacity 
-            style={styles.newChatButton}
-            onPress={() => setShowNewChatModal(true)}
-          >
-            <Ionicons name="create-outline" size={24} color="#fff" />
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <NotificationBell
+              unreadCount={notif.unreadCount}
+              onPress={() => notif.setShowModal(true)}
+              size={22}
+            />
+            <TouchableOpacity 
+              style={styles.newChatButton}
+              onPress={() => setShowNewChatModal(true)}
+            >
+              <Ionicons name="create-outline" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </View>
       </LinearGradient>
 
@@ -477,6 +489,17 @@ export default function MessagesScreen() {
           </View>
         </View>
       </Modal>
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
+      />
     </View>
   );
 }

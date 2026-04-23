@@ -36,6 +36,9 @@ import api from '../../utils/api';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import { API_URL } from '../../utils/api';
+import NotificationBell from '../../components/NotificationBell';
+import NotificationModal from '../../components/NotificationModal';
+import { useNotifications } from '../../hooks/useNotifications';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -102,6 +105,7 @@ const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: numbe
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
+  const notif = useNotifications(user?.id);
   const HERO_HEIGHT = BASE_HERO_HEIGHT + insets.top;
   const [events, setEvents] = useState<Event[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
@@ -145,7 +149,10 @@ export default function HomeScreen() {
     useCallback(() => {
       fetchEvents();
       fetchClubsCount();
-      if (user?.id) fetchFavorites();
+      if (user?.id) {
+        fetchFavorites();
+        notif.fetchNotifications();
+      }
     }, [user?.id])
   );
 
@@ -1044,6 +1051,11 @@ export default function HomeScreen() {
           <View style={styles.stickyHeaderBadge}>
             <Text style={styles.stickyHeaderCount}>{filteredEvents.length}</Text>
           </View>
+          <NotificationBell
+            unreadCount={notif.unreadCount}
+            onPress={() => notif.setShowModal(true)}
+            size={22}
+          />
         </View>
       </Animated.View>
 
@@ -1090,6 +1102,17 @@ export default function HomeScreen() {
             )}
           </View>
         }
+      />
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
       />
     </View>
   );
