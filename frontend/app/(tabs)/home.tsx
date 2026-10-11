@@ -1318,8 +1318,7 @@ const styles = StyleSheet.create({
   filterRow2: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 10,
-    paddingRight: 45,
+    paddingHorizontal: 10,
     marginBottom: 11,
     marginTop: -12,
     gap: 8,
@@ -1335,7 +1334,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FF5500',
     gap: 6,
-    marginLeft: 15,
   },
   sortByButtonText: {
     color: '#FF5500',
@@ -1382,7 +1380,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#FF5500',
     gap: 6,
-    marginLeft: 15,
   },
   calendarViewButtonText: {
     color: '#FF5500',
