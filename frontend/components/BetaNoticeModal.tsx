@@ -147,9 +147,9 @@ export default function BetaNoticeModal() {
                   resizeMode="contain"
                 />
                 <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 9, letterSpacing: 3, marginBottom: 10 }}>presents</Text>
-                <Text style={styles.headerTitle}>Welcome to Oklahoma Car Meets</Text>
-                <Text style={styles.headerSubtitle}>Meets, Cruises, Shows & More!</Text>
-                <Text style={styles.betaBadge}>BETA VERSION</Text>
+                <Text style={styles.headerTitle}>Welcome to the official StreetMotion app</Text>
+                <Text style={styles.headerSubtitle}>Your new home for everything automotive. You will find an extensive array of tools at your fingertips.</Text>
+                <Text style={styles.betaBadge}>PLEASE READ BELOW</Text>
               </LinearGradient>
 
               {/* Content */}
@@ -185,7 +185,7 @@ export default function BetaNoticeModal() {
                 {/* Privacy Notice */}
                 <View style={styles.privacyBox}>
                   <View style={styles.privacyHeader}>
-                    <Ionicons name="shield-checkmark" size={18} color="#4CAF50" />
+                    <Ionicons name="shield-checkmark" size={18} color="#F44336" />
                     <Text style={styles.privacyTitle}>Your Privacy Matters!</Text>
                   </View>
                   <Text style={styles.privacyText}>
@@ -392,12 +392,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   privacyBox: {
-    backgroundColor: '#1a2e1a',
+    backgroundColor: '#2e1a1a',
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#4CAF50',
+    borderColor: '#F44336',
   },
   privacyHeader: {
     flexDirection: 'row',
@@ -406,12 +406,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   privacyTitle: {
-    color: '#4CAF50',
+    color: '#F44336',
     fontSize: 17,
     fontWeight: '700',
   },
   privacyText: {
-    color: '#a5d6a7',
+    color: '#ef9a9a',
     fontSize: 13,
     lineHeight: 19,
   },
