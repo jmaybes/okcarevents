@@ -29,16 +29,16 @@ export default function TalentScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Talent</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-          <NotificationBell
-            unreadCount={notif.unreadCount}
-            onPress={() => notif.setShowModal(true)}
-            size={20}
-          />
+        <View style={{ alignItems: 'center' }}>
           <Image
             source={require('../../assets/images/streetmotion-logo.png')}
             style={styles.headerLogo}
             resizeMode="contain"
+          />
+          <NotificationBell
+            unreadCount={notif.unreadCount}
+            onPress={() => notif.setShowModal(true)}
+            size={18}
           />
         </View>
       </View>

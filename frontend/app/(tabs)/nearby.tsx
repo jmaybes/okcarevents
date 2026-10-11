@@ -486,16 +486,18 @@ export default function NearbyScreen() {
             >
               <Ionicons name={showMap ? "list" : "map"} size={20} color="#fff" />
             </TouchableOpacity>
-            <NotificationBell
-              unreadCount={notif.unreadCount}
-              onPress={() => notif.setShowModal(true)}
-              size={20}
-            />
-            <Image
-              source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 60, height: 22 }}
-              resizeMode="contain"
-            />
+            <View style={{ alignItems: 'center' }}>
+              <Image
+                source={require('../../assets/images/streetmotion-logo.png')}
+                style={{ width: 60, height: 22 }}
+                resizeMode="contain"
+              />
+              <NotificationBell
+                unreadCount={notif.unreadCount}
+                onPress={() => notif.setShowModal(true)}
+                size={18}
+              />
+            </View>
           </View>
         </View>
       </LinearGradient>

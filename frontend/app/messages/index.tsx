@@ -358,22 +358,24 @@ export default function MessagesScreen() {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Messages</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-            <NotificationBell
-              unreadCount={notif.unreadCount}
-              onPress={() => notif.setShowModal(true)}
-              size={20}
-            />
             <TouchableOpacity 
               style={styles.newChatButton}
               onPress={() => setShowNewChatModal(true)}
             >
               <Ionicons name="create-outline" size={24} color="#fff" />
             </TouchableOpacity>
-            <Image
-              source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 60, height: 22 }}
-              resizeMode="contain"
-            />
+            <View style={{ alignItems: 'center' }}>
+              <Image
+                source={require('../../assets/images/streetmotion-logo.png')}
+                style={{ width: 60, height: 22 }}
+                resizeMode="contain"
+              />
+              <NotificationBell
+                unreadCount={notif.unreadCount}
+                onPress={() => notif.setShowModal(true)}
+                size={18}
+              />
+            </View>
           </View>
         </View>
       </LinearGradient>

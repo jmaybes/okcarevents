@@ -330,16 +330,18 @@ export default function EventDetailScreen() {
           <TouchableOpacity onPress={handleShare}>
             <Ionicons name="share-social" size={24} color="#fff" />
           </TouchableOpacity>
-          <NotificationBell
-            unreadCount={notif.unreadCount}
-            onPress={() => notif.setShowModal(true)}
-            size={20}
-          />
-          <Image
-            source={require('../../../assets/images/streetmotion-logo.png')}
-            style={{ width: 60, height: 22 }}
-            resizeMode="contain"
-          />
+          <View style={{ alignItems: 'center' }}>
+            <Image
+              source={require('../../../assets/images/streetmotion-logo.png')}
+              style={{ width: 60, height: 22 }}
+              resizeMode="contain"
+            />
+            <NotificationBell
+              unreadCount={notif.unreadCount}
+              onPress={() => notif.setShowModal(true)}
+              size={18}
+            />
+          </View>
         </View>
       </View>
 

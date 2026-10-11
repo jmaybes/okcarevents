@@ -761,20 +761,22 @@ export default function ProfileScreen() {
               <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
               <Text style={styles.headerSubtitle}>{user?.name}</Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <NotificationBell
-                unreadCount={allNotifications.length}
-                onPress={() => setShowNotifModal(true)}
-                size={20}
-              />
-              <TouchableOpacity onPress={() => { fetchUserCar(true); setShowCarModal(true); }}>
-                <Ionicons name="settings-outline" size={22} color="#fff" />
-              </TouchableOpacity>
+            <View style={{ alignItems: 'center' }}>
               <Image
                 source={require('../../assets/images/streetmotion-logo.png')}
                 style={{ width: 60, height: 22 }}
                 resizeMode="contain"
               />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                <NotificationBell
+                  unreadCount={allNotifications.length}
+                  onPress={() => setShowNotifModal(true)}
+                  size={18}
+                />
+                <TouchableOpacity onPress={() => { fetchUserCar(true); setShowCarModal(true); }}>
+                  <Ionicons name="settings-outline" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </LinearGradient>
