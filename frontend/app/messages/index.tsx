@@ -318,12 +318,12 @@ export default function MessagesScreen() {
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
+            <Text style={styles.headerTitle}>Messages</Text>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 70, height: 26 }}
+              style={{ width: 60, height: 22 }}
               resizeMode="contain"
             />
-            <View style={{ width: 40 }} />
           </View>
         </LinearGradient>
 
@@ -356,16 +356,12 @@ export default function MessagesScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Image
-            source={require('../../assets/images/streetmotion-logo.png')}
-            style={{ width: 70, height: 26 }}
-            resizeMode="contain"
-          />
+          <Text style={styles.headerTitle}>Messages</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <NotificationBell
               unreadCount={notif.unreadCount}
               onPress={() => notif.setShowModal(true)}
-              size={22}
+              size={20}
             />
             <TouchableOpacity 
               style={styles.newChatButton}
@@ -373,6 +369,11 @@ export default function MessagesScreen() {
             >
               <Ionicons name="create-outline" size={24} color="#fff" />
             </TouchableOpacity>
+            <Image
+              source={require('../../assets/images/streetmotion-logo.png')}
+              style={{ width: 60, height: 22 }}
+              resizeMode="contain"
+            />
           </View>
         </View>
       </LinearGradient>
@@ -535,7 +536,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
   },

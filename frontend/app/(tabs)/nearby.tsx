@@ -464,14 +464,7 @@ export default function NearbyScreen() {
       >
         <View style={styles.header}>
           <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Image
-                source={require('../../assets/images/streetmotion-logo.png')}
-                style={{ width: 70, height: 26 }}
-                resizeMode="contain"
-              />
-              <Text style={styles.headerTitle}>Nearby</Text>
-            </View>
+            <Text style={styles.headerTitle}>Nearby</Text>
             <Text style={styles.headerSubtitle}>{nearbyUsers.length} users within {radius} miles</Text>
           </View>
           <View style={styles.headerActions}>
@@ -497,6 +490,11 @@ export default function NearbyScreen() {
               unreadCount={notif.unreadCount}
               onPress={() => notif.setShowModal(true)}
               size={20}
+            />
+            <Image
+              source={require('../../assets/images/streetmotion-logo.png')}
+              style={{ width: 60, height: 22 }}
+              resizeMode="contain"
             />
           </View>
         </View>
@@ -1082,7 +1080,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#fff',
   },

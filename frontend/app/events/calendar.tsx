@@ -223,20 +223,21 @@ export default function CalendarViewScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-        <Image
-          source={require('../../assets/images/streetmotion-logo.png')}
-          style={{ width: 70, height: 26 }}
-          resizeMode="contain"
-        />
+        <Text style={styles.headerTitle}>Calendar</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <NotificationBell
             unreadCount={notif.unreadCount}
             onPress={() => notif.setShowModal(true)}
-            size={22}
+            size={20}
           />
           <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
             <Text style={styles.todayButtonText}>Today</Text>
           </TouchableOpacity>
+          <Image
+            source={require('../../assets/images/streetmotion-logo.png')}
+            style={{ width: 60, height: 22 }}
+            resizeMode="contain"
+          />
         </View>
       </View>
 
@@ -397,7 +398,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: '700',
   },
   todayButton: {

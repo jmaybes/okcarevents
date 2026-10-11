@@ -350,23 +350,24 @@ export default function AddEventScreen() {
             style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
           >
             <View style={styles.header}>
-              <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <Image
-                    source={require('../../assets/images/streetmotion-logo.png')}
-                    style={{ width: 70, height: 26 }}
-                    resizeMode="contain"
-                  />
-                  <Text style={styles.headerTitle}>Add Event</Text>
-                </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.headerTitle}>Add Event</Text>
                 <Text style={styles.headerSubtitle}>
                   Share a car event with the community
                 </Text>
               </View>
-              <NotificationBell
-                unreadCount={notif.unreadCount}
-                onPress={() => notif.setShowModal(true)}
-              />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <NotificationBell
+                  unreadCount={notif.unreadCount}
+                  onPress={() => notif.setShowModal(true)}
+                  size={20}
+                />
+                <Image
+                  source={require('../../assets/images/streetmotion-logo.png')}
+                  style={{ width: 60, height: 22 }}
+                  resizeMode="contain"
+                />
+              </View>
             </View>
           </LinearGradient>
 
@@ -775,7 +776,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#fff',
   },

@@ -28,18 +28,19 @@ export default function TalentScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <View style={styles.header}>
-        <View style={styles.headerLeft}>
+        <Text style={styles.headerTitle}>Talent</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+          <NotificationBell
+            unreadCount={notif.unreadCount}
+            onPress={() => notif.setShowModal(true)}
+            size={20}
+          />
           <Image
             source={require('../../assets/images/streetmotion-logo.png')}
             style={styles.headerLogo}
             resizeMode="contain"
           />
         </View>
-        <Text style={styles.headerTitle}>Talent</Text>
-        <NotificationBell
-          unreadCount={notif.unreadCount}
-          onPress={() => notif.setShowModal(true)}
-        />
       </View>
 
       {/* Coming Soon Content */}
@@ -81,14 +82,13 @@ const styles = StyleSheet.create({
     borderBottomColor: '#1a1a1a',
   },
   headerLeft: {
-    width: 80,
   },
   headerLogo: {
-    width: 80,
-    height: 30,
+    width: 70,
+    height: 26,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#fff',
   },

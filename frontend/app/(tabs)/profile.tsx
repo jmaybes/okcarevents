@@ -701,13 +701,13 @@ export default function ProfileScreen() {
           end={{ x: 1, y: 0 }}
           style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 70, height: 26 }}
+              style={{ width: 60, height: 22 }}
               resizeMode="contain"
             />
-            <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
           </View>
           <Text style={styles.headerSubtitle}>Showcase your ride</Text>
         </LinearGradient>
@@ -758,24 +758,23 @@ export default function ProfileScreen() {
         >
           <View style={styles.headerRow}>
             <View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Image
-                  source={require('../../assets/images/streetmotion-logo.png')}
-                  style={{ width: 70, height: 26 }}
-                  resizeMode="contain"
-                />
-                <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
-              </View>
+              <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
               <Text style={styles.headerSubtitle}>{user?.name}</Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
               <NotificationBell
                 unreadCount={allNotifications.length}
                 onPress={() => setShowNotifModal(true)}
+                size={20}
               />
               <TouchableOpacity onPress={() => { fetchUserCar(true); setShowCarModal(true); }}>
-                <Ionicons name="settings-outline" size={24} color="#fff" />
+                <Ionicons name="settings-outline" size={22} color="#fff" />
               </TouchableOpacity>
+              <Image
+                source={require('../../assets/images/streetmotion-logo.png')}
+                style={{ width: 60, height: 22 }}
+                resizeMode="contain"
+              />
             </View>
           </View>
         </LinearGradient>
@@ -1947,7 +1946,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#fff',
     letterSpacing: 2,
