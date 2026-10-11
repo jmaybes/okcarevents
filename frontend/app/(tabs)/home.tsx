@@ -1202,11 +1202,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   sponsorBadge: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   sponsorLogo: {
-    width: 100,
-    height: 36,
+    width: 130,
+    height: 46,
   },
   presentsText: {
     color: 'rgba(255,255,255,0.5)',
@@ -1214,13 +1214,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 2,
     marginTop: -2,
-    marginLeft: 2,
+    textAlign: 'center',
   },
   heroTitle: {
-    fontSize: 38,
+    fontSize: 32,
     fontWeight: '900',
     color: '#fff',
-    lineHeight: 42,
+    lineHeight: 36,
     letterSpacing: 2,
     textShadow: '1px 5px #000',
     textAlign: 'center',
