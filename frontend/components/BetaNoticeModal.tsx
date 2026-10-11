@@ -147,8 +147,7 @@ export default function BetaNoticeModal() {
                   resizeMode="contain"
                 />
                 <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 9, letterSpacing: 3, marginBottom: 10 }}>presents</Text>
-                <Text style={styles.headerTitle}>Welcome to the StreetMotion App</Text>
-                <Text style={styles.headerSubtitle}>Your new home for everything automotive. You will find an extensive array of tools at your fingertips.</Text>
+                <Text style={styles.headerTitle}>Welcome to the official StreetMotion App, your new home for everything automotive. You will find an extensive array of tools at your fingertips.</Text>
                 <Text style={styles.betaBadge}>PLEASE READ BELOW</Text>
               </LinearGradient>
 
