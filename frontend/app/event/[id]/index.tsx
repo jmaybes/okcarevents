@@ -290,6 +290,11 @@ export default function EventDetailScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
+        <Image
+          source={require('../../../assets/images/streetmotion-logo.png')}
+          style={{ width: 70, height: 26 }}
+          resizeMode="contain"
+        />
         <View style={styles.topBarRight}>
           {user?.isAdmin && (
             <>

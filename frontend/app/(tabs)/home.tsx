@@ -715,9 +715,13 @@ export default function HomeScreen() {
         {/* Hero text content with parallax */}
         <Animated.View style={[styles.heroContent, heroContentStyle, { paddingTop: insets.top + 16 }]}>
           <View style={styles.heroBadgeRow}>
-            <View style={styles.heroBadge}>
-              <Ionicons name="flame" size={14} color="#FF5500" />
-              <Text style={styles.heroBadgeText}>OKC's #1 Car Community</Text>
+            <View style={styles.sponsorBadge}>
+              <Image
+                source={require('../../assets/images/streetmotion-logo.png')}
+                style={styles.sponsorLogo}
+                resizeMode="contain"
+              />
+              <Text style={styles.presentsText}>presents</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginRight: '7%' }}>
               <NotificationBell
@@ -1054,8 +1058,12 @@ export default function HomeScreen() {
           style={StyleSheet.absoluteFillObject}
         />
         <View style={styles.stickyHeaderContent}>
-          <Ionicons name="car-sport" size={22} color="#FF5500" />
-          <Text style={styles.stickyHeaderTitle}>Oklahoma Car Events</Text>
+          <Image
+            source={require('../../assets/images/streetmotion-logo.png')}
+            style={{ width: 70, height: 26 }}
+            resizeMode="contain"
+          />
+          <Text style={styles.stickyHeaderTitle}>OKC Car Events</Text>
           <View style={styles.stickyHeaderBadge}>
             <Text style={styles.stickyHeaderCount}>{filteredEvents.length}</Text>
           </View>
@@ -1192,6 +1200,21 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
     letterSpacing: 0.5,
+  },
+  sponsorBadge: {
+    alignItems: 'flex-start',
+  },
+  sponsorLogo: {
+    width: 100,
+    height: 36,
+  },
+  presentsText: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 9,
+    fontWeight: '500',
+    letterSpacing: 2,
+    marginTop: -2,
+    marginLeft: 2,
   },
   heroTitle: {
     fontSize: 38,

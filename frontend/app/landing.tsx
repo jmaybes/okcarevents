@@ -130,9 +130,12 @@ export default function LandingScreen() {
         >
           <View style={styles.heroOverlay}>
             <View style={styles.heroContent}>
-              <View style={styles.logoContainer}>
-                <Ionicons name="car-sport" size={60} color="#FF5500" />
-              </View>
+              <Image
+                source={require('../assets/images/streetmotion-logo.png')}
+                style={{ width: 160, height: 60, marginBottom: 8 }}
+                resizeMode="contain"
+              />
+              <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 10, letterSpacing: 3, marginBottom: 12 }}>presents</Text>
               <Text style={styles.heroTitle}>Oklahoma Car Events</Text>
               <Text style={styles.heroTitleSub}>& Clubs</Text>
               <Text style={styles.heroSubtitle}>

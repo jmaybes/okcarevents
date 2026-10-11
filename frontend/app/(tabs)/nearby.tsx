@@ -13,6 +13,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Keyboard,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
@@ -463,9 +464,15 @@ export default function NearbyScreen() {
       >
         <View style={styles.header}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>Nearby Enthusiasts</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <Image
+                source={require('../../assets/images/streetmotion-logo.png')}
+                style={{ width: 70, height: 26 }}
+                resizeMode="contain"
+              />
+              <Text style={styles.headerTitle}>Nearby</Text>
+            </View>
             <Text style={styles.headerSubtitle}>{nearbyUsers.length} users within {radius} miles</Text>
-            <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 8, marginTop: 2 }}>{API_URL}</Text>
           </View>
           <View style={styles.headerActions}>
             {nearbyUsers.length > 0 && (

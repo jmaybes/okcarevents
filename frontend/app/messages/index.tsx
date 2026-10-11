@@ -9,6 +9,7 @@ import {
   RefreshControl,
   TextInput,
   Modal,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -317,7 +318,11 @@ export default function MessagesScreen() {
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Messages</Text>
+            <Image
+              source={require('../../assets/images/streetmotion-logo.png')}
+              style={{ width: 70, height: 26 }}
+              resizeMode="contain"
+            />
             <View style={{ width: 40 }} />
           </View>
         </LinearGradient>
@@ -351,7 +356,11 @@ export default function MessagesScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Messages</Text>
+          <Image
+            source={require('../../assets/images/streetmotion-logo.png')}
+            style={{ width: 70, height: 26 }}
+            resizeMode="contain"
+          />
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <NotificationBell
               unreadCount={notif.unreadCount}

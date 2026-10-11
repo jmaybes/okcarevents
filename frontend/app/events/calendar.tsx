@@ -223,7 +223,11 @@ export default function CalendarViewScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Calendar View</Text>
+        <Image
+          source={require('../../assets/images/streetmotion-logo.png')}
+          style={{ width: 70, height: 26 }}
+          resizeMode="contain"
+        />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
           <NotificationBell
             unreadCount={notif.unreadCount}

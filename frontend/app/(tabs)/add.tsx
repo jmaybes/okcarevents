@@ -351,12 +351,18 @@ export default function AddEventScreen() {
           >
             <View style={styles.header}>
               <View>
-                <Text style={styles.headerTitle}>Add New Event</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <Image
+                    source={require('../../assets/images/streetmotion-logo.png')}
+                    style={{ width: 70, height: 26 }}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.headerTitle}>Add Event</Text>
+                </View>
                 <Text style={styles.headerSubtitle}>
                   Share a car event with the community
                 </Text>
               </View>
-              <Ionicons name="add-circle" size={32} color="#fff" />
               <NotificationBell
                 unreadCount={notif.unreadCount}
                 onPress={() => notif.setShowModal(true)}

@@ -701,7 +701,14 @@ export default function ProfileScreen() {
           end={{ x: 1, y: 0 }}
           style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
         >
-          <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Image
+              source={require('../../assets/images/streetmotion-logo.png')}
+              style={{ width: 70, height: 26 }}
+              resizeMode="contain"
+            />
+            <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
+          </View>
           <Text style={styles.headerSubtitle}>Showcase your ride</Text>
         </LinearGradient>
         
@@ -751,7 +758,14 @@ export default function ProfileScreen() {
         >
           <View style={styles.headerRow}>
             <View>
-              <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <Image
+                  source={require('../../assets/images/streetmotion-logo.png')}
+                  style={{ width: 70, height: 26 }}
+                  resizeMode="contain"
+                />
+                <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
+              </View>
               <Text style={styles.headerSubtitle}>{user?.name}</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -993,6 +1007,11 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/feeds')}>
             <Ionicons name="newspaper" size={24} color="#FF9800" />
             <Text style={styles.menuItemText}>Community Lounge</Text>
+            <Ionicons name="chevron-forward" size={24} color="#666" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/clubs')}>
+            <Ionicons name="people-circle" size={24} color="#4CAF50" />
+            <Text style={styles.menuItemText}>Clubs</Text>
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/crews')}>

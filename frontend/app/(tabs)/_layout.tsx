@@ -122,10 +122,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="clubs"
         options={{
-          title: 'Clubs',
+          title: 'Talent',
           tabBarIcon: ({ focused, size }) => (
             <AnimatedTabIcon 
-              name={focused ? "people" : "people-outline"} 
+              name={focused ? "star" : "star-outline"} 
               focused={focused}
               size={size} 
             />

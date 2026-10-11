@@ -141,11 +141,12 @@ export default function BetaNoticeModal() {
                 <View style={styles.versionBadge}>
                   <Text style={styles.versionText}>v1.0.0</Text>
                 </View>
-                <Image 
-                  source={require('../assets/images/okc-logo.png')} 
-                  style={styles.logoIcon}
+                <Image
+                  source={require('../assets/images/streetmotion-logo.png')}
+                  style={{ width: 140, height: 50, marginBottom: 6 }}
                   resizeMode="contain"
                 />
+                <Text style={{ color: 'rgba(255,255,255,0.5)', fontSize: 9, letterSpacing: 3, marginBottom: 10 }}>presents</Text>
                 <Text style={styles.headerTitle}>Welcome to Oklahoma Car Meets</Text>
                 <Text style={styles.headerSubtitle}>Meets, Cruises, Shows & More!</Text>
                 <Text style={styles.betaBadge}>BETA VERSION</Text>
