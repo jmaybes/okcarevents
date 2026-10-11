@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
@@ -25,23 +26,30 @@ export default function TalentScreen() {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Talent</Text>
-        <View style={{ alignItems: 'center' }}>
-          <Image
-            source={require('../../assets/images/streetmotion-logo.png')}
-            style={styles.headerLogo}
-            resizeMode="contain"
-          />
-          <NotificationBell
-            unreadCount={notif.unreadCount}
-            onPress={() => notif.setShowModal(true)}
-            size={18}
-          />
+    <View style={styles.container}>
+      {/* Header with gradient */}
+      <LinearGradient
+        colors={['#C0C0C0', '#1a1a1a']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
+      >
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Talent</Text>
+          <View style={{ alignItems: 'center' }}>
+            <Image
+              source={require('../../assets/images/streetmotion-logo.png')}
+              style={styles.headerLogo}
+              resizeMode="contain"
+            />
+            <NotificationBell
+              unreadCount={notif.unreadCount}
+              onPress={() => notif.setShowModal(true)}
+              size={18}
+            />
+          </View>
         </View>
-      </View>
+      </LinearGradient>
 
       {/* Coming Soon Content */}
       <View style={styles.comingSoonContainer}>
@@ -72,14 +80,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0c0c0c',
   },
+  headerGradient: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
   },
   headerLeft: {
   },

@@ -118,7 +118,7 @@ export default function BetaNoticeModal() {
     >
       <View style={[styles.overlay, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 12 }]}>
         <LinearGradient
-          colors={['#FF5500', '#E91E63', '#9C27B0', '#FF5500']}
+          colors={['#C0C0C0', '#4a4a4a', '#1a1a1a', '#C0C0C0']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.gradientBorder}
@@ -133,7 +133,7 @@ export default function BetaNoticeModal() {
             >
               {/* Header */}
               <LinearGradient
-                colors={['#FF5500', '#E91E63']}
+                colors={['#C0C0C0', '#1a1a1a']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.header}

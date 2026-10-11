@@ -499,7 +499,7 @@ const BottomNavBar = () => {
 
   return (
     <LinearGradient
-      colors={['#FF5500', '#E91E63']}
+      colors={['#C0C0C0', '#1a1a1a']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={[navS.container, { paddingBottom: bottomPadding, height: 50 + bottomPadding, opacity: 0.9 }]}
@@ -785,7 +785,7 @@ export default function FeedsScreen() {
     return (
       <View style={[s.container, { paddingTop: insets.top }]}>
         <StatusBar barStyle="dark-content" />
-        <LinearGradient colors={['#FF5500', '#E91E63']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={s.headerBar}>
+        <LinearGradient colors={['#C0C0C0', '#1a1a1a']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={s.headerBar}>
           <TouchableOpacity onPress={() => router.back()} style={s.backBtn}><Ionicons name="arrow-back" size={24} color="#fff" /></TouchableOpacity>
           <Text style={s.headerTitle}>Community Lounge</Text>
           <View style={{ width: 40 }} />

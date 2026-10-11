@@ -558,7 +558,7 @@ export default function TimerScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <LinearGradient
-          colors={['#FF5500', '#E91E63']}
+          colors={['#C0C0C0', '#1a1a1a']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.headerGradient}
@@ -802,7 +802,7 @@ export default function TimerScreen() {
           {result && (
             <View style={styles.resultButtons}>
               <TouchableOpacity style={[styles.resultBtn, { flex: 2 }]} onPress={resetTimer}>
-                <LinearGradient colors={['#FF5500', '#E91E63']} style={styles.resultBtnGradient}>
+                <LinearGradient colors={['#C0C0C0', '#1a1a1a']} style={styles.resultBtnGradient}>
                   <Ionicons name="refresh" size={24} color="#fff" />
                   <Text style={styles.resultBtnText}>TRY AGAIN</Text>
                 </LinearGradient>

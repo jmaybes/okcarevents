@@ -347,7 +347,7 @@ export default function EventGalleryScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <LinearGradient
-        colors={['#FF5500', '#E91E63']}
+        colors={['#C0C0C0', '#1a1a1a']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.headerGradient}
@@ -409,7 +409,7 @@ export default function EventGalleryScreen() {
       {isAuthenticated && photos.length > 0 && (
         <TouchableOpacity style={[styles.fab, { bottom: insets.bottom + 20 }]} onPress={pickImage}>
           <LinearGradient
-            colors={['#FF5500', '#E91E63']}
+            colors={['#C0C0C0', '#1a1a1a']}
             style={styles.fabGradient}
           >
             <Ionicons name="add" size={28} color="#fff" />

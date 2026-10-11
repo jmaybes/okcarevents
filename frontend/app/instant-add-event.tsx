@@ -180,7 +180,7 @@ export default function InstantAddEventScreen() {
         <View style={styles.captureContainer}>
           <View style={styles.captureIconWrap}>
             <LinearGradient
-              colors={['#FF5500', '#E91E63']}
+              colors={['#C0C0C0', '#1a1a1a']}
               style={styles.captureIconGradient}
             >
               <Ionicons name="camera" size={48} color="#fff" />
@@ -193,7 +193,7 @@ export default function InstantAddEventScreen() {
 
           <TouchableOpacity style={styles.captureBtn} onPress={takePhoto} activeOpacity={0.8}>
             <LinearGradient
-              colors={['#FF5500', '#E91E63']}
+              colors={['#C0C0C0', '#1a1a1a']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.captureBtnGradient}
@@ -274,7 +274,7 @@ export default function InstantAddEventScreen() {
             activeOpacity={0.8}
           >
             <LinearGradient
-              colors={['#FF5500', '#E91E63']}
+              colors={['#C0C0C0', '#1a1a1a']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.captureBtnGradient}
@@ -480,7 +480,7 @@ export default function InstantAddEventScreen() {
             activeOpacity={0.8}
           >
             <LinearGradient
-              colors={['#FF5500', '#E91E63']}
+              colors={['#C0C0C0', '#1a1a1a']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.submitGradient}

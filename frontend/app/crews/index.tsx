@@ -163,7 +163,7 @@ export default function MyCrewsScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <LinearGradient
-        colors={['#FFE707', '#E91E63']}
+        colors={['#C0C0C0', '#1a1a1a']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}

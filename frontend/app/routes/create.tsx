@@ -179,7 +179,7 @@ export default function CreateRouteScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <LinearGradient
-        colors={['#FF5500', '#E91E63']}
+        colors={['#C0C0C0', '#1a1a1a']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.headerGradient}
