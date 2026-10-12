@@ -143,14 +143,10 @@ export default function HomeScreen() {
   useEffect(() => {
     isMountedRef.current = true;
     getUserLocation();
-    // Check if welcome modal should be shown
-    shouldShowEventsWelcome().then(shouldShow => {
-      if (shouldShow) setShowWelcomeModal(true);
-    });
     return () => { isMountedRef.current = false; };
   }, []);
 
-  // Refetch events every time the tab comes into focus
+  // Check for welcome modal with delay when tab comes into focus
   useFocusEffect(
     useCallback(() => {
       fetchEvents();
@@ -159,6 +155,16 @@ export default function HomeScreen() {
         fetchFavorites();
         notif.fetchNotifications();
       }
+      
+      // Check if we should show the welcome modal after a delay
+      const timer = setTimeout(async () => {
+        const shouldShow = await shouldShowEventsWelcome();
+        if (shouldShow && isMountedRef.current) {
+          setShowWelcomeModal(true);
+        }
+      }, 4000); // 4 second delay
+      
+      return () => clearTimeout(timer);
     }, [user?.id])
   );
 

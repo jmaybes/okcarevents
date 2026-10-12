@@ -158,10 +158,18 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
 // Helper function to check if modal should be shown
 export async function shouldShowEventsWelcome(): Promise<boolean> {
   try {
+    // First check if beta notice has been accepted
+    const betaAccepted = await AsyncStorage.getItem('@okc_car_events_beta_notice_v1');
+    if (betaAccepted !== 'true') {
+      // Beta notice hasn't been accepted yet, don't show this modal
+      return false;
+    }
+    
+    // Then check if this modal has been dismissed
     const dismissed = await AsyncStorage.getItem(STORAGE_KEY);
     return dismissed !== 'true';
   } catch {
-    return true;
+    return false;
   }
 }
 
