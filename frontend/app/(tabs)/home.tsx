@@ -43,7 +43,7 @@ import EventsWelcomeModal, { shouldShowEventsWelcome } from '../../components/Ev
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const BASE_HERO_HEIGHT = 300;
+const BASE_HERO_HEIGHT = 240;
 const COLLAPSED_HEADER_HEIGHT = 60;
 
 // Hero background images
@@ -725,7 +725,7 @@ export default function HomeScreen() {
           style={styles.heroBottomGradient}
         />
         {/* Hero text content with parallax */}
-        <Animated.View style={[styles.heroContent, heroContentStyle, { paddingTop: insets.top + 16 }]}>
+        <Animated.View style={[styles.heroContent, heroContentStyle, { paddingTop: insets.top + 8 }]}>
           <View style={styles.heroBadgeRow}>
             <View style={styles.sponsorBadge}>
               <Image
@@ -1264,7 +1264,7 @@ const styles = StyleSheet.create({
   },
   heroTitleContainer: {
     alignItems: 'center',
-    marginVertical: 12,
+    marginVertical: 6,
   },
   heroTitleLine: {
     fontSize: 18,
