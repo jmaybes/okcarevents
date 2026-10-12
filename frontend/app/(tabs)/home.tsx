@@ -1267,8 +1267,9 @@ const styles = StyleSheet.create({
     marginVertical: 6,
   },
   heroTitleLine: {
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: 'RobotoCondensed-Regular',
+    fontWeight: '700',
     color: '#fff',
     textAlign: 'center',
     letterSpacing: 1,
