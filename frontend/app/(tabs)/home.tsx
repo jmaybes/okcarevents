@@ -656,12 +656,12 @@ export default function HomeScreen() {
                   </Text>
                 </View>
                 <View style={styles.detailRow}>
-                  <Ionicons name="location" size={16} color="#FF5252" />
+                  <Ionicons name="location" size={16} color="#ffffff" />
                   <Text style={styles.detailText}>{item.city}</Text>
                 </View>
                 <View style={styles.detailRowSpaced}>
                   <View style={styles.detailRow}>
-                    <Ionicons name="people" size={16} color="#4FC3F7" />
+                    <Ionicons name="people" size={16} color="#ffffff" />
                     <Text style={styles.detailText}>
                       {item.attendeeCount > 0 ? item.attendeeCount : '??'} attending
                     </Text>
@@ -819,18 +819,18 @@ export default function HomeScreen() {
             <Ionicons
               name="globe"
               size={18}
-              color={(showAllEvents && selectedType === 'All') ? '#4FC3F7' : '#999'}
+              color={(showAllEvents && selectedType === 'All') ? '#ffffff' : '#999'}
             />
             <Text
               style={[
                 styles.sortDropdownText,
-                (showAllEvents && selectedType === 'All') && { color: '#4FC3F7', fontWeight: '600' },
+                (showAllEvents && selectedType === 'All') && { color: '#ffffff', fontWeight: '600' },
               ]}
             >
               All
             </Text>
             {(showAllEvents && selectedType === 'All') && (
-              <Ionicons name="checkmark" size={18} color="#4FC3F7" style={{ marginLeft: 'auto' }} />
+              <Ionicons name="checkmark" size={18} color="#ffffff" style={{ marginLeft: 'auto' }} />
             )}
           </TouchableOpacity>
 
@@ -965,18 +965,18 @@ export default function HomeScreen() {
             <Ionicons
               name="navigate"
               size={18}
-              color={sortBy === 'distance' ? '#4FC3F7' : '#999'}
+              color={sortBy === 'distance' ? '#ffffff' : '#999'}
             />
             <Text
               style={[
                 styles.sortDropdownText,
-                sortBy === 'distance' && { color: '#4FC3F7', fontWeight: '600' },
+                sortBy === 'distance' && { color: '#ffffff', fontWeight: '600' },
               ]}
             >
               Distance
             </Text>
             {sortBy === 'distance' && (
-              <Ionicons name="checkmark" size={18} color="#4FC3F7" style={{ marginLeft: 'auto' }} />
+              <Ionicons name="checkmark" size={18} color="#ffffff" style={{ marginLeft: 'auto' }} />
             )}
           </TouchableOpacity>
 
@@ -1085,7 +1085,7 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
         ListHeaderComponent={ListHeaderComponent}
         ItemSeparatorComponent={() => (
-          <View style={{ height: 8, backgroundColor: 'rgba(255, 185, 0, 0.20)' }} />
+          <View style={{ height: 8, backgroundColor: 'rgba(255, 255, 255, 0.15)' }} />
         )}
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
@@ -1099,7 +1099,7 @@ export default function HomeScreen() {
           <View style={styles.emptyContainer}>
             {fetchError ? (
               <>
-                <Ionicons name="cloud-offline" size={64} color="#FF5252" />
+                <Ionicons name="cloud-offline" size={64} color="#ffffff" />
                 <Text style={styles.emptyText}>{"Couldn't load events"}</Text>
                 <Text style={styles.emptySubtext}>Check your connection and try again</Text>
                 <TouchableOpacity 
@@ -1191,7 +1191,7 @@ const styles = StyleSheet.create({
   heroBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,107,53,0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     alignSelf: 'flex-start',
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -1402,7 +1402,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#2a2a2a',
   },
   sortDropdownItemActive: {
-    backgroundColor: 'rgba(225, 85, 0, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   sortDropdownText: {
     color: '#999',
@@ -1440,7 +1440,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   locationWarningText: {
-    color: '#FFC107',
+    color: '#ffffff',
     fontSize: 12,
   },
 
@@ -1453,7 +1453,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   resultsRowHighlight: {
-    backgroundColor: 'rgba(255, 185, 0, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: 'rgba(255, 185, 0, 0.4)',
