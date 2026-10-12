@@ -97,7 +97,6 @@
       "expo-secure-store",
       "expo-web-browser",
       "expo-updates",
-      "expo-image",
       "expo-sharing",
       "expo-status-bar"
     ],
