@@ -744,15 +744,10 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.heroTitleRow}>
-            <View>
-              <Text style={styles.heroTitle}>Oklahoma Car</Text>
-            </View>
+          <View style={styles.heroTitleContainer}>
+            <Text style={styles.heroTitleLine}>The Official Oklahoma</Text>
+            <Text style={styles.heroTitleLine}>Automotive Events Feed</Text>
           </View>
-          <View style={styles.droppingRow}>
-            <DroppingText />
-          </View>
-          <Text style={styles.heroSubtitle}>Discover events near you!</Text>
           <View style={styles.heroStats}>
             <View style={styles.heroStatItem}>
               <AnimatedCounter target={events.length} />
@@ -1248,6 +1243,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'center',
+  },
+  heroTitleContainer: {
+    alignItems: 'center',
+    marginVertical: 12,
+  },
+  heroTitleLine: {
+    fontSize: 18,
+    fontFamily: 'RobotoCondensed-Regular',
+    color: '#fff',
+    textAlign: 'center',
+    letterSpacing: 1,
+    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
   },
   heroBadgeRow: {
     flexDirection: 'row',
