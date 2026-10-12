@@ -173,7 +173,7 @@ export default function MyCrewsScreen() {
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.headerTitle, { fontFamily: 'RockSalt_400Regular' }]}>My Crews</Text>
+            <Text style={[styles.headerTitle, { fontFamily: 'RockSalt' }]}>My Crews</Text>
             <Text style={styles.headerSubtitle}>Ride together</Text>
           </View>
           {!createdCrew ? (

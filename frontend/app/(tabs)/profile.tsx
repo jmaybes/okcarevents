@@ -700,7 +700,7 @@ export default function ProfileScreen() {
           style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={[styles.headerTitle, { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
+            <Text style={[styles.headerTitle, { fontFamily: 'RockSalt' }]}>My Garage</Text>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
               style={{ width: 60, height: 22 }}
@@ -756,7 +756,7 @@ export default function ProfileScreen() {
         >
           <View style={styles.headerRow}>
             <View>
-              <Text style={[styles.headerTitle, { fontFamily: 'RockSalt_400Regular' }]}>My Garage</Text>
+              <Text style={[styles.headerTitle, { fontFamily: 'RockSalt' }]}>My Garage</Text>
               <Text style={styles.headerSubtitle}>{user?.name}</Text>
             </View>
             <View style={{ alignItems: 'center' }}>

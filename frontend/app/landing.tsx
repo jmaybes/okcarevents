@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     fontSize: 36,
-    fontFamily: 'RobotoCondensed_700Bold',
+    fontFamily: 'RobotoCondensed',
     color: '#fff',
     textAlign: 'center',
     marginBottom: 0,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   },
   heroTitleSub: {
     fontSize: 32,
-    fontFamily: 'RobotoCondensed_700Bold',
+    fontFamily: 'RobotoCondensed',
     color: '#FF5500',
     textAlign: 'center',
     marginBottom: 8,
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
   },
   communityTitle: {
     fontSize: 28,
-    fontFamily: 'RobotoCondensed_700Bold',
+    fontFamily: 'RobotoCondensed',
     color: '#fff',
     marginBottom: 4,
   },
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 28,
-    fontFamily: 'RobotoCondensed_700Bold',
+    fontFamily: 'RobotoCondensed',
     color: '#fff',
     textAlign: 'center',
     marginBottom: 8,
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
   },
   featureTitle: {
     fontSize: 16,
-    fontFamily: 'RobotoCondensed_700Bold',
+    fontFamily: 'RobotoCondensed',
     color: '#fff',
     textAlign: 'center',
     marginBottom: 4,
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   },
   statNumber: {
     fontSize: 36,
-    fontFamily: 'RobotoCondensed_700Bold',
+    fontFamily: 'RobotoCondensed',
     color: '#FF5500',
     marginBottom: 4,
   },
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
   },
   ctaTitle: {
     fontSize: 32,
-    fontFamily: 'RobotoCondensed_700Bold',
+    fontFamily: 'RobotoCondensed',
     color: '#fff',
     marginTop: 12,
     marginBottom: 8,
