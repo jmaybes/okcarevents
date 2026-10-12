@@ -39,6 +39,7 @@ import { API_URL } from '../../utils/api';
 import NotificationBell from '../../components/NotificationBell';
 import NotificationModal from '../../components/NotificationModal';
 import { useNotifications } from '../../hooks/useNotifications';
+import EventsWelcomeModal, { shouldShowEventsWelcome } from '../../components/EventsWelcomeModal';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -122,6 +123,7 @@ export default function HomeScreen() {
   const [heroImageLoaded, setHeroImageLoaded] = useState(false);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [clubsCount, setClubsCount] = useState(0);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const retryCountRef = useRef(0);
   const isMountedRef = useRef(true);
 
@@ -141,6 +143,10 @@ export default function HomeScreen() {
   useEffect(() => {
     isMountedRef.current = true;
     getUserLocation();
+    // Check if welcome modal should be shown
+    shouldShowEventsWelcome().then(shouldShow => {
+      if (shouldShow) setShowWelcomeModal(true);
+    });
     return () => { isMountedRef.current = false; };
   }, []);
 
@@ -1124,6 +1130,11 @@ export default function HomeScreen() {
         getIcon={notif.getIcon}
         getColor={notif.getColor}
         getTimeAgo={notif.getTimeAgo}
+      />
+
+      <EventsWelcomeModal
+        visible={showWelcomeModal}
+        onDismiss={() => setShowWelcomeModal(false)}
       />
     </View>
   );
