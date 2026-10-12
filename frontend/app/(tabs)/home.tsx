@@ -691,6 +691,13 @@ export default function HomeScreen() {
               </View>
             </View>
           </View>
+          {/* Gradient separator */}
+          <LinearGradient
+            colors={['#C0C0C0', '#1a1a1a']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.cardSeparator}
+          />
         </Pressable>
       </Animated.View>
     );
@@ -1508,6 +1515,10 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     marginBottom: 0,
     overflow: 'hidden',
+  },
+  cardSeparator: {
+    height: 3,
+    width: '100%',
   },
   eventImage: {
     width: '100%',
