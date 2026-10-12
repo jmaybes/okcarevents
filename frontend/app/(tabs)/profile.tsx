@@ -303,9 +303,9 @@ export default function ProfileScreen() {
     switch (type) {
       case 'garage_comment': return '#4FC3F7';
       case 'rsvp_confirmation': return '#69F0AE';
-      case 'rsvp_reminder': return '#FF5500';
+      case 'rsvp_reminder': return '#ffffff';
       case 'event_reminder': return '#FFD740';
-      case 'popup_event': return '#FF5252';
+      case 'popup_event': return '#ffffff';
       case 'message': return '#69F0AE';
       case 'meetup_invite': return '#CE93D8';
       case 'feedback_response': return '#FFB74D';
@@ -743,8 +743,8 @@ export default function ProfileScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            tintColor="#FF5500"
-            colors={['#FF5500']}
+            tintColor="#ffffff"
+            colors={['#ffffff']}
           />
         }
       >
@@ -778,7 +778,7 @@ export default function ProfileScreen() {
         <View style={styles.carShowcaseSection}>
           {loadingCar ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#FF5500" />
+              <ActivityIndicator size="large" color="#ffffff" />
             </View>
           ) : userCar ? (
             <>
@@ -830,7 +830,7 @@ export default function ProfileScreen() {
                   )}
                   {userCar.horsepower && (
                     <View style={[styles.carDetailRow, { flex: 1 }]}>
-                      <Ionicons name="flash" size={16} color="#FF5500" />
+                      <Ionicons name="flash" size={16} color="#ffffff" />
                       <Text style={styles.carDetailText}>{userCar.horsepower} HP</Text>
                     </View>
                   )}
@@ -860,7 +860,7 @@ export default function ProfileScreen() {
               
               <View style={styles.garageActionRow}>
                 <TouchableOpacity style={styles.editCarButton} onPress={() => { setEditingCarId(userCar.id); fetchUserCar(true); setShowCarModal(true); }}>
-                  <Ionicons name="pencil" size={16} color="#FF5500" />
+                  <Ionicons name="pencil" size={16} color="#ffffff" />
                   <Text style={styles.editCarButtonText}>Edit Car & Photos</Text>
                 </TouchableOpacity>
                 {userCars.length < 2 && (
@@ -868,7 +868,7 @@ export default function ProfileScreen() {
                     style={styles.addCarInlineBtn}
                     onPress={handleAddSecondCar}
                   >
-                    <Ionicons name="add-circle-outline" size={18} color="#FF5500" />
+                    <Ionicons name="add-circle-outline" size={18} color="#ffffff" />
                     <Text style={styles.addCarInlineText}>2nd Car</Text>
                   </TouchableOpacity>
                 )}
@@ -891,7 +891,7 @@ export default function ProfileScreen() {
                           borderRadius: 10,
                           padding: 12,
                           borderWidth: car.isActive ? 1 : 0,
-                          borderColor: '#FF5500',
+                          borderColor: '#ffffff',
                         }}
                         onPress={() => {
                           if (!car.isActive) {
@@ -900,7 +900,7 @@ export default function ProfileScreen() {
                         }}
                       >
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
-                          <Ionicons name="car-sport" size={20} color={car.isActive ? '#FF5500' : '#666'} />
+                          <Ionicons name="car-sport" size={20} color={car.isActive ? '#ffffff' : '#666'} />
                           <View style={{ flex: 1 }}>
                             <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>
                               {car.year} {car.make} {car.model}
@@ -911,7 +911,7 @@ export default function ProfileScreen() {
                           </View>
                         </View>
                         {car.isActive ? (
-                          <View style={{ backgroundColor: '#FF5500', borderRadius: 12, paddingHorizontal: 8, paddingVertical: 3 }}>
+                          <View style={{ backgroundColor: '#ffffff', borderRadius: 12, paddingHorizontal: 8, paddingVertical: 3 }}>
                             <Text style={{ color: '#fff', fontSize: 10, fontWeight: 'bold' }}>ACTIVE</Text>
                           </View>
                         ) : (
@@ -930,7 +930,7 @@ export default function ProfileScreen() {
                 <Ionicons name="construct" size={12} color="#fff" />
                 <Text style={styles.nudgeBadgeText}>FIXED & READY</Text>
               </View>
-              <Ionicons name="car-sport" size={56} color="#FF5500" />
+              <Ionicons name="car-sport" size={56} color="#ffffff" />
               <Text style={styles.addCarTitle}>Set Up Your Garage!</Text>
               <Text style={styles.addCarSubtitle}>
                 We've fixed the saving issues — your garage will save correctly now. Add your ride with photos, specs, and mods!
@@ -962,7 +962,7 @@ export default function ProfileScreen() {
         {/* ===== EVENTS & RSVPs ===== */}
         <View style={styles.menuSection}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="calendar" size={20} color="#FF5500" />
+            <Ionicons name="calendar" size={20} color="#ffffff" />
             <Text style={styles.sectionHeaderText}>Events & RSVPs</Text>
           </View>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/my-rsvps')}>
@@ -971,7 +971,7 @@ export default function ProfileScreen() {
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/my-events')}>
-            <Ionicons name="create" size={24} color="#FF5500" />
+            <Ionicons name="create" size={24} color="#ffffff" />
             <Text style={styles.menuItemText}>My Created Events</Text>
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
@@ -990,7 +990,7 @@ export default function ProfileScreen() {
         {/* ===== COMMUNITY ===== */}
         <View style={styles.menuSection}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="people" size={20} color="#FF5500" />
+            <Ionicons name="people" size={20} color="#ffffff" />
             <Text style={styles.sectionHeaderText}>Community</Text>
           </View>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/messages')}>
@@ -1023,7 +1023,7 @@ export default function ProfileScreen() {
         {/* ===== PERFORMANCE ===== */}
         <View style={styles.menuSection}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="speedometer" size={20} color="#FF5500" />
+            <Ionicons name="speedometer" size={20} color="#ffffff" />
             <Text style={styles.sectionHeaderText}>Performance</Text>
           </View>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/timer')}>
@@ -1032,12 +1032,12 @@ export default function ProfileScreen() {
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/timer/my-runs')}>
-            <Ionicons name="analytics" size={24} color="#FF5500" />
+            <Ionicons name="analytics" size={24} color="#ffffff" />
             <Text style={styles.menuItemText}>My Performance Runs</Text>
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/timer/leaderboard')}>
-            <Ionicons name="trophy" size={24} color="#FFC107" />
+            <Ionicons name="trophy" size={24} color="#ffffff" />
             <Text style={styles.menuItemText}>Area Leaderboards</Text>
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
@@ -1046,14 +1046,14 @@ export default function ProfileScreen() {
         {user?.isAdmin && (
           <View style={styles.menuSection}>
             <View style={styles.sectionHeader}>
-              <Ionicons name="shield-checkmark" size={20} color="#FF5500" />
+              <Ionicons name="shield-checkmark" size={20} color="#ffffff" />
               <Text style={styles.sectionHeaderText}>Admin</Text>
             </View>
             <TouchableOpacity 
               style={[styles.menuItem, styles.adminMenuItem]} 
               onPress={() => router.push('/admin/pending')}
             >
-              <Ionicons name="time" size={24} color="#FF5500" />
+              <Ionicons name="time" size={24} color="#ffffff" />
               <Text style={styles.menuItemText}>Pending Events</Text>
               <Ionicons name="chevron-forward" size={24} color="#666" />
             </TouchableOpacity>
@@ -1108,7 +1108,7 @@ export default function ProfileScreen() {
             style={[styles.menuItem, { backgroundColor: '#1a1a2e' }]}
             onPress={() => Alert.alert('Server Info', `Connected to:\n${API_URL || 'NOT SET'}`)}
           >
-            <Ionicons name="server" size={24} color="#FF5500" />
+            <Ionicons name="server" size={24} color="#ffffff" />
             <Text style={[styles.menuItemText, { fontSize: 11, color: '#888' }]}>
               Server: {API_URL ? API_URL.replace('https://', '').split('.')[0] : 'NOT SET'}
             </Text>
@@ -1165,7 +1165,7 @@ export default function ProfileScreen() {
               );
             }}
           >
-            <Ionicons name="key" size={24} color="#FFC107" />
+            <Ionicons name="key" size={24} color="#ffffff" />
             <Text style={styles.menuItemText}>Clear Saved Login</Text>
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
@@ -1177,7 +1177,7 @@ export default function ProfileScreen() {
         {/* Route Planning Section */}
         <View style={styles.menuSection}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="map" size={20} color="#FF5500" />
+            <Ionicons name="map" size={20} color="#ffffff" />
             <Text style={styles.sectionHeaderText}>Route Planning</Text>
           </View>
           <TouchableOpacity 
@@ -1209,12 +1209,12 @@ export default function ProfileScreen() {
         {/* Garage Visibility Section */}
         <View style={styles.menuSection}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="eye" size={20} color="#FF5500" />
+            <Ionicons name="eye" size={20} color="#ffffff" />
             <Text style={styles.sectionHeaderText}>Garage Visibility</Text>
           </View>
           <View style={[
             styles.visibilityToggleCard,
-            { borderColor: garagePublic ? '#4CAF50' : '#FF5252', borderWidth: 1.5 }
+            { borderColor: garagePublic ? '#4CAF50' : '#ffffff', borderWidth: 1.5 }
           ]}>
             <View style={styles.visibilityStatusRow}>
               <View style={[
@@ -1224,11 +1224,11 @@ export default function ProfileScreen() {
                 <Ionicons 
                   name={garagePublic ? "globe-outline" : "lock-closed"} 
                   size={20} 
-                  color={garagePublic ? "#4CAF50" : "#FF5252"} 
+                  color={garagePublic ? "#4CAF50" : "#ffffff"} 
                 />
                 <Text style={[
                   styles.visibilityBadgeText,
-                  { color: garagePublic ? '#4CAF50' : '#FF5252' }
+                  { color: garagePublic ? '#4CAF50' : '#ffffff' }
                 ]}>
                   {garagePublic ? 'PUBLIC' : 'PRIVATE'}
                 </Text>
@@ -1236,7 +1236,7 @@ export default function ProfileScreen() {
               <Switch
                 value={garagePublic}
                 onValueChange={toggleGaragePublic}
-                trackColor={{ false: '#FF5252', true: '#4CAF50' }}
+                trackColor={{ false: '#ffffff', true: '#4CAF50' }}
                 thumbColor="#fff"
               />
             </View>
@@ -1251,7 +1251,7 @@ export default function ProfileScreen() {
         {/* Report Suggestions & Bugs Section */}
         <View style={styles.menuSection}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="chatbubble-ellipses" size={20} color="#FF5500" />
+            <Ionicons name="chatbubble-ellipses" size={20} color="#ffffff" />
             <Text style={styles.sectionHeaderText}>Feedback</Text>
           </View>
           <TouchableOpacity 
@@ -1269,7 +1269,7 @@ export default function ProfileScreen() {
               setShowFeedbackModal(true);
             }}
           >
-            <Ionicons name="bulb" size={24} color="#FFC107" />
+            <Ionicons name="bulb" size={24} color="#ffffff" />
             <Text style={styles.menuItemText}>Suggest a Feature</Text>
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
@@ -1455,7 +1455,7 @@ export default function ProfileScreen() {
               
               <Text style={styles.modalLabel}>Photos (Max 10)</Text>
               <TouchableOpacity style={styles.uploadButton} onPress={pickCarPhoto}>
-                <Ionicons name="images" size={24} color="#FF5500" />
+                <Ionicons name="images" size={24} color="#ffffff" />
                 <Text style={styles.uploadButtonText}>Upload Photos</Text>
               </TouchableOpacity>
               <Text style={styles.photoHint}>
@@ -1573,7 +1573,7 @@ export default function ProfileScreen() {
 
               <View style={[
                 styles.publicToggleContainer,
-                { borderColor: garagePublic ? '#4CAF50' : '#FF5252', borderWidth: 1.5 }
+                { borderColor: garagePublic ? '#4CAF50' : '#ffffff', borderWidth: 1.5 }
               ]}>
                 <View style={styles.publicToggleInfo}>
                   <View style={[
@@ -1583,11 +1583,11 @@ export default function ProfileScreen() {
                     <Ionicons 
                       name={garagePublic ? "globe-outline" : "lock-closed"} 
                       size={18} 
-                      color={garagePublic ? "#4CAF50" : "#FF5252"} 
+                      color={garagePublic ? "#4CAF50" : "#ffffff"} 
                     />
                     <Text style={[
                       styles.visibilityBadgeText,
-                      { color: garagePublic ? '#4CAF50' : '#FF5252' }
+                      { color: garagePublic ? '#4CAF50' : '#ffffff' }
                     ]}>
                       {garagePublic ? 'PUBLIC' : 'PRIVATE'}
                     </Text>
@@ -1601,7 +1601,7 @@ export default function ProfileScreen() {
                 <Switch
                   value={garagePublic}
                   onValueChange={setGaragePublic}
-                  trackColor={{ false: '#FF5252', true: '#4CAF50' }}
+                  trackColor={{ false: '#ffffff', true: '#4CAF50' }}
                   thumbColor="#fff"
                 />
               </View>
@@ -1691,7 +1691,7 @@ export default function ProfileScreen() {
                 <Ionicons 
                   name="bulb" 
                   size={20} 
-                  color={feedbackForm.type === 'suggestion' ? '#fff' : '#FFC107'} 
+                  color={feedbackForm.type === 'suggestion' ? '#fff' : '#ffffff'} 
                 />
                 <Text style={[
                   styles.feedbackTypeText,
@@ -1857,11 +1857,11 @@ const notifStyles = StyleSheet.create({
   clearBtn: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: '#FF550022',
+    backgroundColor: '#ffffff22',
     borderRadius: 8,
   },
   clearBtnText: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontSize: 13,
     fontWeight: '600',
   },
@@ -1973,7 +1973,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   loginButton: {
-    backgroundColor: '#FF5500',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 16,
     width: '100%',
@@ -2098,7 +2098,7 @@ const styles = StyleSheet.create({
   },
   carTrim: {
     fontSize: 14,
-    color: '#FF5500',
+    color: '#ffffff',
     marginBottom: 12,
   },
   carStatsRow: {
@@ -2137,7 +2137,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   editCarButtonText: {
-    color: '#FF5500',
+    color: '#ffffff',
     marginLeft: 8,
     fontWeight: '600',
   },
@@ -2151,7 +2151,7 @@ const styles = StyleSheet.create({
     borderLeftColor: '#333',
   },
   addCarInlineText: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontWeight: '600',
     fontSize: 13,
   },
@@ -2242,7 +2242,7 @@ const styles = StyleSheet.create({
     padding: 28,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF5500',
+    borderColor: '#ffffff',
     borderStyle: 'dashed',
   },
   nudgeBadge: {
@@ -2279,7 +2279,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#FF5500',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 22,
@@ -2303,7 +2303,7 @@ const styles = StyleSheet.create({
   sectionHeaderText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#FF5500',
+    color: '#ffffff',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
@@ -2317,7 +2317,7 @@ const styles = StyleSheet.create({
   },
   adminMenuItem: {
     borderWidth: 2,
-    borderColor: '#FF5500',
+    borderColor: '#ffffff',
   },
   menuItemText: {
     flex: 1,
@@ -2416,7 +2416,7 @@ const styles = StyleSheet.create({
   modalSectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FF5500',
+    color: '#ffffff',
     marginBottom: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -2464,7 +2464,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   drivetrainButtonActive: {
-    backgroundColor: '#FF5500',
+    backgroundColor: '#ffffff',
   },
   drivetrainText: {
     color: '#888',
@@ -2481,11 +2481,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#FF5500',
+    borderColor: '#ffffff',
     borderStyle: 'dashed',
   },
   uploadButtonText: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
@@ -2576,7 +2576,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addVideoButton: {
-    backgroundColor: '#FF5500',
+    backgroundColor: '#ffffff',
     width: 48,
     height: 48,
     borderRadius: 12,
@@ -2655,7 +2655,7 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   saveButton: {
-    backgroundColor: '#FF5500',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     padding: 16,
     flexDirection: 'row',
@@ -2696,7 +2696,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   feedbackTypeButtonActive: {
-    backgroundColor: '#FF5500',
+    backgroundColor: '#ffffff',
   },
   feedbackTypeText: {
     color: '#888',
