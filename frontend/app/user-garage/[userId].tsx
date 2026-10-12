@@ -19,8 +19,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
-
 import { API_URL } from '../../utils/api';
+import PageHeader from '../../components/PageHeader';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const SLIDESHOW_HEIGHT = 320;
@@ -371,14 +371,12 @@ export default function UserGarageScreen() {
 
   if (loading && !showCarSelectionModal) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Garage</Text>
-          <View style={{ width: 40 }} />
-        </View>
+      <View style={styles.container}>
+        <PageHeader
+          title="Garage"
+          showBackButton={true}
+          showNotificationBell={false}
+        />
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#FF5500" />
         </View>
@@ -390,14 +388,12 @@ export default function UserGarageScreen() {
   if (showCarSelectionModal && !car) {
     const ownerName = allCars.length > 0 ? (allCars[0].ownerNickname || allCars[0].ownerName) : 'User';
     return (
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>{ownerName}'s Garage</Text>
-          <View style={{ width: 40 }} />
-        </View>
+      <View style={styles.container}>
+        <PageHeader
+          title={`${ownerName}'s Garage`}
+          showBackButton={true}
+          showNotificationBell={false}
+        />
 
         <Modal
           visible={showCarSelectionModal}
@@ -495,14 +491,12 @@ export default function UserGarageScreen() {
 
   if (error || !car) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Garage</Text>
-          <View style={{ width: 40 }} />
-        </View>
+      <View style={styles.container}>
+        <PageHeader
+          title="Garage"
+          showBackButton={true}
+          showNotificationBell={false}
+        />
         <View style={styles.center}>
           <Ionicons name="car-sport-outline" size={64} color="#444" />
           <Text style={styles.emptyTitle}>
@@ -520,14 +514,12 @@ export default function UserGarageScreen() {
 
   if (!car.isPublic && car.userId !== user?.id) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Garage</Text>
-          <View style={{ width: 40 }} />
-        </View>
+      <View style={styles.container}>
+        <PageHeader
+          title="Garage"
+          showBackButton={true}
+          showNotificationBell={false}
+        />
         <View style={styles.center}>
           <Ionicons name="lock-closed" size={64} color="#444" />
           <Text style={styles.emptyTitle}>Private Garage</Text>
@@ -540,24 +532,14 @@ export default function UserGarageScreen() {
   const photos = (car.photos || []).map(getPhotoUri).filter(p => p.length > 0);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <LinearGradient
-        colors={['#C0C0C0', '#1a1a1a']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <View style={styles.headerInfo}>
-          <Text style={[styles.headerTitle, { fontFamily: 'RockSalt-Regular' }]} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.5}>
-            {car.ownerNickname || car.ownerName}'s Garage
-          </Text>
-        </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-          {allCars.length > 1 && (
+    <View style={styles.container}>
+      <PageHeader
+        title={`${car.ownerNickname || car.ownerName}'s Garage`}
+        showBackButton={true}
+        showNotificationBell={false}
+        rightComponent={
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            {allCars.length > 1 && (
             <TouchableOpacity
               onPress={() => setShowCarSelectionModal(true)}
               style={styles.switchCarBtn}
@@ -576,7 +558,8 @@ export default function UserGarageScreen() {
             />
           </TouchableOpacity>
         </View>
-      </LinearGradient>
+        }
+      />
 
       {/* Crew Badges - shown at top of public garage */}
       {userCrews.length > 0 && (

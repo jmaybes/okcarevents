@@ -34,6 +34,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
+import PageHeader from '../../components/PageHeader';
 
 const { width } = Dimensions.get('window');
 import { API_URL } from '../../utils/api';
@@ -554,23 +555,13 @@ export default function TimerScreen() {
   });
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <LinearGradient
-          colors={['#C0C0C0', '#1a1a1a']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.headerGradient}
-        >
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-              <Ionicons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-            <View style={{ flex: 1, marginLeft: 12 }}>
-              <Text style={styles.headerTitle}>Performance Timer</Text>
-              <Text style={styles.headerSubtitle}>GPS-based acceleration testing</Text>
-            </View>
+    <View style={styles.container}>
+      <PageHeader
+        title="Performance Timer"
+        showBackButton={true}
+        showNotificationBell={false}
+        rightComponent={
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <TouchableOpacity onPress={() => setShowManualEntry(true)} style={styles.headerActionBtn}>
               <Ionicons name="create-outline" size={22} color="#fff" />
             </TouchableOpacity>
@@ -578,7 +569,10 @@ export default function TimerScreen() {
               <Ionicons name="trophy" size={22} color="#fff" />
             </TouchableOpacity>
           </View>
-        </LinearGradient>
+        }
+      />
+
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
         {/* Car Selection */}
         {garageCars.length > 0 && (
@@ -1022,31 +1016,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 40,
-  },
-  headerGradient: {
-    paddingTop: 10,
-    paddingBottom: 16,
-    paddingHorizontal: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.85)',
-    marginTop: 2,
   },
   headerActionBtn: {
     padding: 8,

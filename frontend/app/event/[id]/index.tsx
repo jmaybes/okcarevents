@@ -34,7 +34,7 @@ import * as Sharing from 'expo-sharing';
 import { useAuth } from '../../../contexts/AuthContext';
 
 import { API_URL } from '../../../utils/api';
-import NotificationBell from '../../../components/NotificationBell';
+import PageHeader from '../../../components/PageHeader';
 import NotificationModal from '../../../components/NotificationModal';
 import { useNotifications } from '../../../hooks/useNotifications';
 
@@ -285,65 +285,57 @@ export default function EventDetailScreen() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <View style={styles.topBarRight}>
-          {user?.isAdmin && (
-            <>
-              <TouchableOpacity 
-                onPress={() => router.push(`/admin/edit-event/${id}`)}
-                style={styles.editButton}
-              >
-                <Ionicons name="create-outline" size={24} color="#FF5500" />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => {
-                  Alert.alert(
-                    'Delete Event',
-                    'Are you sure you want to delete this event? This cannot be undone.',
-                    [
-                      { text: 'Cancel', style: 'cancel' },
-                      {
-                        text: 'Delete',
-                        style: 'destructive',
-                        onPress: () => {
-                          axios.delete(`${API_URL}/api/events/${id}`)
-                            .then(() => {
-                              Alert.alert('Deleted', 'Event has been removed.');
-                              router.back();
-                            })
-                            .catch(() => Alert.alert('Error', 'Failed to delete event.'));
+    <View style={styles.container}>
+      <PageHeader
+        title="Event Details"
+        showBackButton={true}
+        showNotificationBell={true}
+        unreadCount={notif.unreadCount}
+        onNotificationPress={() => notif.setShowModal(true)}
+        rightComponent={
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            {user?.isAdmin && (
+              <>
+                <TouchableOpacity 
+                  onPress={() => router.push(`/admin/edit-event/${id}`)}
+                  style={styles.editButton}
+                >
+                  <Ionicons name="create-outline" size={20} color="#FF5500" />
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={() => {
+                    Alert.alert(
+                      'Delete Event',
+                      'Are you sure you want to delete this event? This cannot be undone.',
+                      [
+                        { text: 'Cancel', style: 'cancel' },
+                        {
+                          text: 'Delete',
+                          style: 'destructive',
+                          onPress: () => {
+                            axios.delete(`${API_URL}/api/events/${id}`)
+                              .then(() => {
+                                Alert.alert('Deleted', 'Event has been removed.');
+                                router.back();
+                              })
+                              .catch(() => Alert.alert('Error', 'Failed to delete event.'));
+                          },
                         },
-                      },
-                    ]
-                  );
-                }}
-                style={styles.editButton}
-              >
-                <Ionicons name="trash-outline" size={24} color="#FF3B30" />
-              </TouchableOpacity>
-            </>
-          )}
-          <TouchableOpacity onPress={handleShare}>
-            <Ionicons name="share-social" size={24} color="#fff" />
-          </TouchableOpacity>
-          <View style={{ alignItems: 'center' }}>
-            <Image
-              source={require('../../../assets/images/streetmotion-logo.png')}
-              style={{ width: 60, height: 22 }}
-              resizeMode="contain"
-            />
-            <NotificationBell
-              unreadCount={notif.unreadCount}
-              onPress={() => notif.setShowModal(true)}
-              size={18}
-            />
+                      ]
+                    );
+                  }}
+                  style={styles.editButton}
+                >
+                  <Ionicons name="trash-outline" size={20} color="#FF3B30" />
+                </TouchableOpacity>
+              </>
+            )}
+            <TouchableOpacity onPress={handleShare}>
+              <Ionicons name="share-social" size={20} color="#fff" />
+            </TouchableOpacity>
           </View>
-        </View>
-      </View>
+        }
+      />
 
       <ScrollView style={styles.scrollView}>
         <Animated.View 
@@ -508,7 +500,7 @@ export default function EventDetailScreen() {
         </View>
       </ScrollView>
 
-      <View style={styles.bottomActions}>
+      <View style={[styles.bottomActions, { paddingBottom: insets.bottom || 8 }]}>
         <TouchableOpacity
           style={[styles.actionButton, styles.favoriteButton]}
           onPress={handleFavorite}
@@ -647,25 +639,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#0c0c0c',
   },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-  },
-  topBarRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
   editButton: {
     padding: 4,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   scrollView: {
     flex: 1,

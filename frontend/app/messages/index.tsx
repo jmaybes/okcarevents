@@ -19,7 +19,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 
 import { API_URL } from '../../utils/api';
-import NotificationBell from '../../components/NotificationBell';
+import PageHeader from '../../components/PageHeader';
 import NotificationModal from '../../components/NotificationModal';
 import { useNotifications } from '../../hooks/useNotifications';
 
@@ -307,25 +307,12 @@ export default function MessagesScreen() {
 
   if (!isAuthenticated) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-        <LinearGradient
-          colors={['#2196F3', '#1976D2']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.headerGradient}
-        >
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-              <Ionicons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Messages</Text>
-            <Image
-              source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 60, height: 22 }}
-              resizeMode="contain"
-            />
-          </View>
-        </LinearGradient>
+      <View style={styles.container}>
+        <PageHeader
+          title="Messages"
+          showBackButton={true}
+          showNotificationBell={false}
+        />
 
         <View style={styles.authRequiredContainer}>
           <Ionicons name="chatbubbles-outline" size={80} color="#333" />
@@ -345,40 +332,22 @@ export default function MessagesScreen() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      <LinearGradient
-        colors={['#2196F3', '#1976D2']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
+    <View style={styles.container}>
+      <PageHeader
+        title="Messages"
+        showBackButton={true}
+        showNotificationBell={true}
+        unreadCount={notif.unreadCount}
+        onNotificationPress={() => notif.setShowModal(true)}
+        rightComponent={
+          <TouchableOpacity 
+            style={styles.newChatButton}
+            onPress={() => setShowNewChatModal(true)}
+          >
+            <Ionicons name="create-outline" size={22} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Messages</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-            <TouchableOpacity 
-              style={styles.newChatButton}
-              onPress={() => setShowNewChatModal(true)}
-            >
-              <Ionicons name="create-outline" size={24} color="#fff" />
-            </TouchableOpacity>
-            <View style={{ alignItems: 'center' }}>
-              <Image
-                source={require('../../assets/images/streetmotion-logo.png')}
-                style={{ width: 60, height: 22 }}
-                resizeMode="contain"
-              />
-              <NotificationBell
-                unreadCount={notif.unreadCount}
-                onPress={() => notif.setShowModal(true)}
-                size={18}
-              />
-            </View>
-          </View>
-        </View>
-      </LinearGradient>
+        }
+      />
 
       {/* Online users indicator */}
       {onlineUsers.length > 0 && (
@@ -520,27 +489,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0c0c0c',
-  },
-  headerGradient: {
-    paddingTop: 10,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#fff',
   },
   newChatButton: {
     width: 40,

@@ -18,6 +18,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 
 import { API_URL } from '../../utils/api';
+import PageHeader from '../../components/PageHeader';
 
 interface PerformanceRun {
   id: string;
@@ -183,21 +184,12 @@ export default function MyRunsScreen() {
 
   if (!isAuthenticated) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-        <LinearGradient
-          colors={['#C0C0C0', '#1a1a1a']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.headerGradient}
-        >
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-              <Ionicons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>My Runs</Text>
-            <View style={{ width: 40 }} />
-          </View>
-        </LinearGradient>
+      <View style={styles.container}>
+        <PageHeader
+          title="My Runs"
+          showBackButton={true}
+          showNotificationBell={false}
+        />
         <View style={styles.authRequiredContainer}>
           <Ionicons name="lock-closed" size={60} color="#333" />
           <Text style={styles.authRequiredTitle}>Login Required</Text>
@@ -213,21 +205,12 @@ export default function MyRunsScreen() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      <LinearGradient
-        colors={['#C0C0C0', '#1a1a1a']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>My Runs</Text>
-          <View style={{ width: 40 }} />
-        </View>
-      </LinearGradient>
+    <View style={styles.container}>
+      <PageHeader
+        title="My Runs"
+        showBackButton={true}
+        showNotificationBell={false}
+      />
 
       {/* Personal Bests */}
       {personalBests && (
@@ -304,27 +287,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0c0c0c',
-  },
-  headerGradient: {
-    paddingTop: 10,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
   },
   personalBests: {
     backgroundColor: '#1a1a1a',

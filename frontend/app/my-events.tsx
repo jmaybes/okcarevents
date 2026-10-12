@@ -22,6 +22,9 @@ import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import { useAuth } from '../contexts/AuthContext';
 
 import { API_URL } from '../utils/api';
+import PageHeader from '../components/PageHeader';
+import NotificationModal from '../components/NotificationModal';
+import { useNotifications } from '../hooks/useNotifications';
 
 interface MyEvent {
   id: string;
@@ -61,6 +64,7 @@ const formatEventDate = (dateStr: string): string => {
 export default function MyEventsScreen() {
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  const notif = useNotifications(user?.id);
   const [events, setEvents] = useState<MyEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -102,6 +106,7 @@ export default function MyEventsScreen() {
 
   useEffect(() => {
     fetchEvents();
+    if (user?.id) notif.fetchNotifications();
   }, [fetchEvents]);
 
   const onRefresh = () => {
@@ -279,7 +284,12 @@ export default function MyEventsScreen() {
 
   if (loading) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.container}>
+        <PageHeader
+          title="My Events"
+          showBackButton={true}
+          showNotificationBell={false}
+        />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#FF5500" />
         </View>
@@ -288,15 +298,14 @@ export default function MyEventsScreen() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Created Events</Text>
-        <View style={{ width: 32 }} />
-      </View>
+    <View style={styles.container}>
+      <PageHeader
+        title="My Events"
+        showBackButton={true}
+        showNotificationBell={true}
+        unreadCount={notif.unreadCount}
+        onNotificationPress={() => notif.setShowModal(true)}
+      />
 
       {events.length === 0 ? (
         <View style={styles.emptyContainer}>
@@ -505,6 +514,17 @@ export default function MyEventsScreen() {
           </KeyboardAvoidingView>
         </View>
       </Modal>
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
+      />
     </View>
   );
 }
@@ -518,26 +538,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#fff',
   },
   listContent: {
     padding: 16,

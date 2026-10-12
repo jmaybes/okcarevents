@@ -10,13 +10,15 @@ import {
   Image,
   Alert,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import api from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
+
+import PageHeader from '../components/PageHeader';
+import NotificationModal from '../components/NotificationModal';
+import { useNotifications } from '../hooks/useNotifications';
 
 interface Event {
   id: string;
@@ -31,15 +33,18 @@ interface Event {
 }
 
 export default function MyFavoritesScreen() {
-  const insets = useSafeAreaInsets();
   const { user } = useAuth();
+  const notif = useNotifications(user?.id);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      if (user?.id) fetchFavorites();
+      if (user?.id) {
+        fetchFavorites();
+        notif.fetchNotifications();
+      }
     }, [user?.id])
   );
 
@@ -121,22 +126,14 @@ export default function MyFavoritesScreen() {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <LinearGradient
-        colors={['#E91E63', '#FF5500']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <View style={styles.headerInfo}>
-          <Text style={styles.headerTitle}>My Favorite Events</Text>
-          <Text style={styles.headerSubtitle}>{events.length} saved event{events.length !== 1 ? 's' : ''}</Text>
-        </View>
-        <Ionicons name="heart" size={28} color="#fff" />
-      </LinearGradient>
+    <View style={styles.container}>
+      <PageHeader
+        title="Favorites"
+        showBackButton={true}
+        showNotificationBell={true}
+        unreadCount={notif.unreadCount}
+        onNotificationPress={() => notif.setShowModal(true)}
+      />
 
       {loading ? (
         <View style={styles.center}>
@@ -163,6 +160,17 @@ export default function MyFavoritesScreen() {
           }
         />
       )}
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
+      />
     </View>
   );
 }
@@ -171,33 +179,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0c0c0c',
-  },
-  headerGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 16,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerInfo: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.85)',
-    marginTop: 2,
   },
   center: {
     flex: 1,

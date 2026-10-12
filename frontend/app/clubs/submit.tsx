@@ -18,6 +18,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
 import { API_URL } from '../../utils/api';
+import PageHeader from '../../components/PageHeader';
 
 export default function SubmitClubScreen() {
   const { user, isAuthenticated } = useAuth();
@@ -87,20 +88,16 @@ export default function SubmitClubScreen() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+    <View style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <View style={styles.headerContent}>
-            <Text style={styles.headerTitle}>Submit Car Club</Text>
-            <Text style={styles.headerSubtitle}>Add a club to the directory</Text>
-          </View>
-        </View>
+        <PageHeader
+          title="Submit Car Club"
+          showBackButton={true}
+          showNotificationBell={false}
+        />
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
           {!isAuthenticated && (
@@ -235,33 +232,6 @@ const styles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  headerContent: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#888',
-    marginTop: 2,
   },
   scrollView: {
     flex: 1,

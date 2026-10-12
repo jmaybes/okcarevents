@@ -22,6 +22,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
 import { API_URL } from '../../utils/api';
+import PageHeader from '../../components/PageHeader';
 
 type LeaderboardType = '0-60' | '0-100' | 'quarter-mile';
 
@@ -291,25 +292,15 @@ export default function LeaderboardScreen() {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      {/* Header */}
-      <LinearGradient
-        colors={['#FFD700', '#FF5500']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <View style={styles.headerContent}>
-            <Ionicons name="trophy" size={32} color="#fff" />
-            <Text style={styles.headerTitle}>Leaderboard</Text>
-          </View>
-          <View style={{ width: 40 }} />
-        </View>
-      </LinearGradient>
+    <View style={styles.container}>
+      <PageHeader
+        title="Leaderboard"
+        showBackButton={true}
+        showNotificationBell={false}
+        rightComponent={
+          <Ionicons name="trophy" size={24} color="#FFD700" />
+        }
+      />
 
       {/* Type Selector */}
       <View style={styles.typeSelector}>
@@ -505,32 +496,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0c0c0c',
-  },
-  headerGradient: {
-    paddingTop: 10,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
   },
   typeSelector: {
     flexDirection: 'row',

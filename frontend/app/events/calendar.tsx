@@ -18,7 +18,7 @@ import axios from 'axios';
 
 import { API_URL } from '../../utils/api';
 import { useAuth } from '../../contexts/AuthContext';
-import NotificationBell from '../../components/NotificationBell';
+import PageHeader from '../../components/PageHeader';
 import NotificationModal from '../../components/NotificationModal';
 import { useNotifications } from '../../hooks/useNotifications';
 
@@ -217,31 +217,19 @@ export default function CalendarViewScreen() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Calendar</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+    <View style={styles.container}>
+      <PageHeader
+        title="Calendar"
+        showBackButton={true}
+        showNotificationBell={true}
+        unreadCount={notif.unreadCount}
+        onNotificationPress={() => notif.setShowModal(true)}
+        rightComponent={
           <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
             <Text style={styles.todayButtonText}>Today</Text>
           </TouchableOpacity>
-          <View style={{ alignItems: 'center' }}>
-            <Image
-              source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 60, height: 22 }}
-              resizeMode="contain"
-            />
-            <NotificationBell
-              unreadCount={notif.unreadCount}
-              onPress={() => notif.setShowModal(true)}
-              size={18}
-            />
-          </View>
-        </View>
-      </View>
+        }
+      />
 
       <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Month Navigation */}
@@ -382,26 +370,6 @@ const styles = StyleSheet.create({
     color: '#888',
     marginTop: 12,
     fontSize: 14,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 13,
-    fontWeight: '700',
   },
   todayButton: {
     paddingHorizontal: 14,

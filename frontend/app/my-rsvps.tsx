@@ -24,6 +24,9 @@ import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 
 import { API_URL } from '../utils/api';
+import PageHeader from '../components/PageHeader';
+import NotificationModal from '../components/NotificationModal';
+import { useNotifications } from '../hooks/useNotifications';
 
 interface RSVP {
   id: string;
@@ -54,6 +57,7 @@ interface Event {
 export default function MyRSVPsScreen() {
   const insets = useSafeAreaInsets();
   const { user, isAuthenticated } = useAuth();
+  const notif = useNotifications(user?.id);
   const [rsvps, setRsvps] = useState<RSVP[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,6 +106,7 @@ export default function MyRSVPsScreen() {
   useEffect(() => {
     if (isAuthenticated && user) {
       fetchRSVPs();
+      notif.fetchNotifications();
     } else {
       setLoading(false);
     }
@@ -243,14 +248,12 @@ export default function MyRSVPsScreen() {
 
   if (!isAuthenticated) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-        <View style={styles.topBar}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.topBarTitle}>My RSVPs</Text>
-          <View style={{ width: 32 }} />
-        </View>
+      <View style={styles.container}>
+        <PageHeader
+          title="My RSVPs"
+          showBackButton={true}
+          showNotificationBell={false}
+        />
         <View style={styles.emptyContainer}>
           <Ionicons name="log-in-outline" size={64} color="#444" />
           <Text style={styles.emptyTitle}>Login Required</Text>
@@ -267,14 +270,14 @@ export default function MyRSVPsScreen() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.topBarTitle}>My RSVPs</Text>
-        <View style={{ width: 32 }} />
-      </View>
+    <View style={styles.container}>
+      <PageHeader
+        title="My RSVPs"
+        showBackButton={true}
+        showNotificationBell={true}
+        unreadCount={notif.unreadCount}
+        onNotificationPress={() => notif.setShowModal(true)}
+      />
 
       {loading ? (
         <View style={styles.emptyContainer}>
@@ -327,6 +330,17 @@ export default function MyRSVPsScreen() {
           }
         />
       )}
+
+      <NotificationModal
+        visible={notif.showModal}
+        onClose={() => notif.setShowModal(false)}
+        notifications={notif.notifications}
+        onTapNotification={notif.handleTap}
+        onClearAll={notif.markAllRead}
+        getIcon={notif.getIcon}
+        getColor={notif.getColor}
+        getTimeAgo={notif.getTimeAgo}
+      />
     </View>
   );
 }
@@ -335,26 +349,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0c0c0c',
-  },
-  topBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  topBarTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
   },
   listContent: {
     padding: 16,

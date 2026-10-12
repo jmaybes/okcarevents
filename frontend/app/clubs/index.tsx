@@ -16,6 +16,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
 import { API_URL } from '../../utils/api';
+import PageHeader from '../../components/PageHeader';
 
 interface Club {
   id: string;
@@ -170,18 +171,12 @@ export default function ClubsScreen() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Oklahoma Car Clubs</Text>
-          <Text style={styles.headerSubtitle}>
-            {filteredClubs.length} club{filteredClubs.length !== 1 ? 's' : ''} found
-          </Text>
-        </View>
-      </View>
+    <View style={styles.container}>
+      <PageHeader
+        title="Oklahoma Car Clubs"
+        showBackButton={true}
+        showNotificationBell={false}
+      />
 
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#888" style={styles.searchIcon} />
@@ -229,33 +224,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#0c0c0c',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  headerContent: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#888',
-    marginTop: 2,
   },
   searchContainer: {
     flexDirection: 'row',

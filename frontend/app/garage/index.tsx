@@ -18,8 +18,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
-
 import { API_URL } from '../../utils/api';
+import PageHeader from '../../components/PageHeader';
 
 interface UserCar {
   id: string;
@@ -300,18 +300,12 @@ export default function BrowseGaragesScreen() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <LinearGradient
-        colors={['#C0C0C0', '#1a1a1a']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={[styles.headerTitle, { fontFamily: 'RockSalt-Regular' }]}>Public Garages</Text>
+    <View style={styles.container}>
+      <PageHeader
+        title="Public Garages"
+        showBackButton={true}
+        showNotificationBell={false}
+        rightComponent={
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <TouchableOpacity 
               onPress={() => {
@@ -329,8 +323,8 @@ export default function BrowseGaragesScreen() {
               <Ionicons name="funnel-outline" size={20} color="#fff" />
             </TouchableOpacity>
           </View>
-        </View>
-      </LinearGradient>
+        }
+      />
 
       {/* Sort Dropdown */}
       {showSortMenu && (
@@ -460,32 +454,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0c0c0c',
-  },
-  headerGradient: {
-    paddingTop: 10,
-    paddingBottom: 16,
-    paddingHorizontal: 20,
-    overflow: 'hidden',
-    boxShadow: 'inset 0px 1px 20px 1px #000000',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#fff',
-    flex: 1,
-    marginLeft: 8,
-    textShadow: '3px 2px 3px #000000c2',
   },
   sortButton: {
     width: 40,

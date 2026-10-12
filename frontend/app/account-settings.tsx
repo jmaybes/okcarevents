@@ -19,6 +19,7 @@ import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 
 import { API_URL } from '../utils/api';
+import PageHeader from '../components/PageHeader';
 
 export default function AccountSettingsScreen() {
   const { user, logout } = useAuth();
@@ -89,15 +90,12 @@ export default function AccountSettingsScreen() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Account Settings</Text>
-        <View style={{ width: 40 }} />
-      </View>
+    <View style={styles.container}>
+      <PageHeader
+        title="Account Settings"
+        showBackButton={true}
+        showNotificationBell={false}
+      />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -286,28 +284,7 @@ export default function AccountSettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1a',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: '#222',
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
+    backgroundColor: '#0c0c0c',
   },
   content: {
     flex: 1,

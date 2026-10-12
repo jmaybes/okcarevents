@@ -21,6 +21,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 
 import { API_URL } from '../../utils/api';
+import PageHeader from '../../components/PageHeader';
 
 const getWebSocketUrl = () => {
   if (!API_URL) return '';
@@ -557,14 +558,12 @@ export default function ChatScreen() {
 
   if (!isAuthenticated) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Chat</Text>
-          <View style={{ width: 40 }} />
-        </View>
+      <View style={styles.container}>
+        <PageHeader
+          title="Chat"
+          showBackButton={true}
+          showNotificationBell={false}
+        />
         <View style={styles.authRequired}>
           <Text style={styles.authText}>Please login to send messages</Text>
         </View>
@@ -573,41 +572,32 @@ export default function ChatScreen() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <LinearGradient
-        colors={['#2196F3', '#1976D2']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <View style={styles.headerInfo}>
+    <View style={styles.container}>
+      <PageHeader
+        title={partner?.nickname || partner?.name || 'Chat'}
+        showBackButton={true}
+        showNotificationBell={false}
+        rightComponent={
+          <View style={styles.headerRightContent}>
             <View style={styles.avatarWrapper}>
-              <Ionicons name="person-circle" size={36} color="#fff" />
+              <Ionicons name="person-circle" size={32} color="#fff" />
               {isPartnerOnline && <View style={styles.onlineIndicator} />}
             </View>
-            <View>
-              <Text style={styles.headerTitle}>{partner?.nickname || partner?.name || 'Loading...'}</Text>
-              {isPartnerTyping ? (
-                <Text style={styles.typingIndicator}>typing...</Text>
-              ) : isPartnerOnline ? (
-                <Text style={styles.onlineStatus}>Online</Text>
-              ) : null}
+            <View style={styles.connectionIndicator}>
+              <View style={[
+                styles.connectionDot,
+                connectionStatus === 'connected' ? styles.connectedDot :
+                connectionStatus === 'connecting' ? styles.connectingDot :
+                styles.disconnectedDot
+              ]} />
             </View>
           </View>
-          <View style={styles.connectionIndicator}>
-            <View style={[
-              styles.connectionDot,
-              connectionStatus === 'connected' ? styles.connectedDot :
-              connectionStatus === 'connecting' ? styles.connectingDot :
-              styles.disconnectedDot
-            ]} />
-          </View>
-        </View>
-      </LinearGradient>
+        }
+        subtitle={
+          isPartnerTyping ? 'typing...' : 
+          isPartnerOnline ? 'Online' : undefined
+        }
+      />
 
       <KeyboardAvoidingView
         style={styles.chatContainer}
@@ -679,59 +669,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0c0c0c',
   },
-  headerGradient: {
-    paddingTop: 10,
-    paddingBottom: 16,
-    paddingHorizontal: 20,
-  },
-  header: {
+  headerRightContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    flex: 1,
-    marginLeft: 8,
+    gap: 8,
   },
   avatarWrapper: {
     position: 'relative',
   },
   onlineIndicator: {
     position: 'absolute',
-    bottom: 2,
-    right: 2,
+    bottom: 0,
+    right: 0,
     width: 10,
     height: 10,
     borderRadius: 5,
     backgroundColor: '#4CAF50',
     borderWidth: 2,
-    borderColor: '#1976D2',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  typingIndicator: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.8)',
-    fontStyle: 'italic',
-  },
-  onlineStatus: {
-    fontSize: 12,
-    color: '#90EE90',
+    borderColor: '#1a1a1a',
   },
   connectionIndicator: {
-    width: 40,
+    width: 20,
     alignItems: 'center',
   },
   connectionDot: {

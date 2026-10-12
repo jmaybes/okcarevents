@@ -17,6 +17,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 
 import { API_URL } from '../../utils/api';
+import PageHeader from '../../components/PageHeader';
 
 interface Route {
   id: string;
@@ -245,28 +246,22 @@ export default function MyRoutesScreen() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <LinearGradient
-        colors={['#C0C0C0', '#1a1a1a']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Route Planning</Text>
-          {user && (
+    <View style={styles.container}>
+      <PageHeader
+        title="Route Planning"
+        showBackButton={true}
+        showNotificationBell={false}
+        rightComponent={
+          user ? (
             <TouchableOpacity 
               style={styles.addButton}
               onPress={() => router.push('/routes/create')}
             >
               <Ionicons name="add" size={28} color="#fff" />
             </TouchableOpacity>
-          )}
-        </View>
-      </LinearGradient>
+          ) : <View style={{ width: 28 }} />
+        }
+      />
 
       {/* Tabs */}
       {user && (
@@ -350,27 +345,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0c0c0c',
-  },
-  headerGradient: {
-    paddingTop: 10,
-    paddingBottom: 16,
-    paddingHorizontal: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
   },
   addButton: {
     padding: 4,

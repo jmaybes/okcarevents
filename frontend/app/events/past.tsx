@@ -26,6 +26,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../../contexts/AuthContext';
 
 import { API_URL } from '../../utils/api';
+import PageHeader from '../../components/PageHeader';
 
 interface Event {
   id: string;
@@ -255,28 +256,12 @@ export default function PastEventsScreen() {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <LinearGradient
-        colors={['#D32F2F', '#B71C1C']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.header}
-      >
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>Past Events</Text>
-          <Text style={styles.headerSubtitle}>
-            {filteredEvents.length} events from the past
-          </Text>
-        </View>
-        <Ionicons name="time" size={28} color="#fff" />
-      </LinearGradient>
+    <View style={styles.container}>
+      <PageHeader
+        title="Past Events"
+        showBackButton={true}
+        showNotificationBell={false}
+      />
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
@@ -341,31 +326,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0c0c0c',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-  },
-  backButton: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  headerContent: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.8)',
-    marginTop: 2,
   },
   searchContainer: {
     flexDirection: 'row',

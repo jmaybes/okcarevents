@@ -22,6 +22,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import axios from 'axios';
 
 import { API_URL } from '../../../utils/api';
+import PageHeader from '../../../components/PageHeader';
 const { width } = Dimensions.get('window');
 const PHOTO_SIZE = (width - 48) / 3;
 
@@ -345,28 +346,19 @@ export default function EventGalleryScreen() {
   const myTagInPhoto = selectedPhoto?.tags.find(t => t.userId === user?.id);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <LinearGradient
-        colors={['#C0C0C0', '#1a1a1a']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-          <View style={styles.headerTitleContainer}>
-            <Text style={styles.headerTitle}>Event Gallery</Text>
-            <Text style={styles.headerSubtitle} numberOfLines={1}>{eventTitle}</Text>
-          </View>
-          {isAuthenticated && (
+    <View style={styles.container}>
+      <PageHeader
+        title="Event Gallery"
+        showBackButton={true}
+        showNotificationBell={false}
+        rightComponent={
+          isAuthenticated ? (
             <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
-              <Ionicons name="camera" size={24} color="#fff" />
+              <Ionicons name="camera" size={22} color="#fff" />
             </TouchableOpacity>
-          )}
-        </View>
-      </LinearGradient>
+          ) : <View style={{ width: 24 }} />
+        }
+      />
 
       {/* Photo count */}
       <View style={styles.countBar}>
@@ -614,35 +606,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0c0c0c',
-  },
-  headerGradient: {
-    paddingTop: 10,
-    paddingBottom: 16,
-    paddingHorizontal: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerTitleContainer: {
-    flex: 1,
-    marginHorizontal: 8,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.8)',
-    marginTop: 2,
   },
   uploadButton: {
     width: 40,
