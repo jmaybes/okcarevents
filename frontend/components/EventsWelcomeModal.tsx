@@ -6,6 +6,7 @@ import {
   Modal,
   TouchableOpacity,
   Dimensions,
+  Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -58,14 +59,13 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
             style={styles.gradientBorder}
           >
             <View style={styles.modalContent}>
-              {/* Header Icon */}
-              <View style={styles.iconContainer}>
-                <LinearGradient
-                  colors={['#C0C0C0', '#666666']}
-                  style={styles.iconGradient}
-                >
-                  <Ionicons name="car-sport" size={32} color="#fff" />
-                </LinearGradient>
+              {/* Header - StreetMotion Logo */}
+              <View style={styles.logoContainer}>
+                <Image
+                  source={require('../assets/images/streetmotion-logo.png')}
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                />
               </View>
 
               {/* Title */}
@@ -82,6 +82,9 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
                     <Text style={styles.featureTitle}>Live Auto-Updates</Text>
                     <Text style={styles.featureDesc}>
                       Events are added and updated frequently. Pull down to refresh anytime.
+                    </Text>
+                    <Text style={styles.featureNote}>
+                      We focus on Oklahoma City and the metro area, but events from across the entire state are included so you never miss a meet.
                     </Text>
                   </View>
                 </View>
@@ -176,7 +179,7 @@ export async function shouldShowEventsWelcome(): Promise<boolean> {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    backgroundColor: 'rgba(0,0,0,0.55)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -190,25 +193,17 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   modalContent: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: 'rgba(26,26,26,0.95)',
     borderRadius: 18,
     padding: 24,
     alignItems: 'center',
   },
-  iconContainer: {
+  logoContainer: {
     marginBottom: 16,
   },
-  iconGradient: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#ffffff',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
+  logoImage: {
+    width: 140,
+    height: 50,
   },
   title: {
     fontSize: 22,
@@ -238,7 +233,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -247,14 +242,21 @@ const styles = StyleSheet.create({
   },
   featureTitle: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#fff',
     marginBottom: 2,
   },
   featureDesc: {
     fontSize: 12,
-    color: '#999',
+    color: '#ccc',
     lineHeight: 17,
+  },
+  featureNote: {
+    fontSize: 11,
+    color: '#aaa',
+    lineHeight: 16,
+    marginTop: 6,
+    fontStyle: 'italic',
   },
   ctaContainer: {
     flexDirection: 'row',
@@ -263,12 +265,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 10,
     paddingHorizontal: 16,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
     borderRadius: 10,
   },
   ctaText: {
     fontSize: 12,
-    color: '#888',
+    color: '#bbb',
   },
   ctaHighlight: {
     color: '#ffffff',
@@ -286,7 +288,7 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#555',
+    borderColor: '#777',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -296,7 +298,7 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     fontSize: 13,
-    color: '#888',
+    color: '#aaa',
   },
   continueButton: {
     width: '100%',
