@@ -23,7 +23,7 @@ module.exports = function withAndroidFonts(config) {
       }
 
       // Copy font files
-      const fontFiles = ['RockSalt.ttf', 'RobotoCondensed.ttf', 'SpaceMono-Regular.ttf'];
+      const fontFiles = ['RockSalt-Regular.ttf', 'RobotoCondensed-Regular.ttf', 'SpaceMono-Regular.ttf'];
       
       for (const fontFile of fontFiles) {
         const sourcePath = path.join(fontsDir, fontFile);

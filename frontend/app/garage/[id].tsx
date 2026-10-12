@@ -410,7 +410,7 @@ export default function GarageDetailScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { fontFamily: 'RockSalt' }]} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.5}>
+          <Text style={[styles.headerTitle, { fontFamily: 'RockSalt-Regular' }]} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.5}>
             {car.ownerNickname || car.ownerName}'s Garage
           </Text>
           <TouchableOpacity onPress={handleShare}>
