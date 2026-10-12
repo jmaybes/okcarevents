@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, RockSalt_400Regular } from '@expo-google-fonts/rock-salt';
+
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import { API_URL } from '../../utils/api';
@@ -39,7 +39,7 @@ interface PendingInvite {
 export default function MyCrewsScreen() {
   const { user, token, isAuthenticated } = useAuth();
   const insets = useSafeAreaInsets();
-  const [fontsLoaded] = useFonts({ RockSalt_400Regular });
+  
   const [crews, setCrews] = useState<Crew[]>([]);
   const [pendingInvites, setPendingInvites] = useState<PendingInvite[]>([]);
   const [loading, setLoading] = useState(true);
@@ -173,7 +173,7 @@ export default function MyCrewsScreen() {
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>My Crews</Text>
+            <Text style={[styles.headerTitle, { fontFamily: 'RockSalt_400Regular' }]}>My Crews</Text>
             <Text style={styles.headerSubtitle}>Ride together</Text>
           </View>
           {!createdCrew ? (

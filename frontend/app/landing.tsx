@@ -15,17 +15,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFonts, RobotoCondensed_700Bold } from '@expo-google-fonts/roboto-condensed';
 import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 import { API_URL } from '../utils/api';
 
 export default function LandingScreen() {
-  const [fontsLoaded] = useFonts({
-    RobotoCondensed_700Bold,
-  });
-  
   const [stats, setStats] = useState({ events: 0, clubs: 0 });
 
   useEffect(() => {

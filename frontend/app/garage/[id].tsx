@@ -24,7 +24,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
-import { useFonts, RockSalt_400Regular } from '@expo-google-fonts/rock-salt';
+
 
 import { API_URL } from '../../utils/api';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -97,7 +97,7 @@ export default function GarageDetailScreen() {
   const { id, showPhotos } = useLocalSearchParams();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
-  const [fontsLoaded] = useFonts({ RockSalt_400Regular });
+  
   const [car, setCar] = useState<UserCar | null>(null);
   const [loading, setLoading] = useState(true);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
@@ -410,7 +410,7 @@ export default function GarageDetailScreen() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.5}>
+          <Text style={[styles.headerTitle, { fontFamily: 'RockSalt_400Regular' }]} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.5}>
             {car.ownerNickname || car.ownerName}'s Garage
           </Text>
           <TouchableOpacity onPress={handleShare}>

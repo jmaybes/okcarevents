@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, RockSalt_400Regular } from '@expo-google-fonts/rock-salt';
+
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import { API_URL } from '../../utils/api';
@@ -41,7 +41,7 @@ export default function CrewDetailScreen() {
   const { crewId } = useLocalSearchParams<{ crewId: string }>();
   const { user, token } = useAuth();
   const insets = useSafeAreaInsets();
-  const [fontsLoaded] = useFonts({ RockSalt_400Regular });
+  
   const [crew, setCrew] = useState<CrewDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -273,7 +273,7 @@ export default function CrewDetailScreen() {
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]} numberOfLines={1}>{crew.name}</Text>
+            <Text style={[styles.headerTitle, { fontFamily: 'RockSalt_400Regular' }]} numberOfLines={1}>{crew.name}</Text>
             <Text style={styles.headerSubtitle}>
               {crew.memberCount} member{crew.memberCount !== 1 ? 's' : ''}
             </Text>

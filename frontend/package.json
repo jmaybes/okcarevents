@@ -13,9 +13,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.6",
-    "@expo-google-fonts/bungee-inline": "^0.4.1",
-    "@expo-google-fonts/roboto-condensed": "^0.4.2",
-    "@expo-google-fonts/rock-salt": "^0.4.1",
     "@expo/dom-webview": "~57.0.1",
     "@expo/log-box": "^57.0.4",
     "@expo/metro-runtime": "~57.0.16",

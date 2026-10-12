@@ -35,6 +35,7 @@ async function checkForUpdates() {
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     'RockSalt_400Regular': require('../assets/fonts/RockSalt_400Regular.ttf'),
+    'RobotoCondensed_700Bold': require('../assets/fonts/RobotoCondensed_700Bold.ttf'),
   });
 
   useEffect(() => {

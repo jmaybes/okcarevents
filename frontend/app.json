@@ -65,7 +65,8 @@
         "expo-font",
         {
           "fonts": [
-            "./assets/fonts/RockSalt_400Regular.ttf"
+            "./assets/fonts/RockSalt_400Regular.ttf",
+            "./assets/fonts/RobotoCondensed_700Bold.ttf"
           ]
         }
       ],

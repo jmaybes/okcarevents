@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, RockSalt_400Regular } from '@expo-google-fonts/rock-salt';
+
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 import { API_URL } from '../../utils/api';
@@ -23,7 +23,7 @@ import { API_URL } from '../../utils/api';
 export default function CreateCrewScreen() {
   const { user, token } = useAuth();
   const insets = useSafeAreaInsets();
-  const [fontsLoaded] = useFonts({ RockSalt_400Regular });
+  
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -85,7 +85,7 @@ export default function CreateCrewScreen() {
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
             <View style={{ flex: 1 }}>
-              <Text style={[styles.headerTitle, fontsLoaded && { fontFamily: 'RockSalt_400Regular' }]}>Create Crew</Text>
+              <Text style={[styles.headerTitle, { fontFamily: 'RockSalt_400Regular' }]}>Create Crew</Text>
               <Text style={styles.headerSubtitle}>Build your squad</Text>
             </View>
             <View style={{ width: 40 }} />
