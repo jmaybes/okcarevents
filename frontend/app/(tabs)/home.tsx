@@ -618,7 +618,7 @@ export default function HomeScreen() {
             <View style={styles.eventContent}>
               <View style={styles.eventHeader}>
                 <View style={styles.eventTypeContainer}>
-                  <Ionicons name="car-sport" size={16} color="#FF5500" />
+                  <Ionicons name="car-sport" size={16} color="#ffffff" />
                   <Text style={styles.eventType}>{item.eventType}</Text>
                 </View>
                 <View style={styles.eventBadges}>
@@ -650,7 +650,7 @@ export default function HomeScreen() {
 
               <View style={styles.eventDetails}>
                 <View style={styles.detailRow}>
-                  <Ionicons name="calendar" size={16} color="#FF5500" />
+                  <Ionicons name="calendar" size={16} color="#ffffff" />
                   <Text style={styles.detailText}>
                     {formatEventDate(item.date)} at {item.time}
                   </Text>
@@ -788,15 +788,15 @@ export default function HomeScreen() {
           style={styles.sortByButton}
           onPress={() => setShowSortMenu(!showSortMenu)}
         >
-          <Ionicons name="options" size={16} color="#FF5500" />
+          <Ionicons name="options" size={16} color="#ffffff" />
           <Text style={styles.sortByButtonText}>SORT / FILTER</Text>
-          <Ionicons name={showSortMenu ? 'chevron-up' : 'chevron-down'} size={14} color="#FF5500" />
+          <Ionicons name={showSortMenu ? 'chevron-up' : 'chevron-down'} size={14} color="#ffffff" />
         </TouchableOpacity>
 
         <View style={{ flex: 1 }} />
 
         <TouchableOpacity style={styles.calendarViewButton} onPress={() => router.push('/events/calendar')}>
-          <Ionicons name="calendar" size={14} color="#FF5500" />
+          <Ionicons name="calendar" size={14} color="#ffffff" />
           <Text style={styles.calendarViewButtonText}>CALENDAR VIEW</Text>
         </TouchableOpacity>
       </View>
@@ -849,7 +849,7 @@ export default function HomeScreen() {
             <Ionicons
               name="location"
               size={18}
-              color={(!showAllEvents && selectedType === 'All') ? '#FF5500' : '#999'}
+              color={(!showAllEvents && selectedType === 'All') ? '#ffffff' : '#999'}
             />
             <Text
               style={[
@@ -860,7 +860,7 @@ export default function HomeScreen() {
               OKC Only
             </Text>
             {(!showAllEvents && selectedType === 'All') && (
-              <Ionicons name="checkmark" size={18} color="#FF5500" style={{ marginLeft: 'auto' }} />
+              <Ionicons name="checkmark" size={18} color="#ffffff" style={{ marginLeft: 'auto' }} />
             )}
           </TouchableOpacity>
 
@@ -878,7 +878,7 @@ export default function HomeScreen() {
             <Ionicons
               name="car-sport"
               size={18}
-              color={selectedType === 'Car Meet' ? '#FF5500' : '#999'}
+              color={selectedType === 'Car Meet' ? '#ffffff' : '#999'}
             />
             <Text
               style={[
@@ -889,7 +889,7 @@ export default function HomeScreen() {
               Meets
             </Text>
             {selectedType === 'Car Meet' && (
-              <Ionicons name="checkmark" size={18} color="#FF5500" style={{ marginLeft: 'auto' }} />
+              <Ionicons name="checkmark" size={18} color="#ffffff" style={{ marginLeft: 'auto' }} />
             )}
           </TouchableOpacity>
 
@@ -907,7 +907,7 @@ export default function HomeScreen() {
             <Ionicons
               name="trophy"
               size={18}
-              color={selectedType === 'Car Show' ? '#FF5500' : '#999'}
+              color={selectedType === 'Car Show' ? '#ffffff' : '#999'}
             />
             <Text
               style={[
@@ -918,7 +918,7 @@ export default function HomeScreen() {
               Shows
             </Text>
             {selectedType === 'Car Show' && (
-              <Ionicons name="checkmark" size={18} color="#FF5500" style={{ marginLeft: 'auto' }} />
+              <Ionicons name="checkmark" size={18} color="#ffffff" style={{ marginLeft: 'auto' }} />
             )}
           </TouchableOpacity>
 
@@ -936,7 +936,7 @@ export default function HomeScreen() {
             <Ionicons
               name="speedometer"
               size={18}
-              color={selectedType === 'Cruise' ? '#FF5500' : '#999'}
+              color={selectedType === 'Cruise' ? '#ffffff' : '#999'}
             />
             <Text
               style={[
@@ -947,7 +947,7 @@ export default function HomeScreen() {
               Cruises
             </Text>
             {selectedType === 'Cruise' && (
-              <Ionicons name="checkmark" size={18} color="#FF5500" style={{ marginLeft: 'auto' }} />
+              <Ionicons name="checkmark" size={18} color="#ffffff" style={{ marginLeft: 'auto' }} />
             )}
           </TouchableOpacity>
 
@@ -1028,7 +1028,7 @@ export default function HomeScreen() {
       {(!showAllEvents && selectedType === 'All' && !freeOnly && sortBy === 'date') ? (
         <View style={styles.resultsRowHighlight}>
           <Text style={styles.resultsTextHighlight}>
-            <Text style={{ color: '#FF5500', fontWeight: '800' }}>{filteredEvents.length}</Text>
+            <Text style={{ color: '#ffffff', fontWeight: '800' }}>{filteredEvents.length}</Text>
             {'  '}Events in or near OKC!  Use sort for options.
           </Text>
         </View>
@@ -1045,7 +1045,7 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <View style={[styles.centerContainer, { paddingTop: insets.top }]}>
-        <ActivityIndicator size="large" color="#FF5500" />
+        <ActivityIndicator size="large" color="#ffffff" />
       </View>
     );
   }
@@ -1093,7 +1093,7 @@ export default function HomeScreen() {
         snapToAlignment="start"
         decelerationRate="fast"
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FF5500" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#ffffff" />
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
@@ -1241,7 +1241,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#fff',
     letterSpacing: 2,
-    textShadowColor: '#FF5500',
+    textShadowColor: '#ffffff',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
   },
@@ -1306,7 +1306,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   heroStatNumber: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontSize: 18,
     fontWeight: '800',
   },
@@ -1345,7 +1345,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   stickyHeaderBadge: {
-    backgroundColor: '#FF5500',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -1375,11 +1375,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1a',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#FF5500',
+    borderColor: '#ffffff',
     gap: 6,
   },
   sortByButtonText: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontSize: 13,
     fontWeight: '600',
   },
@@ -1410,7 +1410,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   sortDropdownTextActive: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontWeight: '600',
   },
   calendarViewButton: {
@@ -1421,11 +1421,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1a',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#FF5500',
+    borderColor: '#ffffff',
     gap: 6,
   },
   calendarViewButtonText: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontSize: 13,
     fontWeight: '600',
   },
@@ -1472,7 +1472,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   resultsDate: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontSize: 14,
     fontWeight: '700',
   },
@@ -1512,7 +1512,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   eventType: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontSize: 12,
     fontWeight: '600',
     marginLeft: 4,
@@ -1600,7 +1600,7 @@ const styles = StyleSheet.create({
   retryButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FF5500',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 25,

@@ -61,7 +61,7 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
               {/* Header Icon */}
               <View style={styles.iconContainer}>
                 <LinearGradient
-                  colors={['#FF5500', '#E91E63']}
+                  colors={['#C0C0C0', '#666666']}
                   style={styles.iconGradient}
                 >
                   <Ionicons name="car-sport" size={32} color="#fff" />
@@ -76,7 +76,7 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
               <View style={styles.featureList}>
                 <View style={styles.featureItem}>
                   <View style={styles.featureIcon}>
-                    <Ionicons name="sync" size={20} color="#FF5500" />
+                    <Ionicons name="sync" size={20} color="#ffffff" />
                   </View>
                   <View style={styles.featureTextContainer}>
                     <Text style={styles.featureTitle}>Live Auto-Updates</Text>
@@ -88,7 +88,7 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
 
                 <View style={styles.featureItem}>
                   <View style={styles.featureIcon}>
-                    <Ionicons name="add-circle" size={20} color="#FF5500" />
+                    <Ionicons name="add-circle" size={20} color="#ffffff" />
                   </View>
                   <View style={styles.featureTextContainer}>
                     <Text style={styles.featureTitle}>Submit Your Events</Text>
@@ -100,7 +100,7 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
 
                 <View style={styles.featureItem}>
                   <View style={styles.featureIcon}>
-                    <Ionicons name="sparkles" size={20} color="#FF5500" />
+                    <Ionicons name="sparkles" size={20} color="#ffffff" />
                   </View>
                   <View style={styles.featureTextContainer}>
                     <Text style={styles.featureTitle}>AI-Powered Creation</Text>
@@ -126,7 +126,7 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
                 activeOpacity={0.7}
               >
                 <View style={[styles.checkbox, dontShowAgain && styles.checkboxChecked]}>
-                  {dontShowAgain && <Ionicons name="checkmark" size={14} color="#fff" />}
+                  {dontShowAgain && <Ionicons name="checkmark" size={14} color="#1a1a1a" />}
                 </View>
                 <Text style={styles.checkboxLabel}>Don't show this again</Text>
               </TouchableOpacity>
@@ -138,7 +138,7 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
                 activeOpacity={0.8}
               >
                 <LinearGradient
-                  colors={['#FF5500', '#E91E63']}
+                  colors={['#C0C0C0', '#666666']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={styles.continueGradient}
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#FF5500',
+    shadowColor: '#ffffff',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   titleUnderline: {
     width: 60,
     height: 3,
-    backgroundColor: '#FF5500',
+    backgroundColor: '#ffffff',
     borderRadius: 2,
     marginTop: 8,
     marginBottom: 20,
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: 'rgba(255,85,0,0.15)',
+    backgroundColor: 'rgba(255,255,255,0.15)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   ctaHighlight: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontWeight: '700',
   },
   checkboxRow: {
@@ -283,8 +283,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#FF5500',
-    borderColor: '#FF5500',
+    backgroundColor: '#ffffff',
+    borderColor: '#ffffff',
   },
   checkboxLabel: {
     fontSize: 13,
