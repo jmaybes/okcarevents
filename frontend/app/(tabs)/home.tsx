@@ -743,13 +743,17 @@ export default function HomeScreen() {
                 size={22}
               />
               <TouchableOpacity
-                style={styles.facebookButton}
+                style={styles.instagramButton}
                 onPress={() => {
                   Linking.openURL('https://www.instagram.com/streetmotion_okc/');
                 }}
                 activeOpacity={0.7}
               >
-                <Ionicons name="logo-instagram" size={24} color="#fff" />
+                <Image
+                  source={require('../../assets/images/instagram-icon.png')}
+                  style={styles.instagramIcon}
+                  resizeMode="contain"
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -1278,6 +1282,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
+  },
+  instagramButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  instagramIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
   },
   facebookButton: {
     justifyContent: 'center',
