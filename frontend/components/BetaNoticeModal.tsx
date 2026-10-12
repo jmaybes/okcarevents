@@ -224,14 +224,6 @@ export default function BetaNoticeModal() {
                     color={acknowledged ? "#fff" : "#666"} 
                   />
                 </TouchableOpacity>
-
-                {/* Skip link */}
-                <TouchableOpacity
-                  style={styles.skipLink}
-                  onPress={forceDismiss}
-                >
-                  <Text style={styles.skipLinkText}>Skip for now</Text>
-                </TouchableOpacity>
               </View>
             </ScrollView>
 
