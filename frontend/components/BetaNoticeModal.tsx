@@ -184,7 +184,7 @@ export default function BetaNoticeModal() {
                 {/* Privacy Notice */}
                 <View style={styles.privacyBox}>
                   <View style={styles.privacyHeader}>
-                    <Ionicons name="shield-checkmark" size={18} color="#F44336" />
+                    <Ionicons name="shield-checkmark" size={18} color="#ffffff" />
                     <Text style={styles.privacyTitle}>Your Privacy Matters!</Text>
                   </View>
                   <Text style={styles.privacyText}>
@@ -247,9 +247,9 @@ export default function BetaNoticeModal() {
                   style={styles.scrollHintGradient}
                 >
                   <Animated.View style={[styles.scrollHintContent, bounceStyle]}>
-                    <Ionicons name="chevron-down" size={20} color="#FF5500" />
+                    <Ionicons name="chevron-down" size={20} color="#ffffff" />
                     <Text style={styles.scrollHintText}>Scroll down for more</Text>
-                    <Ionicons name="chevron-down" size={20} color="#FF5500" />
+                    <Ionicons name="chevron-down" size={20} color="#ffffff" />
                   </Animated.View>
                 </LinearGradient>
               </Animated.View>
@@ -391,12 +391,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   privacyBox: {
-    backgroundColor: '#2e1a1a',
+    backgroundColor: '#2a2a2a',
     borderRadius: 12,
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#F44336',
+    borderColor: '#555555',
   },
   privacyHeader: {
     flexDirection: 'row',
@@ -405,12 +405,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   privacyTitle: {
-    color: '#F44336',
+    color: '#ffffff',
     fontSize: 17,
     fontWeight: '700',
   },
   privacyText: {
-    color: '#ef9a9a',
+    color: '#cccccc',
     fontSize: 13,
     lineHeight: 19,
   },
@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   scrollHintText: {
-    color: '#FF5500',
+    color: '#ffffff',
     fontSize: 13,
     fontWeight: '600',
   },
