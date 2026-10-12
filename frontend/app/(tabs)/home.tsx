@@ -1573,7 +1573,7 @@ const styles = StyleSheet.create({
   },
   eventDescription: {
     fontSize: 15,
-    color: '#aaa',
+    color: '#ccc',
     marginBottom: 12,
     lineHeight: 22,
   },
@@ -1591,7 +1591,7 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 14,
-    color: '#888',
+    color: '#fff',
     marginLeft: 8,
   },
   favoriteButton: {
