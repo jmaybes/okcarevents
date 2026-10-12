@@ -700,7 +700,7 @@ export default function ProfileScreen() {
           style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>My Garage</Text>
+            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Garage</Text>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
               style={{ width: 180, height: 65 }}
@@ -755,7 +755,7 @@ export default function ProfileScreen() {
           style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
         >
           <View style={styles.headerRow}>
-            <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>My Garage</Text>
+            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Garage</Text>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
               style={{ width: 180, height: 65 }}
