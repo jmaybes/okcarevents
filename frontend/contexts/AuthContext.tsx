@@ -1,20 +1,27 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { router } from 'expo-router';
 import axios from 'axios';
 import { API_URL } from '../utils/api';
 
-// Configure notification handler
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+// Check if running in Expo Go (where push notifications don't work in SDK 53+)
+const isExpoGo = Constants.appOwnership === 'expo';
+
+// Only import and configure notifications if NOT in Expo Go
+let Notifications: any = null;
+if (!isExpoGo) {
+  Notifications = require('expo-notifications');
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+}
 
 interface User {
   id: string;
@@ -45,6 +52,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 async function registerForPushNotificationsAsync(): Promise<string | null> {
+  // Skip if in Expo Go
+  if (isExpoGo || !Notifications) {
+    console.log('Push notifications not available in Expo Go');
+    return null;
+  }
+  
   let token = null;
   
   if (Platform.OS === 'android') {
@@ -89,50 +102,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
+  const notificationListener = useRef<any>();
+  const responseListener = useRef<any>();
 
   useEffect(() => {
     loadUser();
     
-    // Set up notification listeners
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received:', notification);
-    });
+    // Set up notification listeners (only if not in Expo Go)
+    if (!isExpoGo && Notifications) {
+      notificationListener.current = Notifications.addNotificationReceivedListener((notification: any) => {
+        console.log('Notification received:', notification);
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log('Notification response:', response);
-      // Navigate based on notification type when user taps
-      const data = response.notification.request.content.data;
-      if (data) {
-        try {
-          if (data.type === 'garage_comment' && data.carId) {
-            router.push(`/garage/${data.carId}`);
-          } else if (data.type === 'message' && data.senderId) {
-            router.push('/messages');
-          } else if (data.type === 'popup_event' && data.eventId) {
-            router.push(`/event/${data.eventId}`);
-          } else if (data.type === 'event_reminder' && data.eventId) {
-            router.push(`/event/${data.eventId}`);
-          } else if (data.type === 'rsvp_reminder' && data.eventId) {
-            router.push(`/event/${data.eventId}`);
-          } else if (data.type === 'meetup_invite') {
-            router.push('/(tabs)/nearby');
-          } else if (data.type === 'feedback_response' && data.feedbackId) {
-            router.push('/feedback/history');
+      responseListener.current = Notifications.addNotificationResponseReceivedListener((response: any) => {
+        console.log('Notification response:', response);
+        // Navigate based on notification type when user taps
+        const data = response.notification.request.content.data;
+        if (data) {
+          try {
+            if (data.type === 'garage_comment' && data.carId) {
+              router.push(`/garage/${data.carId}`);
+            } else if (data.type === 'message' && data.senderId) {
+              router.push('/messages');
+            } else if (data.type === 'popup_event' && data.eventId) {
+              router.push(`/event/${data.eventId}`);
+            } else if (data.type === 'event_reminder' && data.eventId) {
+              router.push(`/event/${data.eventId}`);
+            } else if (data.type === 'rsvp_reminder' && data.eventId) {
+              router.push(`/event/${data.eventId}`);
+            } else if (data.type === 'meetup_invite') {
+              router.push('/(tabs)/nearby');
+            } else if (data.type === 'feedback_response' && data.feedbackId) {
+              router.push('/feedback/history');
+            }
+          } catch (e) {
+            console.log('Navigation from notification failed:', e);
           }
-        } catch (e) {
-          console.log('Navigation from notification failed:', e);
         }
-      }
-    });
+      });
+    }
 
     return () => {
-      if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(notificationListener.current);
-      }
-      if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
+      if (!isExpoGo && Notifications) {
+        if (notificationListener.current) {
+          Notifications.removeNotificationSubscription(notificationListener.current);
+        }
+        if (responseListener.current) {
+          Notifications.removeNotificationSubscription(responseListener.current);
+        }
       }
     };
   }, []);
