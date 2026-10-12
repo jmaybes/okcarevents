@@ -60,6 +60,7 @@
     "plugins": [
       "expo-router",
       "./plugins/withNoRoutingApp",
+      "./plugins/withAndroidFonts",
       "expo-apple-authentication",
       [
         "expo-font",
