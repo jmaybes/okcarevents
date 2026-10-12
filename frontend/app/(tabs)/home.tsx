@@ -13,6 +13,7 @@ import {
   Dimensions,
   ViewToken,
   Alert,
+  Linking,
 } from 'react-native';
 import Animated, {
   FadeInDown,
@@ -744,15 +745,11 @@ export default function HomeScreen() {
               <TouchableOpacity
                 style={styles.facebookButton}
                 onPress={() => {
-                  // Facebook link placeholder
+                  Linking.openURL('https://www.instagram.com/streetmotion_okc/');
                 }}
                 activeOpacity={0.7}
               >
-                <Image
-                  source={require('../../assets/images/facebook-icon.png')}
-                  style={styles.facebookIcon}
-                  resizeMode="contain"
-                />
+                <Ionicons name="logo-instagram" size={24} color="#fff" />
               </TouchableOpacity>
             </View>
           </View>
