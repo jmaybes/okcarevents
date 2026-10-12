@@ -428,7 +428,7 @@ export default function NearbyScreen() {
           style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
         >
           <View style={styles.header}>
-            <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Nearby</Text>
+            <Text style={{ color: '#fff', fontSize: 15, fontWeight: '700', opacity: 0.9, width: 70, fontFamily: 'RobotoCondensed-Regular' }}>Nearby</Text>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
               style={{ width: 180, height: 65 }}
@@ -468,7 +468,7 @@ export default function NearbyScreen() {
         style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
       >
         <View style={styles.header}>
-          <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Nearby</Text>
+          <Text style={{ color: '#fff', fontSize: 15, fontWeight: '700', opacity: 0.9, width: 70, fontFamily: 'RobotoCondensed-Regular' }}>Nearby</Text>
           <Image
             source={require('../../assets/images/streetmotion-logo.png')}
             style={{ width: 180, height: 65 }}
