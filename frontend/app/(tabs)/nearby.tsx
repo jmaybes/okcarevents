@@ -428,8 +428,13 @@ export default function NearbyScreen() {
           style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
         >
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Nearby Enthusiasts</Text>
-            <Ionicons name="location" size={28} color="#fff" />
+            <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Nearby</Text>
+            <Image
+              source={require('../../assets/images/streetmotion-logo.png')}
+              style={{ width: 180, height: 65 }}
+              resizeMode="contain"
+            />
+            <View style={{ width: 60 }} />
           </View>
         </LinearGradient>
         <View style={styles.centerContainer}>
@@ -463,14 +468,15 @@ export default function NearbyScreen() {
         style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
       >
         <View style={styles.header}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>Nearby</Text>
-            <Text style={styles.headerSubtitle}>{nearbyUsers.length} users within {radius} miles</Text>
-          </View>
-          <View style={styles.headerActions}>
+          <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Nearby</Text>
+          <Image
+            source={require('../../assets/images/streetmotion-logo.png')}
+            style={{ width: 180, height: 65 }}
+            resizeMode="contain"
+          />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, width: 60, justifyContent: 'flex-end' }}>
             {nearbyUsers.length > 0 && (
               <TouchableOpacity
-                style={[styles.headerBtn, selectionMode && styles.headerBtnActive]}
                 onPress={toggleSelectionMode}
               >
                 <Ionicons
@@ -481,23 +487,15 @@ export default function NearbyScreen() {
               </TouchableOpacity>
             )}
             <TouchableOpacity
-              style={styles.headerBtn}
               onPress={() => setShowMap(!showMap)}
             >
               <Ionicons name={showMap ? "list" : "map"} size={20} color="#fff" />
             </TouchableOpacity>
-            <View style={{ alignItems: 'center' }}>
-              <Image
-                source={require('../../assets/images/streetmotion-logo.png')}
-                style={{ width: 60, height: 22 }}
-                resizeMode="contain"
-              />
-              <NotificationBell
-                unreadCount={notif.unreadCount}
-                onPress={() => notif.setShowModal(true)}
-                size={18}
-              />
-            </View>
+            <NotificationBell
+              unreadCount={notif.unreadCount}
+              onPress={() => notif.setShowModal(true)}
+              size={20}
+            />
           </View>
         </View>
       </LinearGradient>

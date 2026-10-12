@@ -35,17 +35,17 @@ export default function TalentScreen() {
         style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
       >
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Talent</Text>
-          <View style={{ alignItems: 'center' }}>
-            <Image
-              source={require('../../assets/images/streetmotion-logo.png')}
-              style={styles.headerLogo}
-              resizeMode="contain"
-            />
+          <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Talent</Text>
+          <Image
+            source={require('../../assets/images/streetmotion-logo.png')}
+            style={{ width: 180, height: 65 }}
+            resizeMode="contain"
+          />
+          <View style={{ width: 60, alignItems: 'flex-end' }}>
             <NotificationBell
               unreadCount={notif.unreadCount}
               onPress={() => notif.setShowModal(true)}
-              size={18}
+              size={20}
             />
           </View>
         </View>

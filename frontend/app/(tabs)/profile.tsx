@@ -700,14 +700,14 @@ export default function ProfileScreen() {
           style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={[styles.headerTitle, { fontFamily: 'RockSalt-Regular' }]}>My Garage</Text>
+            <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>My Garage</Text>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 60, height: 22 }}
+              style={{ width: 180, height: 65 }}
               resizeMode="contain"
             />
+            <View style={{ width: 60 }} />
           </View>
-          <Text style={styles.headerSubtitle}>Showcase your ride</Text>
         </LinearGradient>
         
         <View style={styles.guestContainer}>
@@ -755,26 +755,21 @@ export default function ProfileScreen() {
           style={[styles.headerGradient, { paddingTop: insets.top + 10 }]}
         >
           <View style={styles.headerRow}>
-            <View>
-              <Text style={[styles.headerTitle, { fontFamily: 'RockSalt-Regular' }]}>My Garage</Text>
-              <Text style={styles.headerSubtitle}>{user?.name}</Text>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-              <Image
-                source={require('../../assets/images/streetmotion-logo.png')}
-                style={{ width: 60, height: 22 }}
-                resizeMode="contain"
+            <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>My Garage</Text>
+            <Image
+              source={require('../../assets/images/streetmotion-logo.png')}
+              style={{ width: 180, height: 65 }}
+              resizeMode="contain"
+            />
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, width: 60, justifyContent: 'flex-end' }}>
+              <NotificationBell
+                unreadCount={allNotifications.length}
+                onPress={() => setShowNotifModal(true)}
+                size={20}
               />
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
-                <NotificationBell
-                  unreadCount={allNotifications.length}
-                  onPress={() => setShowNotifModal(true)}
-                  size={18}
-                />
-                <TouchableOpacity onPress={() => { fetchUserCar(true); setShowCarModal(true); }}>
-                  <Ionicons name="settings-outline" size={20} color="#fff" />
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity onPress={() => { fetchUserCar(true); setShowCarModal(true); }}>
+                <Ionicons name="settings-outline" size={22} color="#fff" />
+              </TouchableOpacity>
             </View>
           </View>
         </LinearGradient>
