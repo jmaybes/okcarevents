@@ -38,6 +38,7 @@ export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
     'RockSalt-Regular': require('../assets/fonts/RockSalt-Regular.ttf'),
     'RobotoCondensed-Regular': require('../assets/fonts/RobotoCondensed-Regular.ttf'),
+    'Roboto-Bold': require('../assets/fonts/Roboto-Bold.ttf'),
   });
 
   useEffect(() => {

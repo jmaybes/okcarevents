@@ -67,7 +67,8 @@
         {
           "fonts": [
             "./assets/fonts/RockSalt-Regular.ttf",
-            "./assets/fonts/RobotoCondensed-Regular.ttf"
+            "./assets/fonts/RobotoCondensed-Regular.ttf",
+            "./assets/fonts/Roboto-Bold.ttf"
           ]
         }
       ],

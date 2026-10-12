@@ -736,7 +736,7 @@ export default function HomeScreen() {
               />
               <Text style={styles.presentsText}>presents</Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginRight: '7%' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginRight: '7%' }}>
               <NotificationBell
                 unreadCount={notif.unreadCount}
                 onPress={() => notif.setShowModal(true)}
@@ -1269,7 +1269,7 @@ const styles = StyleSheet.create({
   },
   heroTitleLine: {
     fontSize: 20,
-    fontFamily: 'RobotoCondensed-Regular',
+    fontFamily: 'Roboto-Bold',
     fontWeight: '700',
     color: '#fff',
     textAlign: 'center',
