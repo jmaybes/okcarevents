@@ -1055,24 +1055,25 @@ export default function HomeScreen() {
       {/* Sticky compact header that appears on scroll */}
       <Animated.View style={[styles.stickyHeader, { paddingTop: insets.top }, stickyHeaderStyle]}>
         <LinearGradient
-          colors={['rgba(12,12,12,0.98)', 'rgba(12,12,12,0.95)']}
+          colors={['#C0C0C0', '#1a1a1a']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
           style={StyleSheet.absoluteFillObject}
         />
         <View style={styles.stickyHeaderContent}>
+          <Text style={{ color: '#fff', fontSize: 11, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Events</Text>
           <Image
             source={require('../../assets/images/streetmotion-logo.png')}
-            style={{ width: 70, height: 26 }}
+            style={{ width: 180, height: 65 }}
             resizeMode="contain"
           />
-          <Text style={styles.stickyHeaderTitle}>OKC Car Events</Text>
-          <View style={styles.stickyHeaderBadge}>
-            <Text style={styles.stickyHeaderCount}>{filteredEvents.length}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, width: 60, justifyContent: 'flex-end' }}>
+            <NotificationBell
+              unreadCount={notif.unreadCount}
+              onPress={() => notif.setShowModal(true)}
+              size={20}
+            />
           </View>
-          <NotificationBell
-            unreadCount={notif.unreadCount}
-            onPress={() => notif.setShowModal(true)}
-            size={22}
-          />
         </View>
       </Animated.View>
 
@@ -1328,15 +1329,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 100,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
   },
   stickyHeaderContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    gap: 10,
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
   },
   stickyHeaderTitle: {
     flex: 1,
