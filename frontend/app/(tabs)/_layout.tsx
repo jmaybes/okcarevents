@@ -107,25 +107,25 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="nearby"
-        options={{
-          title: 'Nearby',
-          tabBarIcon: ({ focused, size }) => (
-            <AnimatedTabIcon 
-              name={focused ? "location" : "location-outline"} 
-              focused={focused}
-              size={size} 
-            />
-          ),
-        }}
-      />
+110|        name="nearby"
+111|        options={{
+112|          title: 'Nearby',
+113|          tabBarIcon: ({ focused, size }) => (
+114|            <AnimatedTabIcon 
+115|              name={focused ? "location" : "location-outline"} 
+116|              focused={focused}
+117|              size={size} 
+118|            />
+119|          ),
+120|        }}
+121|      />
       <Tabs.Screen
-        name="clubs"
+        name="profile"
         options={{
-          title: 'Talent',
+          title: 'Garage',
           tabBarIcon: ({ focused, size }) => (
             <AnimatedTabIcon 
-              name={focused ? "star" : "star-outline"} 
+              name={focused ? "car" : "car-outline"} 
               focused={focused}
               size={size} 
             />
@@ -146,12 +146,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="clubs"
         options={{
-          title: 'Garage',
+          title: 'Talent',
           tabBarIcon: ({ focused, size }) => (
             <AnimatedTabIcon 
-              name={focused ? "car" : "car-outline"} 
+              name={focused ? "star" : "star-outline"} 
               focused={focused}
               size={size} 
             />
