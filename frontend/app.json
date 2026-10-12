@@ -63,6 +63,12 @@
       "./plugins/withAndroidFonts",
       "expo-apple-authentication",
       [
+        "react-native-maps",
+        {
+          "googleMapsApiKey": "AIzaSyDekipz2kW6nfOpd_c6Ku_NLwgc5N9AsUI"
+        }
+      ],
+      [
         "expo-font",
         {
           "fonts": [
