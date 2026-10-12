@@ -93,12 +93,7 @@
           "color": "#E15500",
           "sounds": []
         }
-      ],
-      "expo-secure-store",
-      "expo-web-browser",
-      "expo-updates",
-      "expo-sharing",
-      "expo-status-bar"
+      ]
     ],
     "experiments": {
       "typedRoutes": true
