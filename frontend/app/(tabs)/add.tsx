@@ -353,7 +353,7 @@ export default function AddEventScreen() {
               <Text style={{ color: '#fff', fontSize: 15, fontWeight: '700', opacity: 0.9, width: 80, fontFamily: 'RobotoCondensed-Regular' }}>Add Event</Text>
               <Image
                 source={require('../../assets/images/streetmotion-logo.png')}
-                style={{ width: 180, height: 65 }}
+                style={{ width: 126, height: 45 }}
                 resizeMode="contain"
               />
               <View style={{ width: 60, alignItems: 'flex-end' }}>

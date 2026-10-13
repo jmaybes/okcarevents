@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   logo: {
-    width: 180,
-    height: 65,
+    width: 126,
+    height: 45,
   },
   rightSection: {
     alignItems: 'flex-end',

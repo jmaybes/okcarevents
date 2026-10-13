@@ -297,7 +297,7 @@ export default function LoginScreen() {
           <Animated.View entering={FadeInDown.delay(100).springify()}>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 180, height: 65 }}
+              style={{ width: 126, height: 45 }}
               resizeMode="contain"
             />
           </Animated.View>

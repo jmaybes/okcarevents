@@ -703,7 +703,7 @@ export default function ProfileScreen() {
             <Text style={{ color: '#fff', fontSize: 13, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Garage</Text>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 180, height: 65 }}
+              style={{ width: 126, height: 45 }}
               resizeMode="contain"
             />
             <View style={{ width: 60 }} />
@@ -713,7 +713,7 @@ export default function ProfileScreen() {
         <View style={styles.guestContainer}>
           <Image
             source={require('../../assets/images/streetmotion-logo.png')}
-            style={{ width: 180, height: 65 }}
+            style={{ width: 126, height: 45 }}
             resizeMode="contain"
           />
           <Text style={styles.guestTitle}>Guest Mode</Text>
@@ -762,7 +762,7 @@ export default function ProfileScreen() {
             <Text style={{ color: '#fff', fontSize: 13, fontWeight: '700', opacity: 0.9, width: 60, fontFamily: 'RobotoCondensed-Regular' }}>Garage</Text>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 180, height: 65 }}
+              style={{ width: 126, height: 45 }}
               resizeMode="contain"
             />
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, width: 60, justifyContent: 'flex-end' }}>

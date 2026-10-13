@@ -1078,7 +1078,7 @@ export default function HomeScreen() {
           <Text style={{ color: '#fff', fontSize: 15, fontWeight: '700', opacity: 0.9, width: 70, fontFamily: 'RobotoCondensed-Regular' }}>Events</Text>
           <Image
             source={require('../../assets/images/streetmotion-logo.png')}
-            style={{ width: 180, height: 65 }}
+            style={{ width: 126, height: 45 }}
             resizeMode="contain"
           />
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, width: 60, justifyContent: 'flex-end' }}>

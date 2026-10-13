@@ -223,7 +223,7 @@ export default function RegisterScreen() {
           <View style={styles.content}>
             <Image
               source={require('../../assets/images/streetmotion-logo.png')}
-              style={{ width: 180, height: 65 }}
+              style={{ width: 126, height: 45 }}
               resizeMode="contain"
             />
             <Text style={styles.title}>Create Account</Text>
