@@ -164,8 +164,15 @@ export default function ClubsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#FF5500" />
+      <View style={styles.container}>
+        <PageHeader
+          title="Oklahoma Car Clubs"
+          showBackButton={false}
+          showNotificationBell={false}
+        />
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#FF5500" />
+        </View>
       </View>
     );
   }
@@ -174,7 +181,7 @@ export default function ClubsScreen() {
     <View style={styles.container}>
       <PageHeader
         title="Oklahoma Car Clubs"
-        showBackButton={true}
+        showBackButton={false}
         showNotificationBell={false}
       />
 
