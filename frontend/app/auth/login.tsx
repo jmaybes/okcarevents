@@ -9,6 +9,7 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import Animated, { 
   FadeInDown, 
@@ -294,7 +295,11 @@ export default function LoginScreen() {
 
         <View style={styles.content}>
           <Animated.View entering={FadeInDown.delay(100).springify()}>
-            <Ionicons name="car-sport" size={64} color="#FF5500" />
+            <Image
+              source={require('../../assets/images/streetmotion-logo.png')}
+              style={{ width: 180, height: 65 }}
+              resizeMode="contain"
+            />
           </Animated.View>
           <Animated.Text 
             entering={FadeInDown.delay(200).springify()}
