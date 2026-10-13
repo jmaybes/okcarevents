@@ -81,10 +81,7 @@ export default function EventsWelcomeModal({ visible, onDismiss }: EventsWelcome
                   <View style={styles.featureTextContainer}>
                     <Text style={styles.featureTitle}>Live Auto-Updates</Text>
                     <Text style={styles.featureDesc}>
-                      Events are added and updated frequently. Pull down to refresh anytime.
-                    </Text>
-                    <Text style={styles.featureNote}>
-                      We focus on Oklahoma City and the metro area, but events from across the entire state are included so you never miss a meet.
+                      Events are added and updated frequently. Pull down to refresh anytime. We focus on Oklahoma City and the metro area, but events from across the entire state are included so you never miss a meet.
                     </Text>
                   </View>
                 </View>
@@ -179,7 +176,7 @@ export async function shouldShowEventsWelcome(): Promise<boolean> {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -193,7 +190,7 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   modalContent: {
-    backgroundColor: 'rgba(26,26,26,0.95)',
+    backgroundColor: 'rgba(26,26,26,0.88)',
     borderRadius: 18,
     padding: 24,
     alignItems: 'center',

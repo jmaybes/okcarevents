@@ -591,11 +591,12 @@ export default function ChatScreen() {
                 styles.disconnectedDot
               ]} />
             </View>
+            {(isPartnerTyping || isPartnerOnline) && (
+              <Text style={styles.statusText}>
+                {isPartnerTyping ? 'typing...' : 'Online'}
+              </Text>
+            )}
           </View>
-        }
-        subtitle={
-          isPartnerTyping ? 'typing...' : 
-          isPartnerOnline ? 'Online' : undefined
         }
       />
 
@@ -673,6 +674,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  statusText: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.8)',
+    fontStyle: 'italic',
   },
   avatarWrapper: {
     position: 'relative',
