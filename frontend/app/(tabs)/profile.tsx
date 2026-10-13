@@ -711,7 +711,11 @@ export default function ProfileScreen() {
         </LinearGradient>
         
         <View style={styles.guestContainer}>
-          <Ionicons name="car-sport-outline" size={80} color="#333" />
+          <Image
+            source={require('../../assets/images/streetmotion-logo.png')}
+            style={{ width: 180, height: 65 }}
+            resizeMode="contain"
+          />
           <Text style={styles.guestTitle}>Guest Mode</Text>
           <Text style={styles.guestText}>
             Login to create your garage, save favorites, RSVP to events, and more
@@ -1973,7 +1977,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   loginButton: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#295bfe',
     borderRadius: 12,
     padding: 16,
     width: '100%',
@@ -1986,15 +1990,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   registerButton: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: 'transparent',
     borderRadius: 12,
     padding: 16,
     width: '100%',
     alignItems: 'center',
     marginTop: 12,
+    borderWidth: 1,
+    borderColor: '#295bfe',
   },
   registerButtonText: {
-    color: '#fff',
+    color: '#295bfe',
     fontSize: 16,
     fontWeight: '600',
   },
