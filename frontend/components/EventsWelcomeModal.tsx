@@ -179,7 +179,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 60,
   },
   modalContainer: {
     width: width - 40,
@@ -203,11 +204,11 @@ const styles = StyleSheet.create({
     height: 50,
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
     color: '#fff',
     textAlign: 'center',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
   titleUnderline: {
     width: 60,
