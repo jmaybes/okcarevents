@@ -105,7 +105,7 @@ export default function MyRunsScreen() {
     if (item.topSpeed) message += `\n⚡ Top Speed: ${item.topSpeed.toFixed(1)} MPH`;
     if (item.quarterMileSpeed) message += `\n💨 Trap Speed: ${item.quarterMileSpeed.toFixed(1)} MPH`;
     if (item.isManualEntry) message += `\n📝 Manual Entry`;
-    message += `\n📱 StreetMotion App`;
+    message += `\n📱 Streetmotion Official`;
 
     try {
       await Share.share({ message });
