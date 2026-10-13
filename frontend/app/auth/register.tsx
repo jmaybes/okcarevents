@@ -10,6 +10,7 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -220,7 +221,11 @@ export default function RegisterScreen() {
           </View>
 
           <View style={styles.content}>
-            <Ionicons name="car-sport" size={64} color="#FF5500" />
+            <Image
+              source={require('../../assets/images/streetmotion-logo.png')}
+              style={{ width: 180, height: 65 }}
+              resizeMode="contain"
+            />
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>Join the car community</Text>
 
@@ -415,7 +420,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   registerButton: {
-    backgroundColor: '#FF5500',
+    backgroundColor: '#295bfe',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -487,7 +492,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   loginLinkBold: {
-    color: '#FF5500',
+    color: '#295bfe',
     fontWeight: 'bold',
   },
 });

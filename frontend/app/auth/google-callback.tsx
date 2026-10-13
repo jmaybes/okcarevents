@@ -10,6 +10,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -245,7 +246,7 @@ export default function GoogleCallbackScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF5500" />
+          <ActivityIndicator size="large" color="#295bfe" />
           <Text style={styles.loadingText}>
             {authProvider === 'apple' ? 'Signing in with Apple...' : 'Signing in with Google...'}
           </Text>
@@ -319,7 +320,7 @@ export default function GoogleCallbackScreen() {
                 maxLength={20}
               />
               {checkingNickname ? (
-                <ActivityIndicator size="small" color="#FF5500" />
+                <ActivityIndicator size="small" color="#295bfe" />
               ) : nickname.length >= 3 && !nicknameError ? (
                 <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
               ) : null}
@@ -454,7 +455,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   atSymbol: {
-    color: '#FF5500',
+    color: '#295bfe',
     fontSize: 18,
     fontWeight: 'bold',
     marginRight: 4,
@@ -484,7 +485,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FF5500',
+    backgroundColor: '#295bfe',
     borderRadius: 12,
     padding: 16,
     marginTop: 32,
