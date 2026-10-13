@@ -53,7 +53,7 @@ export default function TalentScreen() {
 
       {/* Coming Soon Content */}
       <View style={styles.comingSoonContainer}>
-        <Ionicons name="star" size={64} color="#FF5500" />
+        <Ionicons name="star" size={64} color="#295bfe" />
         <Text style={styles.comingSoonTitle}>Talent</Text>
         <Text style={styles.comingSoonSubtitle}>Coming Soon</Text>
         <Text style={styles.comingSoonDesc}>
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   comingSoonSubtitle: {
     fontSize: 18,
-    color: '#FF5500',
+    color: '#295bfe',
     fontWeight: '600',
     marginTop: 4,
   },
