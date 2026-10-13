@@ -494,7 +494,7 @@ export default function TimerScreen() {
       message += `\n💨 Trap Speed: ${result.quarterMileSpeed.toFixed(1)} MPH`;
     }
     if (isNewPB) message += `\n🏆 NEW PERSONAL BEST!`;
-    message += `\n\n📱 Tracked with OKC Car Events`;
+    message += `\n\n📱 Tracked with StreetMotion`;
 
     try {
       await Share.share({ message, title: `My ${modeLabel} Run` });
