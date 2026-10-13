@@ -58,15 +58,15 @@ export default function PageHeader({
           <Text style={[styles.pageTitle, { color: titleColor }]} numberOfLines={1}>{title}</Text>
         </View>
 
-        {/* Center - Logo */}
-        {showLogo ? (
-          <Image
-            source={require('../assets/images/streetmotion-logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        ) : (
-          <View style={styles.logo} />
+        {/* Center - Logo (absolutely positioned for true center) */}
+        {showLogo && (
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../assets/images/streetmotion-logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
         )}
 
         {/* Right side - Notification bell or custom component */}
@@ -97,10 +97,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    position: 'relative',
   },
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
+    zIndex: 1,
   },
   backButton: {
     marginRight: 4,
@@ -113,11 +115,19 @@ const styles = StyleSheet.create({
     fontFamily: 'RobotoCondensed-Regular',
     flexShrink: 1,
   },
+  logoContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   logo: {
     width: 126,
     height: 45,
   },
   rightSection: {
     alignItems: 'flex-end',
+    zIndex: 1,
   },
 });
