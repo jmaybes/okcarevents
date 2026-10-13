@@ -47,7 +47,10 @@ export default function MyCrewsScreen() {
   const [createdCrew, setCreatedCrew] = useState<Crew | null>(null);
 
   const fetchData = useCallback(async () => {
-    if (!user?.id || !token) return;
+    if (!user?.id || !token) {
+      setLoading(false);
+      return;
+    }
     try {
       const [crewsRes, invitesRes] = await Promise.all([
         axios.get(`${API_URL}/api/crews/user/${user.id}`),
