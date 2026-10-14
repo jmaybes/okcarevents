@@ -246,7 +246,7 @@ export default function GoogleCallbackScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#295bfe" />
+          <ActivityIndicator size="large" color="#2196F3" />
           <Text style={styles.loadingText}>
             {authProvider === 'apple' ? 'Signing in with Apple...' : 'Signing in with Google...'}
           </Text>
@@ -320,7 +320,7 @@ export default function GoogleCallbackScreen() {
                 maxLength={20}
               />
               {checkingNickname ? (
-                <ActivityIndicator size="small" color="#295bfe" />
+                <ActivityIndicator size="small" color="#2196F3" />
               ) : nickname.length >= 3 && !nicknameError ? (
                 <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
               ) : null}
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   atSymbol: {
-    color: '#295bfe',
+    color: '#2196F3',
     fontSize: 18,
     fontWeight: 'bold',
     marginRight: 4,
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#295bfe',
+    backgroundColor: '#2196F3',
     borderRadius: 12,
     padding: 16,
     marginTop: 32,

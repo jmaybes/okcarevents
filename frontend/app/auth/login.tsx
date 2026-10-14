@@ -275,7 +275,7 @@ export default function LoginScreen() {
     return (
       <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#295bfe" />
+          <ActivityIndicator size="large" color="#2196F3" />
         </View>
       </View>
     );
@@ -543,8 +543,8 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   checkboxChecked: {
-    backgroundColor: '#295bfe',
-    borderColor: '#295bfe',
+    backgroundColor: '#2196F3',
+    borderColor: '#2196F3',
   },
   rememberMeText: {
     color: '#fff',
@@ -558,7 +558,7 @@ const styles = StyleSheet.create({
     marginLeft: 34,
   },
   loginButton: {
-    backgroundColor: '#295bfe',
+    backgroundColor: '#2196F3',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
@@ -609,7 +609,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   registerLinkBold: {
-    color: '#295bfe',
+    color: '#2196F3',
     fontWeight: 'bold',
   },
   dividerContainer: {

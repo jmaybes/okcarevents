@@ -1977,7 +1977,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   loginButton: {
-    backgroundColor: '#295bfe',
+    backgroundColor: '#2196F3',
     borderRadius: 12,
     padding: 16,
     width: '100%',
@@ -1997,10 +1997,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 12,
     borderWidth: 1,
-    borderColor: '#295bfe',
+    borderColor: '#2196F3',
   },
   registerButtonText: {
-    color: '#295bfe',
+    color: '#2196F3',
     fontSize: 16,
     fontWeight: '600',
   },
