@@ -7,15 +7,9 @@ import {
   ScrollView,
   Switch,
   Alert,
-  TextInput,
   Image,
-  ActivityIndicator,
-  Modal,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform,
-  Linking,
   RefreshControl,
+  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,11 +18,16 @@ import { useAuth } from '../../contexts/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
-import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 
 import { API_URL } from '../../utils/api';
 import NotificationBell from '../../components/NotificationBell';
+import {
+  CarShowcase,
+  CarEditModal,
+  FeedbackModal,
+  ProfileNotificationsModal,
+} from '../../components/profile';
 
 interface Modification {
   category: string;
@@ -779,173 +778,21 @@ export default function ProfileScreen() {
         </LinearGradient>
         
         {/* Car Showcase */}
-        <View style={styles.carShowcaseSection}>
-          {loadingCar ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#ffffff" />
-            </View>
-          ) : userCar ? (
-            <>
-            <View style={styles.carCard}>
-              {userCar.photos && userCar.photos.length > 0 ? (
-                <View style={styles.carMainPhotoContainer}>
-                  <Image 
-                    source={{ uri: userCar.photos[userCar.mainPhotoIndex && userCar.mainPhotoIndex < userCar.photos.length ? userCar.mainPhotoIndex : 0] }} 
-                    style={{ width: '100%', height: 260 }} 
-                    resizeMode="cover" 
-                  />
-                  <LinearGradient
-                    colors={['transparent', 'rgba(0,0,0,0.6)']}
-                    style={styles.carPhotoGradient}
-                  />
-                  <View style={styles.carPhotoCountBadge}>
-                    <Ionicons name="images" size={13} color="#fff" />
-                    <Text style={styles.carPhotoCountText}>{(userCar as any).photoCount || userCar.photos.length}</Text>
-                  </View>
-                  <TouchableOpacity 
-                    style={styles.viewPicsButton}
-                    onPress={() => router.push(`/garage/${userCar.id}`)}
-                    activeOpacity={0.8}
-                  >
-                    <Ionicons name="images-outline" size={12} color="#fff" />
-                    <Text style={styles.viewPicsText}>View Pics</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View style={styles.noPhotoContainer}>
-                  <Ionicons name="car-sport" size={60} color="#333" />
-                  <Text style={styles.noPhotoText}>Add photos of your ride</Text>
-                </View>
-              )}
-              
-              <View style={styles.carInfo}>
-                <Text style={styles.carTitle}>
-                  {userCar.year} {userCar.make} {userCar.model}
-                </Text>
-                {userCar.trim && (
-                  <Text style={styles.carTrim}>{userCar.trim}</Text>
-                )}
-                <View style={styles.carStatsRow}>
-                  {userCar.color && (
-                    <View style={[styles.carDetailRow, { flex: 1 }]}>
-                      <Ionicons name="color-palette" size={16} color="#888" />
-                      <Text style={styles.carDetailText}>{userCar.color}</Text>
-                    </View>
-                  )}
-                  {userCar.horsepower && (
-                    <View style={[styles.carDetailRow, { flex: 1 }]}>
-                      <Ionicons name="flash" size={16} color="#ffffff" />
-                      <Text style={styles.carDetailText}>{userCar.horsepower} HP</Text>
-                    </View>
-                  )}
-                </View>
-                {userCar.engine && (
-                  <View style={styles.carDetailRow}>
-                    <Ionicons name="speedometer" size={16} color="#2196F3" />
-                    <Text style={styles.carDetailText}>{userCar.engine}</Text>
-                  </View>
-                )}
-                {userCar.modificationNotes && (
-                  <View style={styles.carDetailRow}>
-                    <Ionicons name="build" size={16} color="#4CAF50" />
-                    <Text style={styles.carDetailText}>{userCar.modificationNotes}</Text>
-                  </View>
-                )}
-                {userCar.videos && userCar.videos.length > 0 && (
-                  <View style={styles.carDetailRow}>
-                    <Ionicons name="videocam" size={16} color="#9C27B0" />
-                    <Text style={styles.carDetailText}>{userCar.videos.length} video{userCar.videos.length !== 1 ? 's' : ''}</Text>
-                  </View>
-                )}
-                {userCar.description && (
-                  <Text style={styles.carDescription}>{userCar.description}</Text>
-                )}
-              </View>
-              
-              <View style={styles.garageActionRow}>
-                <TouchableOpacity style={styles.editCarButton} onPress={() => { setEditingCarId(userCar.id); fetchUserCar(true); setShowCarModal(true); }}>
-                  <Ionicons name="pencil" size={16} color="#ffffff" />
-                  <Text style={styles.editCarButtonText}>Edit Car & Photos</Text>
-                </TouchableOpacity>
-                {userCars.length < 2 && (
-                  <TouchableOpacity
-                    style={styles.addCarInlineBtn}
-                    onPress={handleAddSecondCar}
-                  >
-                    <Ionicons name="add-circle-outline" size={18} color="#ffffff" />
-                    <Text style={styles.addCarInlineText}>2nd Car</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-
-            {/* Car Switcher - show all cars */}
-            {userCars.length > 0 && (
-              <View style={{ marginTop: 12, gap: 8 }}>
-                {userCars.length > 1 && (
-                  <View style={{ gap: 6 }}>
-                    {userCars.map((car) => (
-                      <TouchableOpacity 
-                        key={car.id}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          backgroundColor: car.isActive ? 'rgba(225, 85, 0, 0.15)' : '#1a1a1a',
-                          borderRadius: 10,
-                          padding: 12,
-                          borderWidth: car.isActive ? 1 : 0,
-                          borderColor: '#ffffff',
-                        }}
-                        onPress={() => {
-                          if (!car.isActive) {
-                            handleSetActiveCar(car.id);
-                          }
-                        }}
-                      >
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1 }}>
-                          <Ionicons name="car-sport" size={20} color={car.isActive ? '#ffffff' : '#666'} />
-                          <View style={{ flex: 1 }}>
-                            <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>
-                              {car.year} {car.make} {car.model}
-                            </Text>
-                            <Text style={{ color: '#888', fontSize: 11 }}>
-                              {car.isActive ? 'Active - Displayed in your garage' : 'Tap to set as active'}
-                            </Text>
-                          </View>
-                        </View>
-                        {car.isActive ? (
-                          <View style={{ backgroundColor: '#ffffff', borderRadius: 12, paddingHorizontal: 8, paddingVertical: 3 }}>
-                            <Text style={{ color: '#fff', fontSize: 10, fontWeight: 'bold' }}>ACTIVE</Text>
-                          </View>
-                        ) : (
-                          <Ionicons name="swap-horizontal" size={18} color="#666" />
-                        )}
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                )}
-              </View>
-            )}
-            </>
-          ) : (
-            <TouchableOpacity style={styles.addCarCard} onPress={() => setShowCarModal(true)}>
-              <View style={styles.nudgeBadge}>
-                <Ionicons name="construct" size={12} color="#fff" />
-                <Text style={styles.nudgeBadgeText}>FIXED & READY</Text>
-              </View>
-              <Ionicons name="car-sport" size={56} color="#ffffff" />
-              <Text style={styles.addCarTitle}>Set Up Your Garage!</Text>
-              <Text style={styles.addCarSubtitle}>
-                We've fixed the saving issues — your garage will save correctly now. Add your ride with photos, specs, and mods!
-              </Text>
-              <View style={styles.nudgeButton}>
-                <Ionicons name="add" size={20} color="#fff" />
-                <Text style={styles.nudgeButtonText}>Get Started</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        </View>
+        <CarShowcase
+          loading={loadingCar}
+          userCar={userCar}
+          userCars={userCars}
+          onEditCar={() => { 
+            if (userCar) {
+              setEditingCarId(userCar.id); 
+              fetchUserCar(true); 
+              setShowCarModal(true); 
+            }
+          }}
+          onAddSecondCar={handleAddSecondCar}
+          onSetActiveCar={handleSetActiveCar}
+          onOpenModal={() => setShowCarModal(true)}
+        />
 
         {/* Browse Public Garages - prominent placement */}
         <TouchableOpacity
@@ -1305,628 +1152,55 @@ export default function ProfileScreen() {
       </ScrollView>
 
       {/* Car Edit Modal */}
-      <Modal
+      <CarEditModal
         visible={showCarModal}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={() => setShowCarModal(false)}
-      >
-        <SafeAreaView style={styles.modalContainer}>
-          <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ flex: 1 }}
-          >
-            <View style={styles.modalHeader}>
-              <TouchableOpacity onPress={() => setShowCarModal(false)}>
-                <Ionicons name="close" size={28} color="#fff" />
-              </TouchableOpacity>
-              <Text style={styles.modalTitle}>{userCar ? 'Edit Your Car' : 'Add Your Car'}</Text>
-              <View style={{ width: 28 }} />
-            </View>
-
-            <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 32 : 0 }}>
-              {/* Basic Info */}
-              <Text style={styles.modalSectionTitle}>Basic Information</Text>
-              
-              <Text style={styles.modalLabel}>Make *</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="e.g., Ford, Chevrolet, Toyota"
-                placeholderTextColor="#666"
-                value={carForm.make}
-                onChangeText={(text) => setCarForm({ ...carForm, make: text })}
-              />
-
-              <Text style={styles.modalLabel}>Model *</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="e.g., Mustang, Camaro, Supra"
-                placeholderTextColor="#666"
-                value={carForm.model}
-                onChangeText={(text) => setCarForm({ ...carForm, model: text })}
-              />
-
-              <Text style={styles.modalLabel}>Year *</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="e.g., 2024"
-                placeholderTextColor="#666"
-                keyboardType="numeric"
-                value={carForm.year}
-                onChangeText={(text) => setCarForm({ ...carForm, year: text })}
-              />
-
-              <Text style={styles.modalLabel}>Trim</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="e.g., GT, SS, TRD Pro"
-                placeholderTextColor="#666"
-                value={carForm.trim}
-                onChangeText={(text) => setCarForm({ ...carForm, trim: text })}
-              />
-
-              <Text style={styles.modalLabel}>Color</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="e.g., Grabber Blue, Triple Yellow"
-                placeholderTextColor="#666"
-                value={carForm.color}
-                onChangeText={(text) => setCarForm({ ...carForm, color: text })}
-              />
-
-              {/* Performance Specs */}
-              <Text style={[styles.modalSectionTitle, { marginTop: 24 }]}>Performance Specs</Text>
-
-              <Text style={styles.modalLabel}>Engine</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="e.g., 5.0L V8, 2JZ-GTE, LS3"
-                placeholderTextColor="#666"
-                value={carForm.engine}
-                onChangeText={(text) => setCarForm({ ...carForm, engine: text })}
-              />
-
-              <View style={styles.rowInputs}>
-                <View style={styles.halfInput}>
-                  <Text style={styles.modalLabel}>Horsepower</Text>
-                  <TextInput
-                    style={styles.modalInput}
-                    placeholder="e.g., 450"
-                    placeholderTextColor="#666"
-                    keyboardType="numeric"
-                    value={carForm.horsepower}
-                    onChangeText={(text) => setCarForm({ ...carForm, horsepower: text })}
-                  />
-                </View>
-                <View style={styles.halfInput}>
-                  <Text style={styles.modalLabel}>Torque (lb-ft)</Text>
-                  <TextInput
-                    style={styles.modalInput}
-                    placeholder="e.g., 410"
-                    placeholderTextColor="#666"
-                    keyboardType="numeric"
-                    value={carForm.torque}
-                    onChangeText={(text) => setCarForm({ ...carForm, torque: text })}
-                  />
-                </View>
-              </View>
-
-              <Text style={styles.modalLabel}>Transmission</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="e.g., 6-Speed Manual, 10-Speed Auto"
-                placeholderTextColor="#666"
-                value={carForm.transmission}
-                onChangeText={(text) => setCarForm({ ...carForm, transmission: text })}
-              />
-
-              <Text style={styles.modalLabel}>Drivetrain</Text>
-              <View style={styles.drivetrainOptions}>
-                {['RWD', 'FWD', 'AWD', '4WD'].map((dt) => (
-                  <TouchableOpacity
-                    key={dt}
-                    style={[
-                      styles.drivetrainButton,
-                      carForm.drivetrain === dt && styles.drivetrainButtonActive
-                    ]}
-                    onPress={() => setCarForm({ ...carForm, drivetrain: dt })}
-                  >
-                    <Text style={[
-                      styles.drivetrainText,
-                      carForm.drivetrain === dt && styles.drivetrainTextActive
-                    ]}>{dt}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              {/* Modifications */}
-              <Text style={[styles.modalSectionTitle, { marginTop: 24 }]}>Modifications</Text>
-
-              <Text style={styles.modalLabel}>Modification List</Text>
-              <TextInput
-                style={[styles.modalInput, styles.modalTextArea]}
-                placeholder="List your mods: cold air intake, exhaust, lowering springs, wheels, etc..."
-                placeholderTextColor="#666"
-                multiline
-                numberOfLines={5}
-                value={carForm.modificationNotes}
-                onChangeText={(text) => setCarForm({ ...carForm, modificationNotes: text })}
-                textAlignVertical="top"
-              />
-
-              {/* Photos */}
-              <Text style={[styles.modalSectionTitle, { marginTop: 24 }]}>Photos</Text>
-              
-              <Text style={styles.modalLabel}>Photos (Max 10)</Text>
-              <TouchableOpacity style={styles.uploadButton} onPress={pickCarPhoto}>
-                <Ionicons name="images" size={24} color="#ffffff" />
-                <Text style={styles.uploadButtonText}>Upload Photos</Text>
-              </TouchableOpacity>
-              <Text style={styles.photoHint}>
-                Tip: Tap the star to set a cover photo. Tap X to delete.
-              </Text>
-
-              {carPhotos.length > 0 && (
-                <View style={styles.photosPreview}>
-                  {carPhotos.map((photo, index) => (
-                    <View key={index} style={[
-                      styles.photoContainer,
-                      index === mainPhotoIndex && styles.photoContainerMain,
-                    ]}>
-                      <Image source={{ uri: photo }} style={styles.photoPreview} />
-                      {/* Cover badge */}
-                      {index === mainPhotoIndex && (
-                        <View style={styles.coverBadge}>
-                          <Text style={styles.coverBadgeText}>COVER</Text>
-                        </View>
-                      )}
-                      {/* Set as Cover button */}
-                      <TouchableOpacity
-                        style={[
-                          styles.setCoverButton,
-                          index === mainPhotoIndex && styles.setCoverButtonActive,
-                        ]}
-                        onPress={() => setMainPhotoIndex(index)}
-                      >
-                        <Ionicons 
-                          name={index === mainPhotoIndex ? "star" : "star-outline"} 
-                          size={18} 
-                          color={index === mainPhotoIndex ? "#FFD700" : "#fff"} 
-                        />
-                      </TouchableOpacity>
-                      {/* Delete button */}
-                      <TouchableOpacity
-                        style={styles.removePhotoButton}
-                        onPress={() => removeCarPhoto(index)}
-                      >
-                        <Ionicons name="close-circle" size={24} color="#FF3B30" />
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </View>
-              )}
-
-              {/* Videos */}
-              <Text style={[styles.modalSectionTitle, { marginTop: 24 }]}>Videos</Text>
-              
-              <Text style={styles.modalLabel}>Video Links (Max 5)</Text>
-              <Text style={styles.modalHint}>Add YouTube or other video links to show off your car</Text>
-              
-              <View style={styles.videoInputRow}>
-                <TextInput
-                  style={[styles.modalInput, { flex: 1 }]}
-                  placeholder="https://youtube.com/watch?v=..."
-                  placeholderTextColor="#666"
-                  value={newVideoUrl}
-                  onChangeText={setNewVideoUrl}
-                  autoCapitalize="none"
-                />
-                <TouchableOpacity style={styles.addVideoButton} onPress={addVideoUrl}>
-                  <Ionicons name="add" size={24} color="#fff" />
-                </TouchableOpacity>
-              </View>
-
-              {videoUrls.length > 0 && (
-                <View style={styles.videoList}>
-                  {videoUrls.map((url, index) => (
-                    <View key={index} style={styles.videoItem}>
-                      <Ionicons name="videocam" size={20} color="#9C27B0" />
-                      <Text style={styles.videoUrl} numberOfLines={1}>{url}</Text>
-                      <TouchableOpacity onPress={() => removeVideoUrl(index)}>
-                        <Ionicons name="close-circle" size={20} color="#FF3B30" />
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </View>
-              )}
-
-              {/* Social & Visibility */}
-              <Text style={[styles.modalSectionTitle, { marginTop: 24 }]}>Social & Visibility</Text>
-
-              <Text style={styles.modalLabel}>Description</Text>
-              <TextInput
-                style={[styles.modalInput, styles.modalTextArea]}
-                placeholder="Tell us about your ride, its story, future plans..."
-                placeholderTextColor="#666"
-                multiline
-                numberOfLines={4}
-                value={carForm.description}
-                onChangeText={(text) => setCarForm({ ...carForm, description: text })}
-                textAlignVertical="top"
-              />
-
-              <Text style={styles.modalLabel}>Instagram Handle</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="@yourusername"
-                placeholderTextColor="#666"
-                value={carForm.instagramHandle}
-                onChangeText={(text) => setCarForm({ ...carForm, instagramHandle: text })}
-                autoCapitalize="none"
-              />
-
-              <Text style={styles.modalLabel}>YouTube Channel URL</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="https://youtube.com/@yourchannel"
-                placeholderTextColor="#666"
-                value={carForm.youtubeChannel}
-                onChangeText={(text) => setCarForm({ ...carForm, youtubeChannel: text })}
-                autoCapitalize="none"
-              />
-
-              <View style={[
-                styles.publicToggleContainer,
-                { borderColor: garagePublic ? '#4CAF50' : '#ffffff', borderWidth: 1.5 }
-              ]}>
-                <View style={styles.publicToggleInfo}>
-                  <View style={[
-                    styles.visibilityBadge,
-                    { backgroundColor: garagePublic ? 'rgba(76,175,80,0.15)' : 'rgba(255,82,82,0.15)' }
-                  ]}>
-                    <Ionicons 
-                      name={garagePublic ? "globe-outline" : "lock-closed"} 
-                      size={18} 
-                      color={garagePublic ? "#4CAF50" : "#ffffff"} 
-                    />
-                    <Text style={[
-                      styles.visibilityBadgeText,
-                      { color: garagePublic ? '#4CAF50' : '#ffffff' }
-                    ]}>
-                      {garagePublic ? 'PUBLIC' : 'PRIVATE'}
-                    </Text>
-                  </View>
-                  <Text style={styles.publicToggleHint}>
-                    {garagePublic 
-                      ? 'Visible to everyone in Community Garages' 
-                      : 'Hidden — only you can see your garage'}
-                  </Text>
-                </View>
-                <Switch
-                  value={garagePublic}
-                  onValueChange={setGaragePublic}
-                  trackColor={{ false: '#ffffff', true: '#4CAF50' }}
-                  thumbColor="#fff"
-                />
-              </View>
-
-              <TouchableOpacity
-                style={[styles.saveButton, savingCar && styles.saveButtonDisabled]}
-                onPress={saveCar}
-                disabled={savingCar}
-              >
-                {savingCar ? (
-                  <View style={{ alignItems: 'center', gap: 4 }}>
-                    <ActivityIndicator color="#fff" />
-                    {photoUploadProgress ? (
-                      <Text style={{ color: '#fff', fontSize: 12 }}>{photoUploadProgress}</Text>
-                    ) : null}
-                  </View>
-                ) : (
-                  <>
-                    <Ionicons name="checkmark" size={20} color="#fff" />
-                    <Text style={styles.saveButtonText}>Save Car</Text>
-                  </>
-                )}
-              </TouchableOpacity>
-            </ScrollView>
-          </KeyboardAvoidingView>
-        </SafeAreaView>
-      </Modal>
+        onClose={() => setShowCarModal(false)}
+        userCar={userCar}
+        carForm={carForm}
+        setCarForm={setCarForm}
+        carPhotos={carPhotos}
+        mainPhotoIndex={mainPhotoIndex}
+        setMainPhotoIndex={setMainPhotoIndex}
+        videoUrls={videoUrls}
+        newVideoUrl={newVideoUrl}
+        setNewVideoUrl={setNewVideoUrl}
+        garagePublic={garagePublic}
+        setGaragePublic={setGaragePublic}
+        savingCar={savingCar}
+        photoUploadProgress={photoUploadProgress}
+        onPickPhoto={pickCarPhoto}
+        onRemovePhoto={removeCarPhoto}
+        onAddVideo={addVideoUrl}
+        onRemoveVideo={removeVideoUrl}
+        onSave={saveCar}
+      />
 
       {/* Feedback Modal */}
-      <Modal
+      <FeedbackModal
         visible={showFeedbackModal}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={() => setShowFeedbackModal(false)}
-      >
-        <SafeAreaView style={styles.modalContainer}>
-          <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ flex: 1 }}
-          >
-          <View style={styles.modalHeader}>
-            <TouchableOpacity onPress={() => setShowFeedbackModal(false)}>
-              <Ionicons name="close" size={28} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.modalTitle}>
-              {feedbackForm.type === 'bug' ? 'Report a Bug' : 
-               feedbackForm.type === 'suggestion' ? 'Suggest a Feature' : 'Contact Admin'}
-            </Text>
-            <View style={{ width: 28 }} />
-          </View>
-
-          <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
-            <Text style={styles.feedbackDescription}>
-              {feedbackForm.type === 'bug' 
-                ? 'Found something not working? Let us know and we\'ll fix it!' 
-                : feedbackForm.type === 'suggestion'
-                ? 'Have an idea to make the app better? We\'d love to hear it!'
-                : 'Have a question or need help? Send us a message!'}
-            </Text>
-
-            <Text style={styles.modalLabel}>Type</Text>
-            <View style={styles.feedbackTypeContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.feedbackTypeButton,
-                  feedbackForm.type === 'bug' && styles.feedbackTypeButtonActive
-                ]}
-                onPress={() => setFeedbackForm({ ...feedbackForm, type: 'bug' })}
-              >
-                <Ionicons 
-                  name="bug" 
-                  size={20} 
-                  color={feedbackForm.type === 'bug' ? '#fff' : '#F44336'} 
-                />
-                <Text style={[
-                  styles.feedbackTypeText,
-                  feedbackForm.type === 'bug' && styles.feedbackTypeTextActive
-                ]}>Bug</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.feedbackTypeButton,
-                  feedbackForm.type === 'suggestion' && styles.feedbackTypeButtonActive
-                ]}
-                onPress={() => setFeedbackForm({ ...feedbackForm, type: 'suggestion' })}
-              >
-                <Ionicons 
-                  name="bulb" 
-                  size={20} 
-                  color={feedbackForm.type === 'suggestion' ? '#fff' : '#ffffff'} 
-                />
-                <Text style={[
-                  styles.feedbackTypeText,
-                  feedbackForm.type === 'suggestion' && styles.feedbackTypeTextActive
-                ]}>Suggestion</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.feedbackTypeButton,
-                  feedbackForm.type === 'other' && styles.feedbackTypeButtonActive
-                ]}
-                onPress={() => setFeedbackForm({ ...feedbackForm, type: 'other' })}
-              >
-                <Ionicons 
-                  name="mail" 
-                  size={20} 
-                  color={feedbackForm.type === 'other' ? '#fff' : '#2196F3'} 
-                />
-                <Text style={[
-                  styles.feedbackTypeText,
-                  feedbackForm.type === 'other' && styles.feedbackTypeTextActive
-                ]}>Other</Text>
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.modalLabel}>Subject *</Text>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Brief summary of your feedback"
-              placeholderTextColor="#666"
-              value={feedbackForm.subject}
-              onChangeText={(text) => setFeedbackForm({ ...feedbackForm, subject: text })}
-            />
-
-            <Text style={styles.modalLabel}>Message *</Text>
-            <TextInput
-              style={[styles.modalInput, styles.feedbackTextArea]}
-              placeholder={
-                feedbackForm.type === 'bug' 
-                  ? "Please describe the bug, what you expected to happen, and steps to reproduce..."
-                  : feedbackForm.type === 'suggestion'
-                  ? "Describe your feature idea and how it would improve the app..."
-                  : "Write your message here..."
-              }
-              placeholderTextColor="#666"
-              multiline
-              numberOfLines={6}
-              value={feedbackForm.message}
-              onChangeText={(text) => setFeedbackForm({ ...feedbackForm, message: text })}
-              textAlignVertical="top"
-            />
-
-            <View style={styles.feedbackFromSection}>
-              <Ionicons name="person-circle" size={24} color="#666" />
-              <Text style={styles.feedbackFromText}>
-                Sending as: {user?.name} ({user?.email})
-              </Text>
-            </View>
-
-            <TouchableOpacity
-              style={[styles.saveButton, sendingFeedback && styles.saveButtonDisabled]}
-              onPress={submitFeedback}
-              disabled={sendingFeedback}
-            >
-              {sendingFeedback ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <>
-                  <Ionicons name="send" size={20} color="#fff" />
-                  <Text style={styles.saveButtonText}>Send Feedback</Text>
-                </>
-              )}
-            </TouchableOpacity>
-          </ScrollView>
-          </KeyboardAvoidingView>
-        </SafeAreaView>
-      </Modal>
+        onClose={() => setShowFeedbackModal(false)}
+        user={user}
+        feedbackForm={feedbackForm}
+        setFeedbackForm={setFeedbackForm}
+        sendingFeedback={sendingFeedback}
+        onSubmit={submitFeedback}
+      />
 
       {/* Notifications Modal */}
-      <Modal
+      <ProfileNotificationsModal
         visible={showNotifModal}
-        animationType="slide"
-        transparent={false}
-        onRequestClose={() => setShowNotifModal(false)}
-      >
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#0c0c0c' }}>
-          <View style={notifStyles.header}>
-            <TouchableOpacity 
-              onPress={() => setShowNotifModal(false)} 
-              style={notifStyles.backBtn}
-              hitSlop={{ top: 16, bottom: 16, left: 16, right: 16 }}
-              activeOpacity={0.5}
-            >
-              <Ionicons name="arrow-back" size={26} color="#fff" />
-            </TouchableOpacity>
-            <Text style={notifStyles.headerTitle}>Notifications</Text>
-            {allNotifications.length > 0 && (
-              <TouchableOpacity onPress={markAllNotificationsRead} style={notifStyles.clearBtn}>
-                <Text style={notifStyles.clearBtnText}>Clear All</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {allNotifications.length === 0 ? (
-            <View style={notifStyles.emptyContainer}>
-              <Ionicons name="notifications-off-outline" size={64} color="#444" />
-              <Text style={notifStyles.emptyTitle}>All Caught Up!</Text>
-              <Text style={notifStyles.emptySubtitle}>No new notifications right now.</Text>
-            </View>
-          ) : (
-            <ScrollView style={notifStyles.list} contentContainerStyle={{ paddingBottom: 40 }}>
-              {allNotifications.map((notif: any) => (
-                <TouchableOpacity
-                  key={notif.id}
-                  style={notifStyles.notifItem}
-                  onPress={() => handleNotificationTap(notif)}
-                  activeOpacity={0.7}
-                >
-                  <View style={[notifStyles.iconCircle, { backgroundColor: getNotificationColor(notif.type) + '22' }]}>
-                    <Ionicons
-                      name={getNotificationIcon(notif.type) as any}
-                      size={22}
-                      color={getNotificationColor(notif.type)}
-                    />
-                  </View>
-                  <View style={notifStyles.notifContent}>
-                    <Text style={notifStyles.notifTitle} numberOfLines={1}>{notif.title}</Text>
-                    <Text style={notifStyles.notifMessage} numberOfLines={2}>{notif.message}</Text>
-                    <Text style={notifStyles.notifTime}>{getTimeAgo(notif.createdAt)}</Text>
-                  </View>
-                  <Ionicons name="chevron-forward" size={16} color="#555" />
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          )}
-        </SafeAreaView>
-      </Modal>
+        onClose={() => setShowNotifModal(false)}
+        notifications={allNotifications}
+        onTapNotification={handleNotificationTap}
+        onClearAll={markAllNotificationsRead}
+        getNotificationIcon={getNotificationIcon}
+        getNotificationColor={getNotificationColor}
+        getTimeAgo={getTimeAgo}
+      />
 
     </View>
   );
 }
-
-const notifStyles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
-  },
-  backBtn: {
-    padding: 12,
-    marginRight: 8,
-    marginLeft: -4,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    flex: 1,
-  },
-  clearBtn: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: '#ffffff22',
-    borderRadius: 8,
-  },
-  clearBtnText: {
-    color: '#ffffff',
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  emptyTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 16,
-  },
-  emptySubtitle: {
-    color: '#888',
-    fontSize: 14,
-    marginTop: 6,
-    textAlign: 'center',
-  },
-  list: {
-    flex: 1,
-  },
-  notifItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1a1a1a',
-  },
-  iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  notifContent: {
-    flex: 1,
-    marginRight: 8,
-  },
-  notifTitle: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 3,
-  },
-  notifMessage: {
-    color: '#aaa',
-    fontSize: 13,
-    lineHeight: 18,
-    marginBottom: 4,
-  },
-  notifTime: {
-    color: '#666',
-    fontSize: 11,
-  },
-});
 
 const styles = StyleSheet.create({
   container: {
