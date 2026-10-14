@@ -33,6 +33,7 @@
     "android": {
       "package": "com.velocityvisualcrew.oklahomacarmeets",
       "versionCode": 207,
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
