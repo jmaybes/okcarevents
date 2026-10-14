@@ -42,6 +42,8 @@ export default function AddEventScreen() {
     }, [user?.id])
   );
   const [photos, setPhotos] = useState<string[]>([]);
+  const [flyerImage, setFlyerImage] = useState<string | null>(null);
+  const [showFlyerOptions, setShowFlyerOptions] = useState(false);
   const [isPopUp, setIsPopUp] = useState(false);
   const [useMyLocation, setUseMyLocation] = useState(false);
   const [loadingLocation, setLoadingLocation] = useState(false);
@@ -127,6 +129,7 @@ export default function AddEventScreen() {
 
         if (response.data.success) {
           const parsed = response.data.parsedData;
+          const processedImage = response.data.processedImage;
           
           // Update form with extracted data
           setFormData(prev => ({
@@ -136,19 +139,18 @@ export default function AddEventScreen() {
             date: parsed.date || prev.date,
             time: parsed.time || prev.time,
             address: parsed.address || prev.address,
-            location: parsed.address || prev.location,
+            location: parsed.location || parsed.address || prev.location,
+            entryFee: parsed.entryFee || prev.entryFee,
+            eventType: parsed.eventType || prev.eventType,
+            contactInfo: parsed.contactInfo || prev.contactInfo,
+            organizer: parsed.hostName || prev.organizer,
           }));
 
-          // Add the scanned image to photos
-          if (result.assets[0].uri) {
-            setPhotos(prev => [...prev, `data:image/jpeg;base64,${result.assets[0].base64}`]);
+          // Save the flyer image and show options
+          if (processedImage) {
+            setFlyerImage(processedImage);
+            setShowFlyerOptions(true);
           }
-
-          Alert.alert(
-            'Flyer Scanned!',
-            'We extracted the following information. Please review and edit as needed.',
-            [{ text: 'OK' }]
-          );
         }
       } catch (error: any) {
         console.error('OCR error:', error);
@@ -157,6 +159,36 @@ export default function AddEventScreen() {
         setScanningFlyer(false);
       }
     }
+  };
+
+  const handleFlyerOption = (option: 'cover' | 'thumbnail' | 'both' | 'none') => {
+    if (!flyerImage) {
+      setShowFlyerOptions(false);
+      return;
+    }
+
+    switch (option) {
+      case 'cover':
+        // Add flyer as the first/cover photo
+        setPhotos(prev => [flyerImage, ...prev.filter(p => p !== flyerImage)]);
+        Alert.alert('Added!', 'Flyer set as event cover image');
+        break;
+      case 'thumbnail':
+        // Save as flyer thumbnail (shown separately on event card)
+        // The flyerImage state will be sent with the event
+        Alert.alert('Added!', 'Flyer saved as clickable thumbnail');
+        break;
+      case 'both':
+        // Both cover and thumbnail
+        setPhotos(prev => [flyerImage, ...prev.filter(p => p !== flyerImage)]);
+        Alert.alert('Added!', 'Flyer set as cover image and saved as thumbnail');
+        break;
+      case 'none':
+        setFlyerImage(null);
+        Alert.alert('Got it!', 'Flyer image not saved. Form fields have been filled.');
+        break;
+    }
+    setShowFlyerOptions(false);
   };
 
   const getMyLocation = async () => {
@@ -278,6 +310,7 @@ export default function AddEventScreen() {
         carTypes: carTypesArray,
         userId: user?.id || null,
         photos: photos,
+        flyerImage: flyerImage,  // Include the original flyer image
         isPopUp: isPopUp,
         latitude: latitude,
         longitude: longitude,
@@ -746,6 +779,84 @@ export default function AddEventScreen() {
         getColor={notif.getColor}
         getTimeAgo={notif.getTimeAgo}
       />
+
+      {/* Flyer Image Options Modal */}
+      <Modal
+        visible={showFlyerOptions}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowFlyerOptions(false)}
+      >
+        <View style={styles.flyerModalOverlay}>
+          <View style={styles.flyerModalContainer}>
+            <View style={styles.typeModalHandle} />
+            
+            <Text style={styles.flyerModalTitle}>Flyer Scanned Successfully!</Text>
+            <Text style={styles.flyerModalSubtitle}>How would you like to use this flyer image?</Text>
+            
+            {/* Preview of flyer */}
+            {flyerImage && (
+              <View style={styles.flyerPreviewContainer}>
+                <Image source={{ uri: flyerImage }} style={styles.flyerPreview} resizeMode="contain" />
+              </View>
+            )}
+            
+            <View style={styles.flyerOptionsContainer}>
+              <TouchableOpacity 
+                style={styles.flyerOption}
+                onPress={() => handleFlyerOption('cover')}
+              >
+                <View style={[styles.flyerOptionIcon, { backgroundColor: '#FF550022' }]}>
+                  <Ionicons name="image" size={24} color="#FF5500" />
+                </View>
+                <View style={styles.flyerOptionText}>
+                  <Text style={styles.flyerOptionTitle}>Use as Cover Image</Text>
+                  <Text style={styles.flyerOptionDesc}>Main photo shown on event card</Text>
+                </View>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.flyerOption}
+                onPress={() => handleFlyerOption('thumbnail')}
+              >
+                <View style={[styles.flyerOptionIcon, { backgroundColor: '#2196F322' }]}>
+                  <Ionicons name="document-text" size={24} color="#2196F3" />
+                </View>
+                <View style={styles.flyerOptionText}>
+                  <Text style={styles.flyerOptionTitle}>Save as Flyer Thumbnail</Text>
+                  <Text style={styles.flyerOptionDesc}>Clickable flyer icon on event</Text>
+                </View>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.flyerOption}
+                onPress={() => handleFlyerOption('both')}
+              >
+                <View style={[styles.flyerOptionIcon, { backgroundColor: '#4CAF5022' }]}>
+                  <Ionicons name="copy" size={24} color="#4CAF50" />
+                </View>
+                <View style={styles.flyerOptionText}>
+                  <Text style={styles.flyerOptionTitle}>Both</Text>
+                  <Text style={styles.flyerOptionDesc}>Use as cover and save thumbnail</Text>
+                </View>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.flyerOption, styles.flyerOptionSkip]}
+                onPress={() => handleFlyerOption('none')}
+              >
+                <View style={[styles.flyerOptionIcon, { backgroundColor: '#88888822' }]}>
+                  <Ionicons name="close" size={24} color="#888" />
+                </View>
+                <View style={styles.flyerOptionText}>
+                  <Text style={[styles.flyerOptionTitle, { color: '#888' }]}>Skip - Just Use Text</Text>
+                  <Text style={styles.flyerOptionDesc}>Only fill form fields</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -1144,5 +1255,80 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 8,
     fontStyle: 'italic',
+  },
+  // Flyer Options Modal Styles
+  flyerModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'flex-end',
+  },
+  flyerModalContainer: {
+    backgroundColor: '#1a1a1a',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    paddingBottom: 40,
+    maxHeight: '85%',
+  },
+  flyerModalTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  flyerModalSubtitle: {
+    color: '#888',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  flyerPreviewContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  flyerPreview: {
+    width: 200,
+    height: 160,
+    borderRadius: 12,
+    backgroundColor: '#222',
+  },
+  flyerOptionsContainer: {
+    gap: 12,
+  },
+  flyerOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#222',
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  flyerOptionSkip: {
+    backgroundColor: '#1a1a1a',
+    borderStyle: 'dashed',
+  },
+  flyerOptionIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  flyerOptionText: {
+    flex: 1,
+  },
+  flyerOptionTitle: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  flyerOptionDesc: {
+    color: '#888',
+    fontSize: 12,
   },
 });

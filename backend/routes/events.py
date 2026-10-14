@@ -192,7 +192,9 @@ If you cannot determine a field, use an empty string. Extract ALL visible text r
             return {
                 "success": True,
                 "extractedText": response_text,
-                "parsedData": parsed_data
+                "parsedData": parsed_data,
+                "processedImage": f"data:image/jpeg;base64,{image_base64}",
+                "message": "Flyer scanned successfully! You can use this image as your event cover."
             }
             
         except ImportError as ie:
@@ -214,7 +216,9 @@ If you cannot determine a field, use an empty string. Extract ALL visible text r
             return {
                 "success": True,
                 "extractedText": extracted_text,
-                "parsedData": parsed_data
+                "parsedData": parsed_data,
+                "processedImage": f"data:image/jpeg;base64,{image_base64}",
+                "message": "Flyer scanned successfully! You can use this image as your event cover."
             }
 
     except HTTPException:

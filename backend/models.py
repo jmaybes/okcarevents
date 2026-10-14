@@ -19,6 +19,7 @@ class EventCreate(BaseModel):
     carTypes: List[str] = []
     eventType: str = "Car Meet"
     photos: List[str] = []
+    flyerImage: Optional[str] = None  # Original flyer image from OCR scan
     userId: Optional[str] = None
     contactInfo: str = ""
     website: str = ""
@@ -43,6 +44,7 @@ class EventUpdate(BaseModel):
     carTypes: Optional[List[str]] = None
     eventType: Optional[str] = None
     photos: Optional[List[str]] = None
+    flyerImage: Optional[str] = None  # Original flyer image from OCR scan
     contactInfo: Optional[str] = None
     website: Optional[str] = None
     isApproved: Optional[bool] = None

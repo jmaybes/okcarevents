@@ -219,6 +219,14 @@ export default function EventDetailScreen() {
     setFlyerModalVisible(true);
 
     try {
+      // First check if the event has an original scanned flyer image
+      if (event?.flyerImage) {
+        setFlyerUri(event.flyerImage);
+        setFlyerLoading(false);
+        return;
+      }
+
+      // Otherwise, generate a flyer from the server
       const flyerUrl = `${API_URL}/api/events/${id}/flyer`;
       const fileUri = `${FileSystem.cacheDirectory}flyer-${id}.jpg`;
 
@@ -237,7 +245,7 @@ export default function EventDetailScreen() {
     } finally {
       setFlyerLoading(false);
     }
-  }, [id]);
+  }, [id, event?.flyerImage]);
 
   const handleShareFlyer = useCallback(async () => {
     if (!flyerUri) return;
