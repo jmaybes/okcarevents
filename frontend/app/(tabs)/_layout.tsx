@@ -158,6 +158,12 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="clubs"
+        options={{
+          href: null, // Hide from tab bar but keep accessible via navigation
+        }}
+      />
     </Tabs>
   );
 }
