@@ -309,7 +309,7 @@ export default function MessagesScreen() {
     return (
       <View style={styles.container}>
         <PageHeader
-          title="Messages"
+          title="Chat"
           showBackButton={true}
           showNotificationBell={false}
         />
@@ -334,7 +334,7 @@ export default function MessagesScreen() {
   return (
     <View style={styles.container}>
       <PageHeader
-        title="Messages"
+        title="Chat"
         showBackButton={true}
         showNotificationBell={true}
         unreadCount={notif.unreadCount}
