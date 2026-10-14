@@ -86,37 +86,141 @@ async def create_event(event: EventCreate):
 
 @router.post("/ocr/scan-flyer")
 async def scan_flyer(request: OCRRequest):
-    """Scan an event flyer image and extract text to populate event fields."""
+    """Scan an event flyer image and extract text to populate event fields using AI Vision."""
     try:
         image_data = request.image
         if ',' in image_data:
             image_data = image_data.split(',')[1]
 
+        # Validate and process image
         image_bytes = base64.b64decode(image_data)
         image = Image.open(io.BytesIO(image_bytes))
 
         if image.mode != 'RGB':
             image = image.convert('RGB')
+        
+        # Convert back to base64 for API
+        buffered = io.BytesIO()
+        image.save(buffered, format="JPEG", quality=85)
+        image_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+        
+        # Use GPT-4 Vision for OCR (more reliable than easyocr)
+        try:
+            from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+            
+            EMERGENT_API_KEY = os.getenv("EMERGENT_API_KEY") or os.getenv("EMERGENT_LLM_KEY")
+            logger.info(f"OCR: API key found: {bool(EMERGENT_API_KEY)}")
+            
+            if not EMERGENT_API_KEY:
+                logger.error("OCR: No API key configured")
+                raise ValueError("OCR service not configured. Missing API key.")
+            
+            # Create vision message to extract event details
+            system_prompt = """You are an expert at reading event flyers. Extract the following information from this event flyer image:
 
-        reader = get_ocr_reader()
+1. Event Title/Name
+2. Date (in format: YYYY-MM-DD if possible, otherwise as shown)
+3. Time (start time, and end time if shown)
+4. Location/Venue name
+5. Full Address (street, city, state, zip if visible)
+6. Event Type (one of: Car Meet, Car Show, Cruise, Pop Up, Swap Meet, Drift Event, Drag Race, Other)
+7. Entry Fee/Cost (if mentioned, otherwise "Free" or "TBD")
+8. Description/Additional details
+9. Contact info (if shown)
+10. Host/Organizer name (if shown)
 
-        import tempfile
-        with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as tmp:
-            image.save(tmp.name, 'JPEG')
-            results = reader.readtext(tmp.name)
-            os.unlink(tmp.name)
+Return ONLY a valid JSON object with these fields:
+{
+  "title": "Event Name",
+  "date": "2024-01-15",
+  "time": "6:00 PM - 10:00 PM",
+  "location": "Venue Name",
+  "address": "123 Main St, Oklahoma City, OK 73101",
+  "eventType": "Car Meet",
+  "entryFee": "Free",
+  "description": "Brief description of the event",
+  "contactInfo": "Contact details if any",
+  "hostName": "Organizer name if any"
+}
 
-        extracted_text = '\n'.join([text for (bbox, text, confidence) in results])
-        parsed_data = parse_event_details(extracted_text)
+If you cannot determine a field, use an empty string. Extract ALL visible text related to the event."""
+            
+            # Use LlmChat for vision
+            import uuid
+            session_id = str(uuid.uuid4())
+            llm = LlmChat(
+                api_key=EMERGENT_API_KEY, 
+                session_id=session_id,
+                system_message=system_prompt
+            ).with_model("openai", "gpt-4o")
+            
+            # Create message with image using ImageContent (which handles image/* MIME types)
+            user_msg = UserMessage(
+                text="Please analyze this event flyer and extract the event details as JSON.",
+                file_contents=[ImageContent(image_base64=image_base64)]
+            )
+            
+            response_text = await llm.send_message(user_msg)
+            
+            # Parse JSON from response
+            import json
+            import re
+            
+            # Try to extract JSON from response
+            json_match = re.search(r'\{[^{}]*\}', response_text, re.DOTALL)
+            if json_match:
+                parsed_data = json.loads(json_match.group())
+            else:
+                # Fallback parsing
+                parsed_data = {
+                    "title": "",
+                    "date": "",
+                    "time": "",
+                    "location": "",
+                    "address": "",
+                    "eventType": "Other",
+                    "entryFee": "",
+                    "description": response_text[:500],
+                    "rawText": response_text
+                }
+            
+            # Ensure all expected fields exist
+            for field in ["title", "date", "time", "location", "address", "eventType", "entryFee", "description"]:
+                if field not in parsed_data:
+                    parsed_data[field] = ""
+            
+            return {
+                "success": True,
+                "extractedText": response_text,
+                "parsedData": parsed_data
+            }
+            
+        except ImportError as ie:
+            logger.error(f"OCR ImportError: {str(ie)}")
+            # Fallback to easyocr if emergentintegrations not available
+            reader = get_ocr_reader()
+            if reader is None:
+                raise HTTPException(status_code=500, detail="OCR service not available. Please try again later.")
+            
+            import tempfile
+            with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as tmp:
+                image.save(tmp.name, 'JPEG')
+                results = reader.readtext(tmp.name)
+                os.unlink(tmp.name)
 
-        return {
-            "success": True,
-            "extractedText": extracted_text,
-            "parsedData": parsed_data
-        }
+            extracted_text = '\n'.join([text for (bbox, text, confidence) in results])
+            parsed_data = parse_event_details(extracted_text)
 
+            return {
+                "success": True,
+                "extractedText": extracted_text,
+                "parsedData": parsed_data
+            }
+
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"OCR error: {str(e)}")
+        logger.error(f"OCR error: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to process image: {str(e)}")
 
 
@@ -540,11 +644,9 @@ Return ONLY a valid JSON array of events found. Return [] if none."""
             "eventsCreated": created,
             "eventsSkipped": skipped,
             "events": created_events,
-            "totalPostsAnalyzed": len(post_texts),
+            "totalEvents": len(events)
         }
 
-    except HTTPException:
-        raise
     except Exception as e:
         logger.error(f"Facebook import error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Import failed: {str(e)}")
