@@ -1966,10 +1966,191 @@ agent_communication:
           comment: "POST /api/messages endpoint working perfectly with push notification integration. ✅ ALL FUNCTIONALITY VERIFIED: (1) Direct messages successfully created between users with proper fields: senderId, recipientId, content, isRead=false, createdAt. (2) Message thread retrieval working correctly (GET /api/messages/thread/{user_id}/{partner_id}) returns chronologically ordered messages. (3) Push notification logic properly implemented - checks recipient's pushToken and notificationsEnabled before sending. (4) System gracefully handles missing push tokens without errors - messages are created successfully even when recipient has no token. (5) Online status detection working (GET /api/messages/online/{user_id}) returns {online: false} for offline users. (6) Online users list endpoint (GET /api/messages/online) returns {online_users: []} array correctly. (7) WebSocket connection manager properly tracks online/offline status for push notification decisions. (8) Push notifications are sent via Expo push service (helpers.py send_push_notification function) with proper title, body, and data payload. Tested with multiple message exchanges between test users, all scenarios working correctly. The user-to-user messaging with push notifications is production-ready."
 
 
+  - task: "Talent System - Admin Invite Creation"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "POST /api/admin/talent/invite endpoint working perfectly. ✅ Admin authentication verified (admin@okcarevents.com/admin123). ✅ Creates invites with email: generates unique 11-character code, stores email, sets 7-day expiration, prevents duplicate pending invites for same email. ✅ Creates shareable invites: generates code without email requirement when generate_code=true. ✅ Response structure correct: includes invite object with code, status (pending), expiresAt, invitedBy (admin_id), createdAt fields. ✅ Proper validation: requires admin access (403 for non-admin), requires either email or generate_code parameter (400 if neither provided). Tested with multiple invite scenarios, all working correctly."
+
+  - task: "Talent System - Get Invites"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/admin/talent/invites endpoint working perfectly. ✅ Returns all invites with proper admin authentication. ✅ Filter by status working correctly: status=pending returns only pending invites, status=accepted returns only accepted invites. ✅ Response includes invites array and count field. ✅ Invites sorted by createdAt descending (newest first). ✅ Each invite includes all required fields: id, code, email, invitedBy, status, expiresAt, acceptedBy, acceptedAt, createdAt. ✅ Admin authorization properly enforced (403 for non-admin users). Tested with 8 total invites including both pending and accepted statuses."
+
+  - task: "Talent System - Validate Invite Code"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/talent/invite/{code} endpoint working perfectly. ✅ Validates pending invite codes correctly: returns {valid: true, email, expiresAt} for valid pending invites. ✅ Invalid code handling: returns 404 'Invalid invite code' for non-existent codes. ✅ Status validation: returns 400 'Invite has been {status}' for non-pending invites (accepted/expired). ✅ Expiry checking: automatically marks expired invites as 'expired' status and returns 400 error. ✅ Public endpoint (no authentication required) - allows users to validate codes before accepting. Tested with valid pending codes, invalid codes, and edge cases."
+
+  - task: "Talent System - Accept Invite"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "POST /api/talent/invite/{code}/accept endpoint working perfectly. ✅ Creates talent profile placeholder: userId, inviteId, category (default 'other'), displayName (from user name), contactEmail (from user email), all social links initialized, isActive=false, setupComplete=false, viewCount=0. ✅ Marks invite as accepted: updates invite status to 'accepted', sets acceptedBy and acceptedAt fields. ✅ Updates user record: sets isTalent=true and talentProfileId fields on user document. ✅ Proper validation: checks invite exists and is pending, validates expiry, prevents duplicate profiles (400 'User already has a talent profile'), validates user exists. ✅ Response includes success message and complete profile object with viewCount. Tested complete workflow from invite creation to acceptance."
+
+  - task: "Talent System - Get Own Profile"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/talent/my-profile endpoint working perfectly. ✅ Returns talent's own profile with viewCount included (important for profile owners to see their stats). ✅ Requires user_id query parameter for authentication. ✅ Returns all profile fields: id, userId, category, businessName, displayName, bio, serviceTags, location, serviceArea, availability, photos, videoUrl, contactEmail, contactPhone, externalLink, socialLinks, isVerified, isFeatured, isPinned, isActive, viewCount, createdAt, updatedAt. ✅ Proper error handling: 400 for invalid user ID, 404 for no profile found. Tested with newly created talent profile."
+
+  - task: "Talent System - Update Profile"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "PUT /api/talent/{talent_id} endpoint working perfectly. ✅ Updates all allowed fields: category, businessName, displayName, bio, serviceTags, location, serviceArea, availability, photos, videoUrl, contactEmail, contactPhone, externalLink, socialLinks, isActive. ✅ Partial updates working correctly - only specified fields changed. ✅ Category validation: only accepts photographer, model, dancer, other (400 for invalid). ✅ Availability validation: only accepts available, booked, taking_bookings (400 for invalid). ✅ Photo limit enforcement: maximum 6 photos allowed (400 if exceeded). ✅ Setup completion detection: automatically sets setupComplete=true when category, displayName, bio, and at least 1 photo are present. ✅ Auto-activation: sets isActive=true when setup completes for first time. ✅ Authorization: only profile owner can update (403 for others). ✅ updatedAt timestamp properly set. Tested with comprehensive profile update including all fields."
+
+  - task: "Talent System - List All Talent"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/talent endpoint working perfectly. ✅ Returns only active talent with setupComplete=true. ✅ Proper ordering: pinned first, then featured, then regular talent. ✅ Category filter working: category parameter filters by specific category or 'all' for no filter. ✅ Search functionality: searches across businessName, displayName, serviceTags, bio fields with case-insensitive regex. ✅ Sort options: sort_by=newest (default, by createdAt desc) or sort_by=most_viewed (by viewCount desc). ✅ Favorites integration: includes isFavorited field for each talent when user_id provided. ✅ Response includes talent array, count, pinnedCount, featuredCount. ✅ Public endpoint (no authentication required). Tested with 2 active talent profiles, filtering, and search."
+
+  - task: "Talent System - Get Specific Talent"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/talent/{talent_id} endpoint working perfectly. ✅ Returns complete talent profile with all fields. ✅ View count increment: automatically increments viewCount by 1 on each view (unless is_owner=true). ✅ Favorites integration: includes isFavorited field when user_id provided. ✅ Owner viewing: is_owner=true parameter prevents view count increment and includes viewCount in response. ✅ Proper validation: 400 for invalid talent ID, 404 for non-existent profile. ✅ Public endpoint (no authentication required). Tested view count increment: 0→1→2 confirmed working correctly."
+
+  - task: "Talent System - Toggle Favorite"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "POST /api/talent/{talent_id}/favorite endpoint working perfectly. ✅ Toggle functionality: adds favorite if not favorited, removes if already favorited. ✅ Response indicates action: {success: true, favorited: true/false, message: 'Added to favorites'/'Removed from favorites'}. ✅ Requires user_id query parameter. ✅ Creates favorite document with userId, talentId, createdAt. ✅ Proper validation: 400 for invalid IDs, 404 for non-existent talent. ✅ Tested complete toggle cycle: add favorite (favorited=true) → remove favorite (favorited=false)."
+
+  - task: "Talent System - Get User Favorites"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/talent/favorites/{user_id} endpoint working perfectly. ✅ Returns all talent favorited by user. ✅ Only includes active talent (isActive=true). ✅ Sorted by createdAt descending (most recently favorited first). ✅ Each talent includes isFavorited=true field. ✅ Response includes talent array and count. ✅ Returns empty array when user has no favorites. ✅ Proper validation: 400 for invalid user ID. ✅ Public endpoint (no authentication required). Tested with user who favorited 1 talent profile."
+
+  - task: "Talent System - Admin Toggle Pin"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "PUT /api/admin/talent/{talent_id}/pin endpoint working perfectly. ✅ Toggles isPinned status (true↔false). ✅ Admin authentication required: validates admin_id and isAdmin flag (403 for non-admin). ✅ Response includes {success: true, isPinned: new_status}. ✅ Updates updatedAt timestamp. ✅ Pinned talent appears first in GET /api/talent list (verified). ✅ Proper validation: 400 for invalid IDs, 404 for non-existent talent. Tested with admin credentials (admin@okcarevents.com/admin123), pinned talent correctly appears first in list."
+
+  - task: "Talent System - Admin Toggle Feature"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "PUT /api/admin/talent/{talent_id}/feature endpoint working perfectly. ✅ Toggles isFeatured status (true↔false). ✅ Admin authentication required: validates admin_id and isAdmin flag (403 for non-admin). ✅ Response includes {success: true, isFeatured: new_status}. ✅ Updates updatedAt timestamp. ✅ Featured talent appears after pinned but before regular talent in GET /api/talent list. ✅ Proper validation: 400 for invalid IDs, 404 for non-existent talent. Tested with admin credentials, featured status toggled successfully."
+
+  - task: "Talent System - Admin Toggle Verify"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "PUT /api/admin/talent/{talent_id}/verify endpoint working perfectly. ✅ Toggles isVerified status (true↔false). ✅ Admin authentication required: validates admin_id and isAdmin flag (403 for non-admin). ✅ Response includes {success: true, isVerified: new_status}. ✅ Updates updatedAt timestamp. ✅ Notification system: creates 'talent_verified' notification when verified with title '🎉 You're Verified!' and congratulations message. ✅ Push notification: sends push to talent if they have pushToken. ✅ Proper validation: 400 for invalid IDs, 404 for non-existent talent. Tested with admin credentials, verification notification created and confirmed in user's notifications."
+
+  - task: "Talent System - Admin Get All Talent"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/admin/talent/all endpoint working perfectly. ✅ Returns all talent profiles including inactive ones (unlike public endpoint which only shows active). ✅ Admin authentication required: validates admin_id and isAdmin flag (403 for non-admin). ✅ Includes viewCount for all profiles (admin view). ✅ Sorted by createdAt descending (newest first). ✅ Response includes talent array and count. ✅ Proper validation: 400 for invalid admin ID. Tested with admin credentials, returned 2 total talent profiles including both active and inactive."
+
+  - task: "Talent System - Check User Talent Status"
+    implemented: true
+    working: true
+    file: "routes/talent.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "GET /api/talent/check/{user_id} endpoint working perfectly. ✅ Returns comprehensive talent status: isTalent (from user record), hasProfile (profile exists), setupComplete (profile setup status), isActive (profile active status), profile (complete profile object with viewCount). ✅ Proper validation: 400 for invalid user ID, 404 for non-existent user. ✅ Returns isTalent=false and hasProfile=false for non-talent users. ✅ Public endpoint (no authentication required). Tested with talent user (all fields true) and non-talent user (all fields false)."
+
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 2
+  test_sequence: 3
   run_ui: false
 
 test_plan:
@@ -1983,4 +2164,8 @@ agent_communication:
       message: "Testing push notification system for: 1) Admin broadcast messages to all users, 2) Direct messages between users. Need to verify: (a) admin broadcast creates messages for all users and attempts push, (b) direct messaging sends push to offline recipients, (c) proper token validation and error handling. Test with admin@okcarevents.com/admin123."
     - agent: "testing"
       message: "Push Notification System testing completed successfully with 100% pass rate (11/11 tests). ✅ ADMIN BROADCAST: POST /api/admin/broadcast working perfectly - creates messages for all non-admin users, attempts push notifications for users with tokens, returns proper response with messagesSent/pushNotificationsSent/totalUsers counts. ✅ DIRECT MESSAGING: POST /api/messages working perfectly - creates messages with proper fields, sends push notifications to recipients with tokens, handles missing tokens gracefully. ✅ ONLINE STATUS: GET /api/messages/online/{user_id} and GET /api/messages/online endpoints working correctly - track WebSocket connections for push notification decisions. ✅ GRACEFUL HANDLING: System properly handles users without push tokens - no errors occur, messages are created successfully, push attempts are skipped for users without tokens. ✅ DATABASE VERIFICATION: Broadcast messages properly stored and appear in user conversations. ✅ MESSAGE THREADS: Conversation retrieval working correctly with proper chronological ordering. NOTE: Admin user was missing from database and was created during testing (admin@okcarevents.com/admin123 in bike_database). All push notification functionality is production-ready and working as specified."
+    - agent: "main"
+      message: "Testing complete Talent System for StreetMotion. Need to verify: (1) Admin invite creation with email and shareable codes, (2) Get invites with status filtering, (3) Validate invite codes, (4) Accept invites and create talent profiles, (5) Talent profile operations (get own, update, list all, get specific), (6) Favorites (toggle, get user favorites), (7) Admin controls (pin, feature, verify). Test with admin@okcarevents.com/admin123."
+    - agent: "testing"
+      message: "TALENT SYSTEM TESTING COMPLETED SUCCESSFULLY WITH 100% PASS RATE (32/32 tests)! ✅ ALL CORE FUNCTIONALITY WORKING PERFECTLY: (1) ADMIN INVITE CREATION: POST /api/admin/talent/invite creates invites with email or shareable codes, generates unique 11-char codes, sets 7-day expiration, prevents duplicate pending invites. (2) GET INVITES: GET /api/admin/talent/invites returns all invites with status filtering (pending/accepted/expired), proper admin authentication. (3) VALIDATE INVITE: GET /api/talent/invite/{code} validates codes, checks expiry, returns proper errors for invalid/used codes. (4) ACCEPT INVITE: POST /api/talent/invite/{code}/accept creates talent profile placeholder, marks invite as accepted, updates user record with isTalent=true, prevents duplicate profiles. (5) TALENT PROFILE OPS: GET /api/talent/my-profile returns own profile with viewCount, PUT /api/talent/{id} updates all fields with validation (category, availability, 6 photo limit), auto-detects setup completion, GET /api/talent lists active talent with pinned→featured→regular ordering, GET /api/talent/{id} increments view count. (6) FAVORITES: POST /api/talent/{id}/favorite toggles favorite status, GET /api/talent/favorites/{user_id} returns user's favorited talent. (7) ADMIN CONTROLS: PUT /api/admin/talent/{id}/pin toggles pinned (appears first in list), PUT /api/admin/talent/{id}/feature toggles featured, PUT /api/admin/talent/{id}/verify toggles verified and creates notification with push. ✅ ADDITIONAL FEATURES VERIFIED: Category filtering, search functionality, sort by newest/most_viewed, authorization checks (403 for non-admin), validation (400/404 errors), notification system for verification. ✅ COMPLETE WORKFLOW TESTED: Admin creates invite → User validates code → User accepts invite → Talent updates profile → Profile goes live → Users favorite talent → Admin pins/features/verifies talent. The entire Talent System is production-ready and working exactly as specified in the review request."
 

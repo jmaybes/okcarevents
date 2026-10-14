@@ -26,6 +26,7 @@ from routes.feeds import router as feeds_router
 from routes.crews import router as crews_router
 from routes.websocket import router as websocket_router
 from routes.flyers import router as flyers_router
+from routes.talent import router as talent_router
 
 # Configure logging
 logging.basicConfig(
@@ -70,6 +71,7 @@ api_router.include_router(admin_router)
 api_router.include_router(feeds_router)
 api_router.include_router(crews_router)
 api_router.include_router(flyers_router)
+api_router.include_router(talent_router)
 
 # Include the API router in the main app
 app.include_router(api_router)

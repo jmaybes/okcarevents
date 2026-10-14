@@ -133,7 +133,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="clubs"
+        name="talent"
         options={{
           title: 'Talent',
           tabBarIcon: ({ focused, size }) => (
