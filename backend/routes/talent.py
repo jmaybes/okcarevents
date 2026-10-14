@@ -23,6 +23,7 @@ def talent_helper(talent, include_view_count: bool = False) -> dict:
         "category": talent.get("category", "other"),
         "businessName": talent.get("businessName", ""),
         "displayName": talent.get("displayName", ""),
+        "headline": talent.get("headline", ""),
         "bio": talent.get("bio", ""),
         "serviceTags": talent.get("serviceTags", []),
         "location": talent.get("location", ""),
@@ -40,6 +41,92 @@ def talent_helper(talent, include_view_count: bool = False) -> dict:
         "isActive": talent.get("isActive", True),
         "createdAt": _isodate(talent.get("createdAt")),
         "updatedAt": _isodate(talent.get("updatedAt")),
+        
+        # ===== NEW CUSTOMIZATION OPTIONS =====
+        # Theme & Colors
+        "theme": talent.get("theme", {
+            "primaryColor": "#FF5500",
+            "backgroundColor": "#000000",
+            "cardColor": "#1a1a1a",
+            "textColor": "#ffffff",
+            "accentColor": "#FF5500",
+            "gradientStart": "#1a1a1a",
+            "gradientEnd": "#000000",
+            "useGradient": False,
+        }),
+        
+        # Layout Preferences
+        "layout": talent.get("layout", {
+            "photoStyle": "carousel",  # carousel, grid, stacked
+            "showBioFirst": False,
+            "sectionOrder": ["photos", "about", "services", "contact"],
+            "headerStyle": "banner",  # banner, minimal, centered
+        }),
+        
+        # Banner/Branding
+        "bannerImage": talent.get("bannerImage", ""),
+        "logoImage": talent.get("logoImage", ""),
+        
+        # Extended Profile Info
+        "headline": talent.get("headline", ""),
+        "yearsExperience": talent.get("yearsExperience", ""),
+        "languages": talent.get("languages", []),
+        "equipment": talent.get("equipment", []),
+        "specialties": talent.get("specialties", []),
+        
+        # Pricing & Booking
+        "showPricing": talent.get("showPricing", False),
+        "priceRange": talent.get("priceRange", {
+            "min": "",
+            "max": "",
+            "unit": "hour",  # hour, day, project, contact
+            "currency": "USD",
+        }),
+        "bookingLink": talent.get("bookingLink", ""),
+        "bookingButtonText": talent.get("bookingButtonText", "Book Now"),
+        
+        # Contact Preferences
+        "contactPreferences": talent.get("contactPreferences", {
+            "showEmail": True,
+            "showPhone": True,
+            "preferredMethod": "message",  # message, email, phone, booking
+            "responseTime": "",  # "Within 24 hours", etc.
+        }),
+        
+        # Services List (detailed)
+        "services": talent.get("services", []),
+        # Each service: { name, description, price, duration }
+        
+        # Testimonials
+        "testimonials": talent.get("testimonials", []),
+        # Each: { name, text, date, rating }
+        
+        # Portfolio/Past Work
+        "portfolioLinks": talent.get("portfolioLinks", []),
+        # Each: { title, url, thumbnail }
+        
+        # Achievements
+        "achievements": talent.get("achievements", []),
+        # Each: { title, year, description }
+        
+        # FAQ
+        "faqs": talent.get("faqs", []),
+        # Each: { question, answer }
+        
+        # Custom Sections
+        "customSections": talent.get("customSections", []),
+        # Each: { title, content, type: 'text' | 'list' | 'gallery' }
+        
+        # Call to Action
+        "ctaButton": talent.get("ctaButton", {
+            "enabled": False,
+            "text": "Get in Touch",
+            "link": "",
+            "style": "primary",  # primary, secondary, outline
+        }),
+        
+        # Profile Completion
+        "profileCompletion": talent.get("profileCompletion", 0),
     }
     
     # Only include view count if requested (for talent viewing their own profile)
@@ -424,9 +511,49 @@ async def update_talent_profile(
     
     # Allowed fields for talent to update
     allowed_fields = [
-        "category", "businessName", "displayName", "bio", "serviceTags",
+        # Basic info
+        "category", "businessName", "displayName", "headline", "bio", "serviceTags",
         "location", "serviceArea", "availability", "photos", "videoUrl",
-        "contactEmail", "contactPhone", "externalLink", "socialLinks", "isActive"
+        "contactEmail", "contactPhone", "externalLink", "socialLinks", "isActive",
+        
+        # Theme & Colors
+        "theme",
+        
+        # Layout Preferences
+        "layout",
+        
+        # Banner/Branding
+        "bannerImage", "logoImage",
+        
+        # Extended Profile Info
+        "yearsExperience", "languages", "equipment", "specialties",
+        
+        # Pricing & Booking
+        "showPricing", "priceRange", "bookingLink", "bookingButtonText",
+        
+        # Contact Preferences
+        "contactPreferences",
+        
+        # Services List (detailed)
+        "services",
+        
+        # Testimonials
+        "testimonials",
+        
+        # Portfolio/Past Work
+        "portfolioLinks",
+        
+        # Achievements
+        "achievements",
+        
+        # FAQ
+        "faqs",
+        
+        # Custom Sections
+        "customSections",
+        
+        # Call to Action
+        "ctaButton",
     ]
     
     update_data = {k: v for k, v in profile_data.items() if k in allowed_fields}
@@ -454,7 +581,28 @@ async def update_talent_profile(
         len(current_data.get("photos", [])) > 0
     )
     
+    # Calculate profile completion percentage
+    completion_items = [
+        bool(current_data.get("displayName")),
+        bool(current_data.get("bio")),
+        len(current_data.get("photos", [])) > 0,
+        bool(current_data.get("category")),
+        bool(current_data.get("location")),
+        bool(current_data.get("contactEmail") or current_data.get("contactPhone")),
+        len(current_data.get("serviceTags", [])) > 0,
+        bool(current_data.get("headline")),
+        bool(current_data.get("bannerImage")),
+        any(current_data.get("socialLinks", {}).values()),
+        len(current_data.get("services", [])) > 0,
+        bool(current_data.get("videoUrl")),
+        bool(current_data.get("externalLink") or current_data.get("bookingLink")),
+        len(current_data.get("testimonials", [])) > 0,
+        bool(current_data.get("yearsExperience")),
+    ]
+    profile_completion = int((sum(completion_items) / len(completion_items)) * 100)
+    
     update_data["setupComplete"] = setup_complete
+    update_data["profileCompletion"] = profile_completion
     update_data["updatedAt"] = datetime.utcnow().isoformat()
     
     # If setup is complete and isActive not explicitly set, activate
