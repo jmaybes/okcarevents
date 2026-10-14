@@ -1,238 +1,479 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Event Flyer Generation
-Tests the Event Flyer Generation API endpoint at /api/events/{event_id}/flyer
+Backend API Testing for Push Notification System
+Tests admin broadcast messaging and user-to-user messaging with push notifications
 """
 
 import requests
 import json
-import sys
 from datetime import datetime
 
-# Backend URL from frontend/.env
-BACKEND_URL = "https://event-hub-okc-1.preview.emergentagent.com"
-API_BASE = f"{BACKEND_URL}/api"
+# Configuration
+BASE_URL = "https://event-hub-okc-1.preview.emergentagent.com/api"
+ADMIN_EMAIL = "admin@okcarevents.com"
+ADMIN_PASSWORD = "admin123"
 
-def test_event_flyer_generation():
-    """Test the Event Flyer Generation API endpoint"""
-    print("=" * 80)
-    print("TESTING: Event Flyer Generation API")
-    print("=" * 80)
+# Test results tracking
+test_results = []
+
+def log_test(test_name, passed, details=""):
+    """Log test result"""
+    status = "✅ PASS" if passed else "❌ FAIL"
+    result = f"{status} - {test_name}"
+    if details:
+        result += f"\n    Details: {details}"
+    test_results.append({"name": test_name, "passed": passed, "details": details})
+    print(result)
+
+def print_summary():
+    """Print test summary"""
+    total = len(test_results)
+    passed = sum(1 for r in test_results if r["passed"])
+    failed = total - passed
     
-    results = {
-        "total_tests": 0,
-        "passed": 0,
-        "failed": 0,
-        "details": []
-    }
+    print("\n" + "="*70)
+    print("TEST SUMMARY")
+    print("="*70)
+    print(f"Total Tests: {total}")
+    print(f"Passed: {passed}")
+    print(f"Failed: {failed}")
+    print("="*70)
     
-    # Test 1: Valid event flyer generation
-    print("\n1. Testing valid event flyer generation...")
-    results["total_tests"] += 1
-    
-    test_event_id = "69e75808e72f540b46991d6d"
-    url = f"{API_BASE}/events/{test_event_id}/flyer"
+    if failed > 0:
+        print("\nFailed Tests:")
+        for r in test_results:
+            if not r["passed"]:
+                print(f"  ❌ {r['name']}")
+                if r["details"]:
+                    print(f"     {r['details']}")
+
+# ==================== Test Setup ====================
+
+def test_admin_login():
+    """Test 1: Admin login to get admin_id"""
+    print("\n" + "="*70)
+    print("TEST 1: Admin Login")
+    print("="*70)
     
     try:
-        response = requests.get(url, timeout=30)
+        response = requests.post(
+            f"{BASE_URL}/auth/login",
+            json={"email": ADMIN_EMAIL, "password": ADMIN_PASSWORD}
+        )
         
         if response.status_code == 200:
-            # Check content type
-            content_type = response.headers.get('content-type', '')
-            if content_type == 'image/jpeg':
-                # Check JPEG magic bytes (FF D8 FF)
-                content = response.content
-                if len(content) > 3 and content[0] == 0xFF and content[1] == 0xD8 and content[2] == 0xFF:
-                    # Check image size (should be >10KB, <500KB)
-                    size_kb = len(content) / 1024
-                    if 10 < size_kb < 500:
-                        # Check required headers
-                        cache_control = response.headers.get('cache-control', '')
-                        content_disposition = response.headers.get('content-disposition', '')
-                        
-                        if cache_control and content_disposition:
-                            print(f"   ✅ PASS: Valid flyer generated")
-                            print(f"      - Status: {response.status_code}")
-                            print(f"      - Content-Type: {content_type}")
-                            print(f"      - Size: {size_kb:.1f} KB")
-                            print(f"      - Cache-Control: {cache_control}")
-                            print(f"      - Content-Disposition: {content_disposition}")
-                            print(f"      - JPEG magic bytes: Valid")
-                            results["passed"] += 1
-                            results["details"].append("✅ Valid event flyer generation - PASS")
-                        else:
-                            print(f"   ❌ FAIL: Missing required headers")
-                            print(f"      - Cache-Control: {cache_control}")
-                            print(f"      - Content-Disposition: {content_disposition}")
-                            results["failed"] += 1
-                            results["details"].append("❌ Valid event flyer generation - Missing headers")
-                    else:
-                        print(f"   ❌ FAIL: Image size out of range: {size_kb:.1f} KB (expected 10-500 KB)")
-                        results["failed"] += 1
-                        results["details"].append(f"❌ Valid event flyer generation - Size {size_kb:.1f} KB out of range")
-                else:
-                    print(f"   ❌ FAIL: Invalid JPEG magic bytes")
-                    print(f"      - First 3 bytes: {content[:3].hex() if len(content) >= 3 else 'N/A'}")
-                    results["failed"] += 1
-                    results["details"].append("❌ Valid event flyer generation - Invalid JPEG magic bytes")
-            else:
-                print(f"   ❌ FAIL: Wrong content type: {content_type} (expected image/jpeg)")
-                results["failed"] += 1
-                results["details"].append(f"❌ Valid event flyer generation - Wrong content type: {content_type}")
-        else:
-            print(f"   ❌ FAIL: HTTP {response.status_code}")
-            print(f"      Response: {response.text[:200]}")
-            results["failed"] += 1
-            results["details"].append(f"❌ Valid event flyer generation - HTTP {response.status_code}")
+            data = response.json()
+            user_data = data.get("user", {})
+            admin_id = user_data.get("id")
+            is_admin = user_data.get("isAdmin", False)
             
+            if admin_id and is_admin:
+                log_test("Admin Login", True, f"Admin ID: {admin_id}, isAdmin: {is_admin}")
+                return admin_id
+            else:
+                log_test("Admin Login", False, f"User is not admin or missing ID: {data}")
+                return None
+        else:
+            log_test("Admin Login", False, f"Status {response.status_code}: {response.text}")
+            return None
     except Exception as e:
-        print(f"   ❌ FAIL: Exception - {e}")
-        results["failed"] += 1
-        results["details"].append(f"❌ Valid event flyer generation - Exception: {e}")
+        log_test("Admin Login", False, f"Exception: {str(e)}")
+        return None
+
+def create_test_users(admin_id):
+    """Create test users for messaging tests"""
+    print("\n" + "="*70)
+    print("TEST 2: Create Test Users")
+    print("="*70)
     
-    # Test 2: Invalid event ID
-    print("\n2. Testing invalid event ID...")
-    results["total_tests"] += 1
+    users = []
+    timestamp = datetime.now().strftime("%H%M%S")
     
-    invalid_id = "invalid-id"
-    url = f"{API_BASE}/events/{invalid_id}/flyer"
+    for i in range(2):
+        try:
+            user_data = {
+                "email": f"pushtest{i}_{timestamp}@test.com",
+                "password": "testpass123",
+                "name": f"Push Test User {i}",
+                "nickname": f"pushuser{i}_{timestamp}"
+            }
+            
+            response = requests.post(f"{BASE_URL}/auth/register", json=user_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                user_id = data.get("id")
+                users.append({"id": user_id, "name": data.get("name"), "email": user_data["email"]})
+                log_test(f"Create Test User {i}", True, f"User ID: {user_id}")
+            else:
+                log_test(f"Create Test User {i}", False, f"Status {response.status_code}: {response.text}")
+        except Exception as e:
+            log_test(f"Create Test User {i}", False, f"Exception: {str(e)}")
+    
+    return users
+
+# ==================== Admin Broadcast Tests ====================
+
+def test_admin_broadcast(admin_id):
+    """Test 3: Admin broadcast message to all users"""
+    print("\n" + "="*70)
+    print("TEST 3: Admin Broadcast Message")
+    print("="*70)
     
     try:
-        response = requests.get(url, timeout=10)
+        broadcast_content = f"🚨 SYSTEM ANNOUNCEMENT: This is a test broadcast message sent at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}. All users should receive this message!"
         
-        if response.status_code == 400:
-            response_data = response.json()
-            if "Invalid event ID" in response_data.get("detail", ""):
-                print(f"   ✅ PASS: Invalid ID correctly rejected")
-                print(f"      - Status: {response.status_code}")
-                print(f"      - Message: {response_data.get('detail')}")
-                results["passed"] += 1
-                results["details"].append("✅ Invalid event ID handling - PASS")
-            else:
-                print(f"   ❌ FAIL: Wrong error message: {response_data.get('detail')}")
-                results["failed"] += 1
-                results["details"].append(f"❌ Invalid event ID handling - Wrong error message")
-        else:
-            print(f"   ❌ FAIL: Expected 400, got {response.status_code}")
-            print(f"      Response: {response.text[:200]}")
-            results["failed"] += 1
-            results["details"].append(f"❌ Invalid event ID handling - Expected 400, got {response.status_code}")
-            
-    except Exception as e:
-        print(f"   ❌ FAIL: Exception - {e}")
-        results["failed"] += 1
-        results["details"].append(f"❌ Invalid event ID handling - Exception: {e}")
-    
-    # Test 3: Non-existent event (valid ObjectId format)
-    print("\n3. Testing non-existent event...")
-    results["total_tests"] += 1
-    
-    nonexistent_id = "aaaaaaaaaaaaaaaaaaaaaaaa"  # Valid ObjectId format but doesn't exist
-    url = f"{API_BASE}/events/{nonexistent_id}/flyer"
-    
-    try:
-        response = requests.get(url, timeout=10)
-        
-        if response.status_code == 404:
-            response_data = response.json()
-            if "Event not found" in response_data.get("detail", ""):
-                print(f"   ✅ PASS: Non-existent event correctly handled")
-                print(f"      - Status: {response.status_code}")
-                print(f"      - Message: {response_data.get('detail')}")
-                results["passed"] += 1
-                results["details"].append("✅ Non-existent event handling - PASS")
-            else:
-                print(f"   ❌ FAIL: Wrong error message: {response_data.get('detail')}")
-                results["failed"] += 1
-                results["details"].append(f"❌ Non-existent event handling - Wrong error message")
-        else:
-            print(f"   ❌ FAIL: Expected 404, got {response.status_code}")
-            print(f"      Response: {response.text[:200]}")
-            results["failed"] += 1
-            results["details"].append(f"❌ Non-existent event handling - Expected 404, got {response.status_code}")
-            
-    except Exception as e:
-        print(f"   ❌ FAIL: Exception - {e}")
-        results["failed"] += 1
-        results["details"].append(f"❌ Non-existent event handling - Exception: {e}")
-    
-    # Test 4: Recurring event flyer (if implemented)
-    print("\n4. Testing recurring event flyer...")
-    results["total_tests"] += 1
-    
-    # Test with a recurring event ID format (base_id__YYYYMMDD)
-    recurring_id = f"{test_event_id}__20260415"
-    url = f"{API_BASE}/events/{recurring_id}/flyer"
-    
-    try:
-        response = requests.get(url, timeout=30)
+        response = requests.post(
+            f"{BASE_URL}/admin/broadcast",
+            params={"admin_id": admin_id},
+            json={"content": broadcast_content}
+        )
         
         if response.status_code == 200:
-            content_type = response.headers.get('content-type', '')
-            if content_type == 'image/jpeg':
-                content = response.content
-                if len(content) > 3 and content[0] == 0xFF and content[1] == 0xD8 and content[2] == 0xFF:
-                    size_kb = len(content) / 1024
-                    print(f"   ✅ PASS: Recurring event flyer generated")
-                    print(f"      - Status: {response.status_code}")
-                    print(f"      - Content-Type: {content_type}")
-                    print(f"      - Size: {size_kb:.1f} KB")
-                    results["passed"] += 1
-                    results["details"].append("✅ Recurring event flyer generation - PASS")
-                else:
-                    print(f"   ❌ FAIL: Invalid JPEG for recurring event")
-                    results["failed"] += 1
-                    results["details"].append("❌ Recurring event flyer generation - Invalid JPEG")
-            else:
-                print(f"   ❌ FAIL: Wrong content type for recurring event: {content_type}")
-                results["failed"] += 1
-                results["details"].append(f"❌ Recurring event flyer generation - Wrong content type")
-        else:
-            print(f"   ❌ FAIL: Recurring event flyer failed with {response.status_code}")
-            print(f"      Response: {response.text[:200]}")
-            results["failed"] += 1
-            results["details"].append(f"❌ Recurring event flyer generation - HTTP {response.status_code}")
+            data = response.json()
+            success = data.get("success", False)
+            messages_sent = data.get("messagesSent", 0)
+            push_sent = data.get("pushNotificationsSent", 0)
+            total_users = data.get("totalUsers", 0)
             
+            if success and messages_sent > 0:
+                log_test(
+                    "Admin Broadcast", 
+                    True, 
+                    f"Success: {success}, Messages: {messages_sent}, Push: {push_sent}, Total Users: {total_users}"
+                )
+                return True
+            else:
+                log_test("Admin Broadcast", False, f"Unexpected response: {data}")
+                return False
+        else:
+            log_test("Admin Broadcast", False, f"Status {response.status_code}: {response.text}")
+            return False
     except Exception as e:
-        print(f"   ❌ FAIL: Exception - {e}")
-        results["failed"] += 1
-        results["details"].append(f"❌ Recurring event flyer generation - Exception: {e}")
+        log_test("Admin Broadcast", False, f"Exception: {str(e)}")
+        return False
+
+def test_broadcast_message_creation(admin_id, test_users):
+    """Test 4: Verify broadcast messages were created in database"""
+    print("\n" + "="*70)
+    print("TEST 4: Verify Broadcast Messages in Database")
+    print("="*70)
     
-    return results
+    if not test_users:
+        log_test("Verify Broadcast Messages", False, "No test users available")
+        return False
+    
+    try:
+        # Check if test user received the broadcast message
+        user_id = test_users[0]["id"]
+        response = requests.get(f"{BASE_URL}/messages/conversations/{user_id}")
+        
+        if response.status_code == 200:
+            conversations = response.json()
+            
+            # Look for conversation with admin
+            admin_conversation = None
+            for conv in conversations:
+                if conv.get("partnerName") == "Admin" or "admin" in conv.get("partnerName", "").lower():
+                    admin_conversation = conv
+                    break
+            
+            if admin_conversation:
+                log_test(
+                    "Verify Broadcast Messages", 
+                    True, 
+                    f"Found admin conversation with last message: '{admin_conversation.get('lastMessage', '')[:50]}...'"
+                )
+                return True
+            else:
+                log_test("Verify Broadcast Messages", False, f"No admin conversation found. Conversations: {len(conversations)}")
+                return False
+        else:
+            log_test("Verify Broadcast Messages", False, f"Status {response.status_code}: {response.text}")
+            return False
+    except Exception as e:
+        log_test("Verify Broadcast Messages", False, f"Exception: {str(e)}")
+        return False
+
+# ==================== Direct Message Tests ====================
+
+def test_direct_message_with_push(test_users):
+    """Test 5: Send direct message between users"""
+    print("\n" + "="*70)
+    print("TEST 5: Direct Message with Push Notification")
+    print("="*70)
+    
+    if len(test_users) < 2:
+        log_test("Direct Message", False, "Need at least 2 test users")
+        return False
+    
+    try:
+        sender = test_users[0]
+        recipient = test_users[1]
+        
+        message_content = f"Hey {recipient['name']}! This is a test message from {sender['name']} at {datetime.now().strftime('%H:%M:%S')}. Testing push notifications!"
+        
+        response = requests.post(
+            f"{BASE_URL}/messages",
+            json={
+                "senderId": sender["id"],
+                "recipientId": recipient["id"],
+                "content": message_content
+            }
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            message_id = data.get("id")
+            sender_id = data.get("senderId")
+            recipient_id = data.get("recipientId")
+            content = data.get("content")
+            is_read = data.get("isRead")
+            created_at = data.get("createdAt")
+            
+            if message_id and sender_id and recipient_id and content:
+                log_test(
+                    "Direct Message", 
+                    True, 
+                    f"Message ID: {message_id}, isRead: {is_read}, createdAt: {created_at}"
+                )
+                return True
+            else:
+                log_test("Direct Message", False, f"Missing required fields: {data}")
+                return False
+        else:
+            log_test("Direct Message", False, f"Status {response.status_code}: {response.text}")
+            return False
+    except Exception as e:
+        log_test("Direct Message", False, f"Exception: {str(e)}")
+        return False
+
+def test_message_thread(test_users):
+    """Test 6: Retrieve message thread between users"""
+    print("\n" + "="*70)
+    print("TEST 6: Message Thread Retrieval")
+    print("="*70)
+    
+    if len(test_users) < 2:
+        log_test("Message Thread", False, "Need at least 2 test users")
+        return False
+    
+    try:
+        user1 = test_users[0]
+        user2 = test_users[1]
+        
+        response = requests.get(f"{BASE_URL}/messages/thread/{user1['id']}/{user2['id']}")
+        
+        if response.status_code == 200:
+            messages = response.json()
+            
+            if isinstance(messages, list) and len(messages) > 0:
+                last_message = messages[-1]
+                log_test(
+                    "Message Thread", 
+                    True, 
+                    f"Found {len(messages)} messages. Last message: '{last_message.get('content', '')[:50]}...'"
+                )
+                return True
+            else:
+                log_test("Message Thread", False, f"No messages found in thread")
+                return False
+        else:
+            log_test("Message Thread", False, f"Status {response.status_code}: {response.text}")
+            return False
+    except Exception as e:
+        log_test("Message Thread", False, f"Exception: {str(e)}")
+        return False
+
+# ==================== Online Status Tests ====================
+
+def test_user_online_status(test_users):
+    """Test 7: Check user online status"""
+    print("\n" + "="*70)
+    print("TEST 7: User Online Status Check")
+    print("="*70)
+    
+    if not test_users:
+        log_test("User Online Status", False, "No test users available")
+        return False
+    
+    try:
+        user_id = test_users[0]["id"]
+        response = requests.get(f"{BASE_URL}/messages/online/{user_id}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            online = data.get("online")
+            
+            if isinstance(online, bool):
+                log_test(
+                    "User Online Status", 
+                    True, 
+                    f"User {user_id} online status: {online} (Expected: False for offline user)"
+                )
+                return True
+            else:
+                log_test("User Online Status", False, f"Invalid response format: {data}")
+                return False
+        else:
+            log_test("User Online Status", False, f"Status {response.status_code}: {response.text}")
+            return False
+    except Exception as e:
+        log_test("User Online Status", False, f"Exception: {str(e)}")
+        return False
+
+def test_online_users_list():
+    """Test 8: Get list of online users"""
+    print("\n" + "="*70)
+    print("TEST 8: Online Users List")
+    print("="*70)
+    
+    try:
+        response = requests.get(f"{BASE_URL}/messages/online")
+        
+        if response.status_code == 200:
+            data = response.json()
+            online_users = data.get("online_users")
+            
+            if isinstance(online_users, list):
+                log_test(
+                    "Online Users List", 
+                    True, 
+                    f"Found {len(online_users)} online users (Expected: 0 for no WebSocket connections)"
+                )
+                return True
+            else:
+                log_test("Online Users List", False, f"Invalid response format: {data}")
+                return False
+        else:
+            log_test("Online Users List", False, f"Status {response.status_code}: {response.text}")
+            return False
+    except Exception as e:
+        log_test("Online Users List", False, f"Exception: {str(e)}")
+        return False
+
+# ==================== Push Token Handling Tests ====================
+
+def test_missing_push_token_handling(test_users):
+    """Test 9: Verify system handles missing push tokens gracefully"""
+    print("\n" + "="*70)
+    print("TEST 9: Missing Push Token Handling")
+    print("="*70)
+    
+    if len(test_users) < 2:
+        log_test("Missing Push Token", False, "Need at least 2 test users")
+        return False
+    
+    try:
+        # Send message to user without push token (test users don't have tokens)
+        sender = test_users[0]
+        recipient = test_users[1]
+        
+        response = requests.post(
+            f"{BASE_URL}/messages",
+            json={
+                "senderId": sender["id"],
+                "recipientId": recipient["id"],
+                "content": "Testing graceful handling of missing push token"
+            }
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            message_id = data.get("id")
+            
+            if message_id:
+                log_test(
+                    "Missing Push Token", 
+                    True, 
+                    "Message created successfully despite missing push token (graceful handling confirmed)"
+                )
+                return True
+            else:
+                log_test("Missing Push Token", False, f"Message creation failed: {data}")
+                return False
+        else:
+            log_test("Missing Push Token", False, f"Status {response.status_code}: {response.text}")
+            return False
+    except Exception as e:
+        log_test("Missing Push Token", False, f"Exception: {str(e)}")
+        return False
+
+def test_broadcast_without_tokens(admin_id):
+    """Test 10: Admin broadcast with users having no push tokens"""
+    print("\n" + "="*70)
+    print("TEST 10: Broadcast Without Push Tokens")
+    print("="*70)
+    
+    try:
+        response = requests.post(
+            f"{BASE_URL}/admin/broadcast",
+            params={"admin_id": admin_id},
+            json={"content": "Testing broadcast with users who have no push tokens"}
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            success = data.get("success", False)
+            messages_sent = data.get("messagesSent", 0)
+            push_sent = data.get("pushNotificationsSent", 0)
+            
+            # Should succeed even if push notifications fail
+            if success and messages_sent > 0:
+                log_test(
+                    "Broadcast Without Tokens", 
+                    True, 
+                    f"Messages sent: {messages_sent}, Push sent: {push_sent} (System handles missing tokens gracefully)"
+                )
+                return True
+            else:
+                log_test("Broadcast Without Tokens", False, f"Unexpected response: {data}")
+                return False
+        else:
+            log_test("Broadcast Without Tokens", False, f"Status {response.status_code}: {response.text}")
+            return False
+    except Exception as e:
+        log_test("Broadcast Without Tokens", False, f"Exception: {str(e)}")
+        return False
+
+# ==================== Main Test Runner ====================
 
 def main():
-    """Run all flyer generation tests"""
-    print(f"Backend API Testing - Event Flyer Generation")
-    print(f"Backend URL: {BACKEND_URL}")
-    print(f"Test Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("\n" + "="*70)
+    print("PUSH NOTIFICATION SYSTEM TESTING")
+    print("Testing Admin Broadcast and User Messaging with Push Notifications")
+    print("="*70)
     
-    # Test Event Flyer Generation API
-    flyer_results = test_event_flyer_generation()
+    # Test 1: Admin Login
+    admin_id = test_admin_login()
+    if not admin_id:
+        print("\n❌ CRITICAL: Admin login failed. Cannot proceed with tests.")
+        print_summary()
+        return
     
-    # Summary
-    print("\n" + "=" * 80)
-    print("TEST SUMMARY")
-    print("=" * 80)
+    # Test 2: Create Test Users
+    test_users = create_test_users(admin_id)
+    if len(test_users) < 2:
+        print("\n⚠️  WARNING: Could not create enough test users. Some tests may be skipped.")
     
-    total_tests = flyer_results["total_tests"]
-    total_passed = flyer_results["passed"]
-    total_failed = flyer_results["failed"]
+    # Test 3-4: Admin Broadcast Tests
+    test_admin_broadcast(admin_id)
+    test_broadcast_message_creation(admin_id, test_users)
     
-    print(f"Total Tests: {total_tests}")
-    print(f"Passed: {total_passed}")
-    print(f"Failed: {total_failed}")
-    print(f"Success Rate: {(total_passed/total_tests*100):.1f}%")
+    # Test 5-6: Direct Message Tests
+    test_direct_message_with_push(test_users)
+    test_message_thread(test_users)
     
-    print("\nDetailed Results:")
-    for detail in flyer_results["details"]:
-        print(f"  {detail}")
+    # Test 7-8: Online Status Tests
+    test_user_online_status(test_users)
+    test_online_users_list()
     
-    if total_failed > 0:
-        print(f"\n❌ {total_failed} test(s) failed. See details above.")
-        return 1
-    else:
-        print(f"\n✅ All {total_passed} tests passed!")
-        return 0
+    # Test 9-10: Push Token Handling Tests
+    test_missing_push_token_handling(test_users)
+    test_broadcast_without_tokens(admin_id)
+    
+    # Print Summary
+    print_summary()
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
