@@ -64,7 +64,7 @@ export default function NearbyScreen() {
   const [customMessage, setCustomMessage] = useState('');
   const [useCustomMessage, setUseCustomMessage] = useState(false);
   const [sendingInvite, setSendingInvite] = useState(false);
-  const [showMap, setShowMap] = useState(false);
+  const [showMap, setShowMap] = useState(true);
   const [mapError, setMapError] = useState(false);
   const [fetchError, setFetchError] = useState(false);
   const retryCountRef = useRef(0);
