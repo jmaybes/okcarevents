@@ -28,6 +28,11 @@ interface NearbyUser {
   latitude: number;
   longitude: number;
   distance: number;
+  crew?: {
+    crewId: string;
+    crewName: string;
+    crewColor: string;
+  };
 }
 
 interface NearbyMapViewProps {
@@ -54,12 +59,32 @@ export default function NearbyMapView({
   location, 
   radius, 
   nearbyUsers = [], 
-  crewMemberIds = [],
   onCenterOnUser, 
   onRefresh 
-}: NearbyMapViewProps & { crewMemberIds?: string[] }) {
+}: NearbyMapViewProps) {
   const mapRef = useRef<any>(null);
   const [mapLoadError, setMapLoadError] = useState(false);
+
+  // Calculate appropriate zoom level based on radius
+  // Smaller radius = more zoomed in, larger radius = more zoomed out
+  const getLatitudeDelta = (r: number) => {
+    if (r <= 5) return 0.1;
+    if (r <= 10) return 0.2;
+    if (r <= 25) return 0.5;
+    return r / 50;
+  };
+
+  useEffect(() => {
+    if (location && mapRef.current) {
+      const delta = getLatitudeDelta(radius);
+      mapRef.current.animateToRegion({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: delta,
+        longitudeDelta: delta,
+      }, 1000);
+    }
+  }, [location, radius]);
 
   // Guard against null location
   if (!location) {
@@ -96,27 +121,6 @@ export default function NearbyMapView({
 
   // Convert radius in miles to meters for Circle component
   const radiusInMeters = radius * 1609.34;
-  
-  // Calculate appropriate zoom level based on radius
-  // Smaller radius = more zoomed in, larger radius = more zoomed out
-  const getLatitudeDelta = (r: number) => {
-    if (r <= 5) return 0.1;
-    if (r <= 10) return 0.2;
-    if (r <= 25) return 0.5;
-    return r / 50;
-  };
-
-  useEffect(() => {
-    if (location && mapRef.current) {
-      const delta = getLatitudeDelta(radius);
-      mapRef.current.animateToRegion({
-        latitude: location.latitude,
-        longitude: location.longitude,
-        latitudeDelta: delta,
-        longitudeDelta: delta,
-      }, 1000);
-    }
-  }, [location, radius]);
 
   const handleCenterOnUser = () => {
     if (location && mapRef.current) {
@@ -215,7 +219,8 @@ export default function NearbyMapView({
 
         {/* Nearby users markers */}
         {nearbyUsers.map((nearbyUser) => {
-          const isCrewMember = crewMemberIds.includes(nearbyUser.id);
+          const isCrewMember = !!nearbyUser.crew;
+          const markerColor = isCrewMember ? nearbyUser.crew?.crewColor || '#FFE707' : '#4CAF50';
           return (
           <Marker
             key={nearbyUser.id}
@@ -224,14 +229,22 @@ export default function NearbyMapView({
               longitude: nearbyUser.longitude,
             }}
           >
-            <View style={[styles.nearbyUserMarker, isCrewMember && styles.crewUserMarker]}>
+            <View style={[
+              styles.nearbyUserMarker, 
+              isCrewMember && styles.crewUserMarker,
+              isCrewMember && { backgroundColor: markerColor, borderColor: markerColor }
+            ]}>
               <Ionicons name={isCrewMember ? "people" : "person"} size={16} color="#fff" />
             </View>
             {Callout && (
               <Callout tooltip onPress={() => router.push(`/messages/${nearbyUser.id}`)}>
                 <View style={styles.calloutContainer}>
                   <Text style={styles.calloutName}>{nearbyUser.nickname || nearbyUser.name}</Text>
-                  {isCrewMember && <Text style={styles.calloutCrew}>🏎️ Crew Member</Text>}
+                  {isCrewMember && (
+                    <Text style={[styles.calloutCrew, { color: markerColor }]}>
+                      🏎️ {nearbyUser.crew?.crewName}
+                    </Text>
+                  )}
                   <Text style={styles.calloutDistance}>{nearbyUser.distance} mi away</Text>
                   <View style={styles.calloutMessageBtn}>
                     <Ionicons name="chatbubble-ellipses" size={14} color="#fff" />

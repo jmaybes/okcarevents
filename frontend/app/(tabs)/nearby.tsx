@@ -46,6 +46,11 @@ interface NearbyUser {
   latitude: number;
   longitude: number;
   distance: number;
+  crew?: {
+    crewId: string;
+    crewName: string;
+    crewColor: string;
+  };
 }
 
 export default function NearbyScreen() {
@@ -350,14 +355,15 @@ export default function NearbyScreen() {
 
   // ====== Render Helpers ======
   const renderUserCard = (nearbyUser: NearbyUser, showCheckbox: boolean) => {
-    const isCrewMember = crewMemberIds.includes(nearbyUser.id);
+    const isCrewMember = !!nearbyUser.crew;
+    const crewColor = nearbyUser.crew?.crewColor || '#FFE707';
     return (
     <TouchableOpacity
       key={nearbyUser.id}
       style={[
         styles.userCard,
         showCheckbox && selectedUsers.has(nearbyUser.id) && styles.userCardSelected,
-        isCrewMember && styles.userCardCrew,
+        isCrewMember && [styles.userCardCrew, { borderColor: crewColor }],
       ]}
       onPress={() => {
         if (showCheckbox) {
@@ -546,7 +552,6 @@ export default function NearbyScreen() {
                 location={location}
                 radius={radius}
                 nearbyUsers={nearbyUsers}
-                crewMemberIds={crewMemberIds}
                 onCenterOnUser={() => {}}
                 onRefresh={initializeLocation}
               />

@@ -36,6 +36,19 @@ async def get_nearby_users(
         {"$set": {"latitude": latitude, "longitude": longitude}}
     )
 
+    # Get user's crews to show crew members with their crew color
+    user_crews = await db.crews.find({"members": user_id}).to_list(50)
+    crew_members_map = {}  # user_id -> crew color
+    for crew in user_crews:
+        crew_color = crew.get("color", "#FFE707")
+        for member_id in crew.get("members", []):
+            if member_id != user_id:  # Don't include self
+                crew_members_map[member_id] = {
+                    "crewId": str(crew["_id"]),
+                    "crewName": crew["name"],
+                    "crewColor": crew_color
+                }
+
     users = await db.users.find({
         "locationSharingEnabled": {"$ne": False},
         "locationPrivate": {"$ne": True},
@@ -49,20 +62,25 @@ async def get_nearby_users(
 
     nearby_users = []
     for user in users:
+        user_id_str = str(user["_id"])
         distance = haversine_distance(
             latitude, longitude,
             user["latitude"], user["longitude"]
         )
         if distance <= radius:
-            nearby_users.append({
-                "id": str(user["_id"]),
+            user_data = {
+                "id": user_id_str,
                 "name": user.get("name", ""),
                 "nickname": user.get("nickname", ""),
                 "profilePic": user.get("profilePic", ""),
                 "latitude": user["latitude"],
                 "longitude": user["longitude"],
                 "distance": round(distance, 1)
-            })
+            }
+            # Add crew info if this user is in one of our crews
+            if user_id_str in crew_members_map:
+                user_data["crew"] = crew_members_map[user_id_str]
+            nearby_users.append(user_data)
 
     nearby_users.sort(key=lambda x: x["distance"])
 

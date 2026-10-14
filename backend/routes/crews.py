@@ -49,9 +49,21 @@ async def create_crew(data: dict, authorization: str = Header(...)):
     if name_exists:
         raise HTTPException(status_code=400, detail="A crew with that name already exists")
 
+    # Get crew color (default to yellow if not provided)
+    color = data.get("color", "#FFE707")
+    # Validate color format
+    valid_colors = ["#FFE707", "#FF5500", "#4CAF50", "#2196F3", "#9C27B0", "#F44336", "#00BCD4", "#FF9800", "#E91E63", "#8BC34A"]
+    if color not in valid_colors:
+        color = "#FFE707"  # Default yellow
+    
+    # Max members limit
+    max_members = 10  # Crews limited to 10 members
+
     crew = {
         "name": name,
         "creatorId": user_id,
+        "color": color,
+        "maxMembers": max_members,
         "coLeaders": [],  # Co-leaders can invite and kick regular members
         "members": [user_id],  # Creator is automatically a member
         "createdAt": datetime.utcnow().isoformat(),
@@ -105,6 +117,8 @@ async def get_crew(crew_id: str):
         "id": str(crew["_id"]),
         "name": crew["name"],
         "creatorId": crew["creatorId"],
+        "color": crew.get("color", "#FFE707"),
+        "maxMembers": crew.get("maxMembers", 10),
         "coLeaders": co_leaders,
         "members": members,
         "memberCount": len(members),
@@ -125,6 +139,8 @@ async def get_user_crews(user_id: str):
             "id": str(crew["_id"]),
             "name": crew["name"],
             "creatorId": crew["creatorId"],
+            "color": crew.get("color", "#FFE707"),
+            "maxMembers": crew.get("maxMembers", 10),
             "memberCount": len(crew.get("members", [])),
             "isCreator": crew["creatorId"] == user_id,
         })
@@ -143,13 +159,15 @@ async def get_created_crew(user_id: str):
         "id": str(crew["_id"]),
         "name": crew["name"],
         "creatorId": crew["creatorId"],
+        "color": crew.get("color", "#FFE707"),
+        "maxMembers": crew.get("maxMembers", 10),
         "memberCount": len(crew.get("members", [])),
     }
 
 
 @router.put("/{crew_id}")
 async def update_crew(crew_id: str, data: dict, authorization: str = Header(...)):
-    """Update crew name (creator only)"""
+    """Update crew name or color (creator only)"""
     user_id = verify_token(authorization)
 
     try:
@@ -162,23 +180,32 @@ async def update_crew(crew_id: str, data: dict, authorization: str = Header(...)
     if crew["creatorId"] != user_id:
         raise HTTPException(status_code=403, detail="Only the crew creator can update it")
 
-    name = data.get("name", "").strip()
-    if not name:
-        raise HTTPException(status_code=400, detail="Crew name is required")
-    if len(name) > 30:
-        raise HTTPException(status_code=400, detail="Crew name must be 30 characters or less")
+    update_fields = {"updatedAt": datetime.utcnow().isoformat()}
 
-    # Check for duplicate name (excluding current crew)
-    name_exists = await db.crews.find_one({
-        "name": {"$regex": f"^{name}$", "$options": "i"},
-        "_id": {"$ne": ObjectId(crew_id)}
-    })
-    if name_exists:
-        raise HTTPException(status_code=400, detail="A crew with that name already exists")
+    # Update name if provided
+    name = data.get("name", "").strip()
+    if name:
+        if len(name) > 30:
+            raise HTTPException(status_code=400, detail="Crew name must be 30 characters or less")
+        # Check for duplicate name (excluding current crew)
+        name_exists = await db.crews.find_one({
+            "name": {"$regex": f"^{name}$", "$options": "i"},
+            "_id": {"$ne": ObjectId(crew_id)}
+        })
+        if name_exists:
+            raise HTTPException(status_code=400, detail="A crew with that name already exists")
+        update_fields["name"] = name
+
+    # Update color if provided
+    color = data.get("color")
+    if color:
+        valid_colors = ["#FFE707", "#FF5500", "#4CAF50", "#2196F3", "#9C27B0", "#F44336", "#00BCD4", "#FF9800", "#E91E63", "#8BC34A"]
+        if color in valid_colors:
+            update_fields["color"] = color
 
     await db.crews.update_one(
         {"_id": ObjectId(crew_id)},
-        {"$set": {"name": name, "updatedAt": datetime.utcnow().isoformat()}}
+        {"$set": update_fields}
     )
 
     return {"message": "Crew updated successfully"}
@@ -222,6 +249,12 @@ async def invite_to_crew(crew_id: str, target_user_id: str, authorization: str =
 
     if not crew:
         raise HTTPException(status_code=404, detail="Crew not found")
+
+    # Check member limit
+    max_members = crew.get("maxMembers", 10)
+    current_members = len(crew.get("members", []))
+    if current_members >= max_members:
+        raise HTTPException(status_code=400, detail=f"Crew is full (max {max_members} members)")
 
     # Only crew creator or co-leaders can invite
     co_leaders = crew.get("coLeaders", [])

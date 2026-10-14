@@ -25,7 +25,21 @@ export default function CreateCrewScreen() {
   const insets = useSafeAreaInsets();
   
   const [name, setName] = useState('');
+  const [selectedColor, setSelectedColor] = useState('#FFE707');
   const [loading, setLoading] = useState(false);
+
+  const CREW_COLORS = [
+    { color: '#FFE707', name: 'Yellow' },
+    { color: '#FF5500', name: 'Orange' },
+    { color: '#4CAF50', name: 'Green' },
+    { color: '#2196F3', name: 'Blue' },
+    { color: '#9C27B0', name: 'Purple' },
+    { color: '#F44336', name: 'Red' },
+    { color: '#00BCD4', name: 'Cyan' },
+    { color: '#FF9800', name: 'Amber' },
+    { color: '#E91E63', name: 'Pink' },
+    { color: '#8BC34A', name: 'Lime' },
+  ];
 
   const handleCreate = async () => {
     Keyboard.dismiss();
@@ -43,7 +57,7 @@ export default function CreateCrewScreen() {
     try {
       const res = await axios.post(
         `${API_URL}/api/crews`,
-        { name: trimmed },
+        { name: trimmed, color: selectedColor },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       Alert.alert('Crew Created! 🏎️', `"${trimmed}" is ready to roll!`, [
@@ -115,6 +129,30 @@ export default function CreateCrewScreen() {
           <Text style={styles.hint}>
             This is the name everyone will see when they view your crew. Choose something that represents your squad!
           </Text>
+
+          {/* Color Picker */}
+          <Text style={styles.label}>Crew Color</Text>
+          <Text style={styles.colorHint}>
+            Your crew members will appear on the Nearby map in this color (only visible to other crew members)
+          </Text>
+          <View style={styles.colorGrid}>
+            {CREW_COLORS.map((c) => (
+              <TouchableOpacity
+                key={c.color}
+                style={[
+                  styles.colorOption,
+                  { backgroundColor: c.color },
+                  selectedColor === c.color && styles.colorOptionSelected
+                ]}
+                onPress={() => setSelectedColor(c.color)}
+                activeOpacity={0.7}
+              >
+                {selectedColor === c.color && (
+                  <Ionicons name="checkmark" size={24} color="#000" />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
 
           <TouchableOpacity
             style={[styles.createButton, !name.trim() && styles.createButtonDisabled]}
@@ -226,7 +264,33 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     lineHeight: 20,
+    marginBottom: 24,
+  },
+  colorHint: {
+    color: '#888',
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  colorGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 12,
     marginBottom: 32,
+  },
+  colorOption: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: 'transparent',
+  },
+  colorOptionSelected: {
+    borderColor: '#fff',
+    transform: [{ scale: 1.1 }],
   },
   createButton: {
     flexDirection: 'row',

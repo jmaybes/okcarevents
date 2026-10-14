@@ -32,6 +32,8 @@ interface CrewDetail {
   id: string;
   name: string;
   creatorId: string;
+  color: string;
+  maxMembers: number;
   members: CrewMember[];
   memberCount: number;
   createdAt: string;
@@ -284,11 +286,17 @@ export default function CrewDetailScreen() {
 
       {/* Crew Banner */}
       <View style={styles.banner}>
-        <View style={styles.bannerIcon}>
-          <Ionicons name="people" size={36} color="#FFE707" />
+        <View style={[styles.bannerIcon, { backgroundColor: `${crew.color || '#FFE707'}22` }]}>
+          <Ionicons name="people" size={36} color={crew.color || '#FFE707'} />
         </View>
         <Text style={styles.bannerName}>{crew.name}</Text>
-        <Text style={styles.bannerDate}>
+        <View style={styles.crewInfoRow}>
+          <View style={[styles.colorIndicator, { backgroundColor: crew.color || '#FFE707' }]} />
+          <Text style={styles.bannerDate}>
+            Crew Color • {crew.memberCount}/{crew.maxMembers || 10} members
+          </Text>
+        </View>
+        <Text style={styles.bannerEstDate}>
           Est. {new Date(crew.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
         </Text>
       </View>
@@ -432,7 +440,24 @@ const styles = StyleSheet.create({
   bannerDate: {
     color: '#666',
     fontSize: 13,
+  },
+  bannerEstDate: {
+    color: '#555',
+    fontSize: 12,
     marginTop: 4,
+  },
+  crewInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 8,
+  },
+  colorIndicator: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    borderWidth: 2,
+    borderColor: '#fff',
   },
   // Members
   listContent: {
