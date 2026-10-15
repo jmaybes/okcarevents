@@ -864,6 +864,11 @@ export default function ProfileScreen() {
             <Text style={styles.menuItemText}>My Crews</Text>
             <Ionicons name="chevron-forward" size={24} color="#666" />
           </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/crews/create')}>
+            <Ionicons name="add-circle" size={24} color="#FFE707" />
+            <Text style={styles.menuItemText}>Create a Crew</Text>
+            <Ionicons name="chevron-forward" size={24} color="#666" />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/garage/tagged-photos')}>
             <Ionicons name="images" size={24} color="#9C27B0" />
             <Text style={styles.menuItemText}>Tagged Photos</Text>
