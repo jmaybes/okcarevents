@@ -315,7 +315,7 @@ async def set_active_car(car_id: str):
 async def get_public_garages(
     request: Request,
     make: Optional[str] = None,
-    limit: int = Query(default=50, le=100),
+    limit: int = Query(default=300, le=500),
     sort: str = Query(default="random", description="Sort by: likes, views, newest, random")
 ):
     """Get all public garages with HTTP thumbnail URLs instead of base64."""
