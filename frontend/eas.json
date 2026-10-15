@@ -31,10 +31,6 @@
       "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_BACKEND_URL": "https://api.okccarmeets.com"
-      },
-      "android": {
-        "enableProguardInReleaseBuilds": true,
-        "enableShrinkResourcesInReleaseBuilds": true
       }
     }
   },
