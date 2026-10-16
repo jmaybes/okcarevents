@@ -228,6 +228,9 @@ export default function NearbyMapView({
               latitude: nearbyUser.latitude,
               longitude: nearbyUser.longitude,
             }}
+            onCalloutPress={() => {
+              if (nearbyUser.id) router.push(`/user-garage/${nearbyUser.id}`);
+            }}
           >
             <View style={[
               styles.nearbyUserMarker, 
@@ -237,7 +240,7 @@ export default function NearbyMapView({
               <Ionicons name={isCrewMember ? "people" : "person"} size={16} color="#fff" />
             </View>
             {Callout && (
-              <Callout tooltip onPress={() => router.push(`/messages/${nearbyUser.id}`)}>
+              <Callout tooltip>
                 <View style={styles.calloutContainer}>
                   <Text style={styles.calloutName}>{nearbyUser.nickname || nearbyUser.name}</Text>
                   {isCrewMember && (
@@ -247,8 +250,8 @@ export default function NearbyMapView({
                   )}
                   <Text style={styles.calloutDistance}>{nearbyUser.distance} mi away</Text>
                   <View style={styles.calloutMessageBtn}>
-                    <Ionicons name="chatbubble-ellipses" size={14} color="#fff" />
-                    <Text style={styles.calloutMessageText}>Message</Text>
+                    <Ionicons name="car-sport" size={14} color="#fff" />
+                    <Text style={styles.calloutMessageText}>View Garage</Text>
                   </View>
                 </View>
               </Callout>
