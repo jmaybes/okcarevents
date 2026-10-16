@@ -158,6 +158,11 @@ export default function BrowseGaragesScreen() {
   const renderGarageCard = (car: UserCar, index: number) => {
     try {
       if (!car || !car.id) return null;
+      // Skip cars without userId to prevent crash
+      if (!car.userId) {
+        console.warn('Car missing userId:', car.id);
+        return null;
+      }
       const mainPhoto = getMainPhoto(car);
       const isLiked = user ? car.likedBy?.includes(user.id) : false;
       const isTopThree = index < 3;
@@ -166,7 +171,11 @@ export default function BrowseGaragesScreen() {
       <TouchableOpacity
         key={car.id}
         style={styles.garageCard}
-        onPress={() => router.push(`/user-garage/${car.userId}`)}
+        onPress={() => {
+          if (car.userId) {
+            router.push(`/user-garage/${car.userId}`);
+          }
+        }}
         activeOpacity={0.85}
       >
         {/* Rank badge for top 3 */}

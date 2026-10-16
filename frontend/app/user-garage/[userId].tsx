@@ -168,12 +168,16 @@ export default function UserGarageScreen() {
   const [myCreatedCrew, setMyCreatedCrew] = useState<any>(null);
   const [inviteSending, setInviteSending] = useState(false);
 
+  // Early return if userId is invalid
   useEffect(() => {
-    if (userId) {
-      fetchAllCarsAndDecide();
-      fetchUserCrews();
-      fetchMyCreatedCrew();
+    if (!userId || userId === 'undefined' || userId === 'null') {
+      setError('no_garage');
+      setLoading(false);
+      return;
     }
+    fetchAllCarsAndDecide();
+    fetchUserCrews();
+    fetchMyCreatedCrew();
   }, [userId]);
 
   const fetchUserCrews = async () => {
@@ -534,7 +538,7 @@ export default function UserGarageScreen() {
   return (
     <View style={styles.container}>
       <PageHeader
-        title={`${car.ownerNickname || car.ownerName}'s Garage`}
+        title={`${car.ownerNickname || car.ownerName || 'Unknown'}'s Garage`}
         showBackButton={true}
         showNotificationBell={false}
         rightComponent={
