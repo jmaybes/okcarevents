@@ -2,7 +2,7 @@
   "expo": {
     "name": "StreetMotion Official",
     "slug": "oklahoma-city-car-meets",
-    "version": "2.7.0",
+    "version": "2.8.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "okcarmeets",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.velocityvisualcrew.okcarmeets",
-      "buildNumber": "4",
+      "buildNumber": "5",
       "usesAppleSignIn": true,
       "config": {
         "googleMapsApiKey": "AIzaSyDekipz2kW6nfOpd_c6Ku_NLwgc5N9AsUI"
@@ -32,7 +32,7 @@
     },
     "android": {
       "package": "com.velocityvisualcrew.oklahomacarmeets",
-      "versionCode": 210,
+      "versionCode": 211,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
