@@ -337,13 +337,10 @@ export default function HomeScreen() {
         if ((event as any).okcDistance !== undefined) {
           return (event as any).okcDistance <= DEFAULT_RADIUS_MILES;
         }
-        // If no coordinates, check city name for OKC references
-        const city = (event.city || '').toLowerCase();
-        return city.includes('oklahoma city') || city.includes('okc') || 
-               city.includes('edmond') || city.includes('moore') || 
-               city.includes('norman') || city.includes('midwest city') ||
-               city.includes('del city') || city.includes('yukon') ||
-               city.includes('mustang') || city.includes('bethany');
+        // No coordinates (common for user-submitted & admin-approved events):
+        // keep them visible so approved events always show up. The distance
+        // filter only excludes events that genuinely have far-away coordinates.
+        return true;
       });
     }
 

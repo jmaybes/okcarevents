@@ -39,6 +39,19 @@ live prod backend via preview URL.
 Publish a NEW OTA update (same branch/channel as before) — the previous OTA did NOT contain
 these fixes. OTA only reaches devices whose installed binary has a matching runtimeVersion.
 
+## Approved events not showing on Events page (June 2026)
+
+User reported: user-submitted events go to admin, get approved, but never appear on the
+Events page. Root cause: approval works correctly (isApproved=True, GET /events returns all
+approved). The Events page (app/(tabs)/home.tsx) default "within 20 miles of OKC" radius
+filter fell back to a hardcoded city whitelist for events WITHOUT latitude/longitude.
+User-submitted events have null coords unless the submitter taps "Use My Location", so any
+approved event whose city wasn't in the short whitelist (Owasso, Tulsa, Stillwater, Chickasha,
+blank city, venue names, etc.) was hidden. Verified against prod: 304 approved events, 280
+with no coords, 138 of those hidden by the old whitelist.
+Fix: in filterEvents(), events without coordinates now stay visible by default; the radius
+filter only excludes events that genuinely have far-away coordinates. (Frontend-only, OTA-eligible.)
+
 ## Standing constraints
 - Frontend API base is hardcoded to production api.okccarmeets.com (utils/api.ts).
 - Native/launcher/store icon changes require a fresh binary build (not OTA).
