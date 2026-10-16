@@ -65,12 +65,13 @@ export default function ClubsScreen() {
       return;
     }
 
+    const query = searchQuery.toLowerCase();
     const filtered = clubs.filter(
       club =>
-        club.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        club.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        club.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        club.carTypes.some(type => type.toLowerCase().includes(searchQuery.toLowerCase()))
+        (club.name || '').toLowerCase().includes(query) ||
+        (club.city || '').toLowerCase().includes(query) ||
+        (club.description || '').toLowerCase().includes(query) ||
+        (club.carTypes || []).some(type => (type || '').toLowerCase().includes(query))
     );
 
     setFilteredClubs(filtered);
@@ -91,8 +92,8 @@ export default function ClubsScreen() {
           <Ionicons name="people-circle" size={40} color="#FF5500" />
         </View>
         <View style={styles.clubHeaderInfo}>
-          <Text style={styles.clubName}>{item.name}</Text>
-          <Text style={styles.clubLocation}>{item.city}</Text>
+          <Text style={styles.clubName}>{item.name || 'Unknown Club'}</Text>
+          <Text style={styles.clubLocation}>{item.city || 'Location TBD'}</Text>
         </View>
         {user?.isAdmin && (
           <TouchableOpacity 
@@ -104,9 +105,11 @@ export default function ClubsScreen() {
         )}
       </View>
 
-      <Text style={styles.clubDescription}>{item.description}</Text>
+      {item.description ? (
+        <Text style={styles.clubDescription}>{item.description}</Text>
+      ) : null}
 
-      {item.carTypes.length > 0 && (
+      {item.carTypes && item.carTypes.length > 0 && (
         <View style={styles.carTypesContainer}>
           {item.carTypes.map((type, index) => (
             <View key={index} style={styles.carTypeChip}>
