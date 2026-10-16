@@ -137,16 +137,16 @@ export default function AdminPendingClubsScreen() {
         </View>
       )}
 
-      {item.meetingSchedule && (
+      {item.meetingSchedule ? (
         <View style={styles.infoRow}>
           <Ionicons name="calendar-outline" size={14} color="#888" />
           <Text style={styles.infoText}>{item.meetingSchedule}</Text>
         </View>
-      )}
+      ) : null}
 
-      {(item.website || item.facebookGroup) && (
+      {(item.website || item.facebookGroup) ? (
         <View style={styles.linksRow}>
-          {item.website && (
+          {item.website ? (
             <TouchableOpacity
               style={styles.linkTag}
               onPress={() => Linking.openURL(item.website)}
@@ -154,8 +154,8 @@ export default function AdminPendingClubsScreen() {
               <Ionicons name="globe" size={12} color="#2196F3" />
               <Text style={styles.linkTagText}>Website</Text>
             </TouchableOpacity>
-          )}
-          {item.facebookGroup && (
+          ) : null}
+          {item.facebookGroup ? (
             <TouchableOpacity
               style={styles.linkTag}
               onPress={() => Linking.openURL(item.facebookGroup)}
@@ -163,9 +163,9 @@ export default function AdminPendingClubsScreen() {
               <Ionicons name="logo-facebook" size={12} color="#1877F2" />
               <Text style={styles.linkTagText}>Facebook</Text>
             </TouchableOpacity>
-          )}
+          ) : null}
         </View>
-      )}
+      ) : null}
 
       <View style={styles.actions}>
         <TouchableOpacity

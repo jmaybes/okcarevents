@@ -381,11 +381,11 @@ export default function EventSearchScreen() {
                   <Text style={styles.eventTypeText}>{event.eventType}</Text>
                 </View>
                 
-                {event.description && (
+                {event.description ? (
                   <Text style={styles.eventDescription} numberOfLines={3}>
                     {event.description}
                   </Text>
-                )}
+                ) : null}
                 
                 <View style={styles.eventActions}>
                   <TouchableOpacity

@@ -168,18 +168,18 @@ export default function MyRoutesScreen() {
             <Ionicons name="map-outline" size={16} color="#888" />
             <Text style={styles.statText}>{route.waypoints.length} stops</Text>
           </View>
-          {route.distance && (
+          {route.distance ? (
             <View style={styles.statItem}>
               <Ionicons name="speedometer-outline" size={16} color="#888" />
               <Text style={styles.statText}>{route.distance} mi</Text>
             </View>
-          )}
-          {route.estimatedTime && (
+          ) : null}
+          {route.estimatedTime ? (
             <View style={styles.statItem}>
               <Ionicons name="time-outline" size={16} color="#888" />
               <Text style={styles.statText}>{route.estimatedTime}</Text>
             </View>
-          )}
+          ) : null}
         </View>
 
         {route.scenicHighlights.length > 0 && (

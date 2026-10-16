@@ -199,12 +199,12 @@ export default function TalentInviteScreen() {
             <Ionicons name="checkmark-circle" size={24} color="#4CAF50" />
             <View style={styles.validInfo}>
               <Text style={styles.validTitle}>Valid Invite Code!</Text>
-              {inviteInfo.email && (
+              {inviteInfo.email ? (
                 <Text style={styles.validDetail}>For: {inviteInfo.email}</Text>
-              )}
-              {inviteInfo.expiresAt && (
+              ) : null}
+              {inviteInfo.expiresAt ? (
                 <Text style={styles.validDetail}>Expires: {formatDate(inviteInfo.expiresAt)}</Text>
-              )}
+              ) : null}
             </View>
           </View>
         )}

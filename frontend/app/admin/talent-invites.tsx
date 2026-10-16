@@ -320,12 +320,12 @@ export default function TalentInvitesScreen() {
                   </View>
                 </View>
                 
-                {invite.email && (
+                {invite.email ? (
                   <View style={styles.inviteDetail}>
                     <Ionicons name="mail-outline" size={14} color="#888" />
                     <Text style={styles.inviteDetailText}>{invite.email}</Text>
                   </View>
-                )}
+                ) : null}
                 
                 <View style={styles.inviteDetail}>
                   <Ionicons name="time-outline" size={14} color="#888" />

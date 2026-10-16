@@ -174,25 +174,25 @@ const TalentCard = ({
         </View>
         
         {/* Business name if different */}
-        {talent.businessName && talent.businessName !== talent.displayName && (
+        {talent.businessName && talent.businessName !== talent.displayName ? (
           <Text style={styles.businessName} numberOfLines={1}>{talent.businessName}</Text>
-        )}
+        ) : null}
         
         {/* Location */}
-        {talent.location && (
+        {talent.location ? (
           <View style={styles.infoRow}>
             <Ionicons name="location" size={14} color="#FF5500" />
             <Text style={styles.infoText} numberOfLines={1}>{talent.location}</Text>
-            {talent.serviceArea && (
+            {talent.serviceArea ? (
               <Text style={styles.serviceArea}>• {talent.serviceArea}</Text>
-            )}
+            ) : null}
           </View>
-        )}
+        ) : null}
         
         {/* Bio preview */}
-        {talent.bio && (
+        {talent.bio ? (
           <Text style={styles.bioPreview} numberOfLines={2}>{talent.bio}</Text>
-        )}
+        ) : null}
         
         {/* Tags */}
         {talent.serviceTags?.length > 0 && (
@@ -220,18 +220,18 @@ const TalentCard = ({
           {/* Social icons preview */}
           {hasSocials && (
             <View style={styles.socialIconsRow}>
-              {talent.socialLinks?.instagram && (
+              {talent.socialLinks?.instagram ? (
                 <Ionicons name="logo-instagram" size={16} color="#E4405F" style={styles.socialIcon} />
-              )}
-              {talent.socialLinks?.tiktok && (
+              ) : null}
+              {talent.socialLinks?.tiktok ? (
                 <Ionicons name="logo-tiktok" size={16} color="#fff" style={styles.socialIcon} />
-              )}
-              {talent.socialLinks?.youtube && (
+              ) : null}
+              {talent.socialLinks?.youtube ? (
                 <Ionicons name="logo-youtube" size={16} color="#FF0000" style={styles.socialIcon} />
-              )}
-              {talent.socialLinks?.facebook && (
+              ) : null}
+              {talent.socialLinks?.facebook ? (
                 <Ionicons name="logo-facebook" size={16} color="#1877F2" style={styles.socialIcon} />
-              )}
+              ) : null}
             </View>
           )}
         </View>

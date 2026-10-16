@@ -188,18 +188,18 @@ export default function CalendarViewScreen() {
             <Ionicons name="time-outline" size={13} color="#888" />
             <Text style={styles.eventMetaText}>{item.time || 'TBD'}</Text>
           </View>
-          {item.location && (
+          {item.location ? (
             <View style={styles.eventMeta}>
               <Ionicons name="location-outline" size={13} color="#888" />
               <Text style={styles.eventMetaText} numberOfLines={1}>{item.location}</Text>
             </View>
-          )}
-          {item.cost && item.cost !== 'Free' && item.cost !== '0' && (
+          ) : null}
+          {item.cost && item.cost !== 'Free' && item.cost !== '0' ? (
             <View style={styles.eventMeta}>
               <Ionicons name="pricetag-outline" size={13} color="#888" />
               <Text style={styles.eventMetaText}>{item.cost}</Text>
             </View>
-          )}
+          ) : null}
         </View>
       </TouchableOpacity>
     );

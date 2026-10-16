@@ -125,9 +125,9 @@ export default function CarShowcase({
             <Text style={styles.carTitle}>
               {userCar.year} {userCar.make} {userCar.model}
             </Text>
-            {userCar.trim && (
+            {userCar.trim ? (
               <Text style={styles.carTrim}>{userCar.trim}</Text>
-            )}
+            ) : null}
             <View style={styles.carStatsRow}>
               {userCar.color ? (
                 <View style={[styles.carDetailRow, { flex: 1 }]}>
@@ -142,18 +142,18 @@ export default function CarShowcase({
                 </View>
               ) : null}
             </View>
-            {userCar.engine && (
+            {userCar.engine ? (
               <View style={styles.carDetailRow}>
                 <Ionicons name="speedometer" size={16} color="#2196F3" />
                 <Text style={styles.carDetailText}>{userCar.engine}</Text>
               </View>
-            )}
-            {userCar.modificationNotes && (
+            ) : null}
+            {userCar.modificationNotes ? (
               <View style={styles.carDetailRow}>
                 <Ionicons name="build" size={16} color="#4CAF50" />
                 <Text style={styles.carDetailText}>{userCar.modificationNotes}</Text>
               </View>
-            )}
+            ) : null}
             {userCar.videos && userCar.videos.length > 0 && (
               <View style={styles.carDetailRow}>
                 <Ionicons name="videocam" size={16} color="#9C27B0" />
@@ -162,9 +162,9 @@ export default function CarShowcase({
                 </Text>
               </View>
             )}
-            {userCar.description && (
+            {userCar.description ? (
               <Text style={styles.carDescription}>{userCar.description}</Text>
-            )}
+            ) : null}
           </View>
           
           <View style={styles.garageActionRow}>

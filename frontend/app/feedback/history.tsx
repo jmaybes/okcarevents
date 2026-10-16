@@ -130,20 +130,20 @@ export default function FeedbackHistoryScreen() {
                 Submitted: {formatDate(feedback.createdAt)}
               </Text>
 
-              {feedback.adminResponse && (
+              {feedback.adminResponse ? (
                 <View style={styles.adminResponseSection}>
                   <View style={styles.responseHeader}>
                     <Ionicons name="shield-checkmark" size={16} color="#FF5500" />
                     <Text style={styles.responseLabel}>Admin Response</Text>
                   </View>
                   <Text style={styles.responseText}>{feedback.adminResponse}</Text>
-                  {feedback.updatedAt && (
+                  {feedback.updatedAt ? (
                     <Text style={styles.responseDateText}>
                       Responded: {formatDate(feedback.updatedAt)}
                     </Text>
-                  )}
+                  ) : null}
                 </View>
-              )}
+              ) : null}
             </View>
           ))}
           <View style={{ height: 40 }} />

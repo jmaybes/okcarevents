@@ -307,9 +307,9 @@ export default function TalentDetailScreen() {
             )}
           </View>
           
-          {talent.businessName && talent.businessName !== talent.displayName && (
+          {talent.businessName && talent.businessName !== talent.displayName ? (
             <Text style={styles.businessName}>{talent.businessName}</Text>
-          )}
+          ) : null}
           
           <View style={styles.categoryRow}>
             <View style={styles.categoryBadge}>
@@ -336,27 +336,27 @@ export default function TalentDetailScreen() {
         </View>
         
         {/* Location */}
-        {(talent.location || talent.serviceArea) && (
+        {(talent.location || talent.serviceArea) ? (
           <View style={styles.section}>
             <View style={styles.locationRow}>
               <Ionicons name="location" size={18} color="#FF5500" />
               <View style={styles.locationInfo}>
-                {talent.location && <Text style={styles.locationText}>{talent.location}</Text>}
-                {talent.serviceArea && (
+                {talent.location ? <Text style={styles.locationText}>{talent.location}</Text> : null}
+                {talent.serviceArea ? (
                   <Text style={styles.serviceAreaText}>Service Area: {talent.serviceArea}</Text>
-                )}
+                ) : null}
               </View>
             </View>
           </View>
-        )}
+        ) : null}
         
         {/* Bio */}
-        {talent.bio && (
+        {talent.bio ? (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>About</Text>
             <Text style={styles.bioText}>{talent.bio}</Text>
           </View>
-        )}
+        ) : null}
         
         {/* Service tags */}
         {talent.serviceTags?.length > 0 && (
@@ -373,7 +373,7 @@ export default function TalentDetailScreen() {
         )}
         
         {/* Video */}
-        {talent.videoUrl && (
+        {talent.videoUrl ? (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Video Showcase</Text>
             <TouchableOpacity 
@@ -384,7 +384,7 @@ export default function TalentDetailScreen() {
               <Text style={styles.videoButtonText}>Watch Video Reel</Text>
             </TouchableOpacity>
           </View>
-        )}
+        ) : null}
         
         {/* Social links */}
         {Object.entries(talent.socialLinks || {}).some(([_, v]) => v) && (
@@ -410,7 +410,7 @@ export default function TalentDetailScreen() {
         )}
         
         {/* External link */}
-        {talent.externalLink && (
+        {talent.externalLink ? (
           <View style={styles.section}>
             <TouchableOpacity style={styles.externalLinkButton} onPress={handleExternalLink}>
               <Ionicons name="globe-outline" size={20} color="#2196F3" />
@@ -418,7 +418,7 @@ export default function TalentDetailScreen() {
               <Ionicons name="open-outline" size={16} color="#2196F3" />
             </TouchableOpacity>
           </View>
-        )}
+        ) : null}
         
         {/* View count for owner */}
         {isOwner && talent.viewCount !== undefined && (
@@ -454,23 +454,23 @@ export default function TalentDetailScreen() {
             <Text style={styles.messageButtonText}>Message</Text>
           </TouchableOpacity>
           
-          {talent.contactEmail && (
+          {talent.contactEmail ? (
             <TouchableOpacity 
               style={styles.contactButton}
               onPress={() => handleContact('email')}
             >
               <Ionicons name="mail" size={22} color="#FF5500" />
             </TouchableOpacity>
-          )}
+          ) : null}
           
-          {talent.contactPhone && (
+          {talent.contactPhone ? (
             <TouchableOpacity 
               style={styles.contactButton}
               onPress={() => handleContact('phone')}
             >
               <Ionicons name="call" size={22} color="#4CAF50" />
             </TouchableOpacity>
-          )}
+          ) : null}
         </View>
       )}
       

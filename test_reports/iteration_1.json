@@ -1,0 +1,32 @@
+{
+  "summary": "Frontend-only verification of Streetmotion native-crash fixes against production backend (api.okccarmeets.com). Clubs (/clubs), Public Garages list (/garage), and Public User Garage (/user-garage/69bb035fb5d3f5e057f073ca - Admin's McLaren 570s MSO-X) ALL render fully with ZERO 'Unexpected text node' errors and ZERO ReferenceError/'useFonts is not defined' errors. The useFonts bug fix in user-garage/[userId].tsx is verified working (page loads full specs + Build Details). The clubs falsy-render fix is verified (memberCount===0 and website===\"\" entries render clean). HOWEVER, retesting the OWN garage detail screen /garage/<carId> (app/garage/[id].tsx) still produces 6 'Unexpected text node' errors on the McLaren detail page — main agent only guarded horsepower/torque (numeric) but left many string-field patterns like {car.trim && <Text>...</Text>}, {car.description && ...}, {car.engine && ...}, {car.transmission && ...}, {car.drivetrain && ...}, {car.color && ...}, {car.modificationNotes && ...}, {car.instagramHandle && ...}, {car.youtubeChannel && ...} and the composite {(car.modifications && car.modifications.length > 0) || car.modificationNotes} unchanged. When those string fields are '' (common from the production DB), the && expression evaluates to the empty string which React Native renders as a bare text node inside <View>/<ScrollView> — same class of bug that was reported for Clubs. On web it only logs a console error; on native it hard-crashes the screen, so this must be fixed before shipping another native build / OTA.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "app/garage/[id].tsx", "issue": "6 'Unexpected text node: A text node cannot be a child of a <View>' console errors on /garage/69cb30e24ddc647117911a44 (McLaren 570s MSO-X). Caused by string-field short-circuits returning '' when the field is empty. Needs same ternary-null treatment that was applied to Clubs/user-garage. Specific lines to convert from {x && <JSX/>} to {x ? <JSX/> : null}: 506 (car.trim), 558 (car.description), 569 (car.engine), 590 (car.transmission), 597 (car.drivetrain), 604 (car.color), 615 (composite modifications/modificationNotes), 641 (car.modificationNotes), 653 (instagram OR youtube composite), 657 (car.instagramHandle), 663 (car.youtubeChannel). Will HARD-CRASH on native even though web only logs it.", "testID": "n/a", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": [
+      {"component": "app/garage/[id].tsx", "issue": "Falsy-string && JSX anti-pattern inside <View>/<ScrollView> — same native-crash class the user reported for Clubs. Reference: /app/frontend/app/garage/[id].tsx:506, 558, 569, 590, 597, 604, 615, 641, 653, 657, 663."}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "In /app/frontend/app/garage/[id].tsx, replace every `{car.<stringField> && (<JSX/>)}` with `{car.<stringField> ? (<JSX/>) : null}` for: trim (L506), description (L558), engine (L569), transmission (L590), drivetrain (L597), color (L604), modificationNotes (L641), instagramHandle (L657), youtubeChannel (L663).",
+    "Also fix the two composite conditionals: L615 `{((car.modifications && car.modifications.length > 0) || car.modificationNotes) && (...)}` → convert to ternary returning null (modificationNotes='' falls through to '').",
+    "L653 `{(car.instagramHandle || car.youtubeChannel) && (...)}` → ternary returning null.",
+    "After fixing, re-run this test — expect 0 'Unexpected text node' errors on /garage/<carId>."
+  ],
+  "critical_code_review_comments": [
+    "Root cause pattern across the codebase: using `{stringField && <JSX/>}` as a child of <View>. When stringField is '' (very common from API), React Native renders the empty string as a text node inside View, which throws on native. Safer universal pattern: `{stringField ? <JSX/> : null}` or coerce with `!!stringField &&`.",
+    "Recommend a repo-wide grep for `&& (<` and `&& <Text` / `&& <View` inside JSX to find any remaining instances in other screens (feeds, events, profile, clubs/submit, etc.) before next native release — this is the single most common native-only crash class in this project."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "75%"},
+  "seed_data_creation": "None. Used live production data from api.okccarmeets.com.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Reported crashes on Clubs and public user-garage are FIXED and verified on web (0 text-node errors, 0 ReferenceError). But the SAME class of bug remains on /garage/[id].tsx (own-garage detail) — 6 text-node errors on the McLaren detail page. Main agent must apply the same ternary-null treatment to all string-field short-circuits in /app/frontend/app/garage/[id].tsx. After fix, re-navigate to https://event-hub-okc-1.preview.emergentagent.com/garage/69cb30e24ddc647117911a44 and confirm 0 'Unexpected text node' console errors.",
+  "rca_of_issue": "React Native hard-crashes when any text (string or number) is rendered as a direct child of <View>/<ScrollView>. Idiomatic React `{falsyValue && <JSX/>}` works on web (empty string renders nothing visible) but on native the empty string IS a text node and must be wrapped in <Text>. The clubs and user-garage screens were converted to `{x ? (...) : null}`, but garage/[id].tsx was only partially converted (numeric horsepower/torque only); string fields trim, description, engine, transmission, drivetrain, color, modificationNotes, instagramHandle, youtubeChannel still use the && pattern. Reproduction: open /garage/<any carId where any of those strings is ''> — check browser console for 'Unexpected text node: . A text node cannot be a child of a <View>'. Mitigation: convert all `{str && <JSX/>}` inside Views to `{str ? <JSX/> : null}` (or ensure the parent is a <Text>)."
+}

@@ -295,12 +295,12 @@ export default function AdminFeedbackScreen() {
                   <Text style={styles.feedbackDate}>{formatDate(feedback.createdAt)}</Text>
                 </View>
 
-                {feedback.adminResponse && (
+                {feedback.adminResponse ? (
                   <View style={styles.responseIndicator}>
                     <Ionicons name="chatbubble-ellipses" size={14} color="#4CAF50" />
                     <Text style={styles.responseIndicatorText}>Response sent</Text>
                   </View>
-                )}
+                ) : null}
               </TouchableOpacity>
             ))
           )}
@@ -372,14 +372,14 @@ export default function AdminFeedbackScreen() {
               <Text style={styles.detailDate}>{formatDate(selectedFeedback.createdAt)}</Text>
 
               {/* Existing Response */}
-              {selectedFeedback.adminResponse && (
+              {selectedFeedback.adminResponse ? (
                 <>
                   <Text style={styles.detailLabel}>Previous Response</Text>
                   <View style={styles.existingResponse}>
                     <Text style={styles.existingResponseText}>{selectedFeedback.adminResponse}</Text>
                   </View>
                 </>
-              )}
+              ) : null}
 
               {/* Status Actions */}
               <Text style={styles.detailLabel}>Update Status</Text>

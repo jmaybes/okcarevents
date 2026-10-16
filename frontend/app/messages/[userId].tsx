@@ -394,7 +394,7 @@ export default function ChatScreen() {
             <Text style={styles.popupCardContent}>{item.content}</Text>
 
             {/* Location Button */}
-            {item.locationShareId && (
+            {item.locationShareId ? (
               <View style={styles.locationSection}>
                 {hasLocation ? (
                   <TouchableOpacity
@@ -425,7 +425,7 @@ export default function ChatScreen() {
                   </View>
                 )}
               </View>
-            )}
+            ) : null}
 
             {/* RSVP Section - only for received invites */}
             {!isMyMessage && (
