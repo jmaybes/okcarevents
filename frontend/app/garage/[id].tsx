@@ -538,13 +538,13 @@ export default function GarageDetailScreen() {
             <Text style={styles.statValue}>{car.views || 0}</Text>
             <Text style={styles.statLabel}>Views</Text>
           </View>
-          {car.horsepower && (
+          {car.horsepower ? (
             <View style={styles.statCard}>
               <Ionicons name="flash" size={24} color="#FFC107" />
               <Text style={styles.statValue}>{car.horsepower}</Text>
               <Text style={styles.statLabel}>HP</Text>
             </View>
-          )}
+          ) : null}
           {car.modifications && car.modifications.length > 0 && (
             <View style={styles.statCard}>
               <Ionicons name="build" size={24} color="#4CAF50" />
@@ -573,20 +573,20 @@ export default function GarageDetailScreen() {
                 <Text style={styles.specValue}>{car.engine}</Text>
               </View>
             )}
-            {car.horsepower && (
+            {car.horsepower ? (
               <View style={styles.specItem}>
                 <Ionicons name="flash" size={20} color="#FF5500" />
                 <Text style={styles.specLabel}>Horsepower</Text>
                 <Text style={styles.specValue}>{car.horsepower} HP</Text>
               </View>
-            )}
-            {car.torque && (
+            ) : null}
+            {car.torque ? (
               <View style={styles.specItem}>
                 <Ionicons name="sync" size={20} color="#FF5500" />
                 <Text style={styles.specLabel}>Torque</Text>
                 <Text style={styles.specValue}>{car.torque} lb-ft</Text>
               </View>
-            )}
+            ) : null}
             {car.transmission && (
               <View style={styles.specItem}>
                 <Ionicons name="cog" size={20} color="#FF5500" />

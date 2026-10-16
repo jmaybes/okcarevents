@@ -149,10 +149,6 @@ export default function UserGarageScreen() {
   const [error, setError] = useState<string | null>(null);
   const [isLiked, setIsLiked] = useState(false);
 
-  const [fontsLoaded] = useFonts({
-    RockSalt_400Regular,
-  });
-
   // Multi-car state
   const [allCars, setAllCars] = useState<CarSummary[]>([]);
   const [showCarSelectionModal, setShowCarSelectionModal] = useState(false);

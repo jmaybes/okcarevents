@@ -129,18 +129,18 @@ export default function CarShowcase({
               <Text style={styles.carTrim}>{userCar.trim}</Text>
             )}
             <View style={styles.carStatsRow}>
-              {userCar.color && (
+              {userCar.color ? (
                 <View style={[styles.carDetailRow, { flex: 1 }]}>
                   <Ionicons name="color-palette" size={16} color="#888" />
                   <Text style={styles.carDetailText}>{userCar.color}</Text>
                 </View>
-              )}
-              {userCar.horsepower && (
+              ) : null}
+              {userCar.horsepower ? (
                 <View style={[styles.carDetailRow, { flex: 1 }]}>
                   <Ionicons name="flash" size={16} color="#ffffff" />
                   <Text style={styles.carDetailText}>{userCar.horsepower} HP</Text>
                 </View>
-              )}
+              ) : null}
             </View>
             {userCar.engine && (
               <View style={styles.carDetailRow}>
