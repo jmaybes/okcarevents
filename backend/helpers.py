@@ -198,6 +198,8 @@ def user_helper(user) -> dict:
         "nickname": user.get("nickname", ""),
         "profilePic": user.get("profilePic", ""),
         "isAdmin": user.get("isAdmin", False),
+        "isTalent": user.get("isTalent", False),
+        "talentProfileId": _sid(user.get("talentProfileId")) if user.get("talentProfileId") else None,
         "notificationsEnabled": user.get("notificationsEnabled", True),
         "locationSharingEnabled": user.get("locationSharingEnabled", True),
         "locationPrivate": user.get("locationPrivate", False),

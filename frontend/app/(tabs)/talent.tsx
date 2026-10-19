@@ -296,11 +296,11 @@ export default function TalentScreen() {
   const isAdmin = user?.isAdmin || false;
 
   const submitInviteCode = () => {
-    const code = codeInput.trim().toUpperCase();
+    const code = codeInput.trim();
     if (!code) return;
     setShowCodeModal(false);
     setCodeInput('');
-    router.push(`/talent/invite/${code}`);
+    router.push(`/talent/invite/${encodeURIComponent(code)}`);
   };
 
   const fetchTalent = useCallback(async () => {
@@ -406,6 +406,15 @@ export default function TalentScreen() {
             >
               <Ionicons name="key" size={22} color="#FFD700" />
             </TouchableOpacity>
+
+            {(user?.isTalent || user?.talentProfileId) && (
+              <TouchableOpacity 
+                style={styles.headerBtn}
+                onPress={() => router.push('/talent/setup')}
+              >
+                <Ionicons name="create" size={22} color="#4CAF50" />
+              </TouchableOpacity>
+            )}
             
             {isAdmin && (
               <TouchableOpacity 
@@ -565,11 +574,11 @@ export default function TalentScreen() {
             </Text>
             <TextInput
               style={styles.codeInput}
-              placeholder="e.g. ABC12345"
+              placeholder="Paste your code"
               placeholderTextColor="#666"
               value={codeInput}
               onChangeText={setCodeInput}
-              autoCapitalize="characters"
+              autoCapitalize="none"
               autoCorrect={false}
               returnKeyType="go"
               onSubmitEditing={submitInviteCode}

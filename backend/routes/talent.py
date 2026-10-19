@@ -39,6 +39,8 @@ def talent_helper(talent, include_view_count: bool = False) -> dict:
         "isFeatured": talent.get("isFeatured", False),
         "isPinned": talent.get("isPinned", False),
         "isActive": talent.get("isActive", True),
+        "setupComplete": talent.get("setupComplete", False),
+        "profileCompletion": talent.get("profileCompletion", 0),
         "createdAt": _isodate(talent.get("createdAt")),
         "updatedAt": _isodate(talent.get("updatedAt")),
         
@@ -68,7 +70,6 @@ def talent_helper(talent, include_view_count: bool = False) -> dict:
         "logoImage": talent.get("logoImage", ""),
         
         # Extended Profile Info
-        "headline": talent.get("headline", ""),
         "yearsExperience": talent.get("yearsExperience", ""),
         "languages": talent.get("languages", []),
         "equipment": talent.get("equipment", []),
@@ -508,6 +509,11 @@ async def update_talent_profile(
     
     if not profile_data:
         raise HTTPException(status_code=400, detail="No update data provided")
+    
+    # The frontend sends the body wrapped as {"profile_data": {...}}. Because this
+    # param is a plain dict, FastAPI assigns the ENTIRE request body to it, so unwrap.
+    if 'profile_data' in profile_data and isinstance(profile_data['profile_data'], dict):
+        profile_data = profile_data['profile_data']
     
     # Allowed fields for talent to update
     allowed_fields = [

@@ -30,6 +30,8 @@ interface User {
   nickname?: string;
   profilePic?: string;
   isAdmin?: boolean;
+  isTalent?: boolean;
+  talentProfileId?: string | null;
   notificationsEnabled?: boolean;
   locationSharingEnabled?: boolean;
   locationPrivate?: boolean;

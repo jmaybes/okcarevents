@@ -26,7 +26,7 @@ export default function TalentInviteScreen() {
   const { code: urlCode } = useLocalSearchParams();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   
   const [code, setCode] = useState(urlCode?.toString() || '');
   const [validating, setValidating] = useState(false);
@@ -92,6 +92,15 @@ export default function TalentInviteScreen() {
       const data = await response.json();
       
       if (response.ok) {
+        // Refresh auth user so talentProfileId / isTalent are available immediately
+        try {
+          const profileId = data?.profile?.id;
+          if (user) {
+            await updateUser({ ...user, isTalent: true, ...(profileId ? { talentProfileId: profileId } : {}) });
+          }
+        } catch {
+          // non-fatal; user will be refreshed on next app launch
+        }
         Alert.alert(
           '🎉 Welcome to Talent!',
           'Your invite has been accepted! Now let\'s set up your profile.',

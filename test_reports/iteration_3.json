@@ -1,0 +1,41 @@
+{
+  "summary": "Full talent lifecycle E2E retest (backend + frontend). Backend 14/14 pytest tests PASS. Frontend confirms gold key icon opens the 'Enter Invite Code' modal and the code is passed through to /talent/invite/<code> WITHOUT uppercasing/altering (verified with mixed-case 'MixedCase_XYZ123'). Admin→invite→validate→accept→setup→list→view→edit→hide/show flow works end-to-end via backend. user_helper correctly exposes isTalent + talentProfileId on both /api/auth/login and /api/users/{id} (iteration-3 fix verified). HOWEVER one CRITICAL bug blocks the primary user-facing SAVE path: the frontend setup.tsx sends `{profile_data: {...}}` wrapper but the backend PUT /api/talent/{id} treats `profile_data: dict` as the FULL body, so the wrapped payload is a no-op — talent clicking Save in /talent/setup will see no field actually persist (confirmed by test_07a_wrapped_body_is_noop_BUG and direct curl). Un-wrapped bodies work perfectly. Minor: talent_helper response omits `setupComplete`, so UI cannot gate on it directly.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "PUT /api/talent/{talent_id}", "issue": "FastAPI body-param contract mismatch: route declares `profile_data: dict = None` which makes the ENTIRE body the dict, but frontend /talent/setup.tsx line 362 sends `{profile_data: profileData}` wrapper. Result: every talent save from the UI silently drops ALL fields (bio, category, photos, isActive, etc). Fix: either (a) change backend to `profile_data: dict = Body(..., embed=True)` to accept the wrapper, or (b) unwrap in handler: `if 'profile_data' in profile_data: profile_data = profile_data['profile_data']`, or (c) change frontend to send un-wrapped body. Option (b) is safest (backward-compatible).", "priority": "CRITICAL"}
+    ],
+    "minor": [
+      {"endpoint": "GET /api/talent/{id} & PUT /api/talent/{id}", "issue": "talent_helper() does NOT include `setupComplete` in the response. Backend writes it to DB (route sets update_data['setupComplete']=setup_complete) but it is never serialized back. UI cannot check completion state from the API — add `\"setupComplete\": talent.get(\"setupComplete\", False)` to talent_helper."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Talent profile Save (setup/edit)", "issue": "Due to the backend wrapper bug above, tapping Save in /talent/setup appears to succeed (200 OK, 'Profile updated' toast) but NO user-entered fields actually persist. User perceives this as 'edit does nothing'. This directly blocks the review-request's PRIMARY promise ('talent can FULLY CONTROL their listing ANYTIME').", "affected_testIDs": ["save-button-in-talent-setup"]}
+    ],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_talent_flow.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "FIX CRITICAL: In /app/backend/routes/talent.py update_talent_profile, add at top of function: `if isinstance(profile_data, dict) and 'profile_data' in profile_data and isinstance(profile_data['profile_data'], dict): profile_data = profile_data['profile_data']`. OR change signature to `profile_data: dict = Body(..., embed=True)`. This single fix unblocks the ENTIRE talent edit-anytime requirement.",
+    "FIX MINOR: Add `\"setupComplete\": talent.get(\"setupComplete\", False)` to talent_helper() in /app/backend/routes/talent.py so UI/clients can see the computed flag.",
+    "RETEST: After the fix, re-run /app/backend/tests/test_talent_flow.py (test_07a will FAIL as a success indicator — flip its assertion). Also manually walk a user through /talent → key icon → enter real code → accept → setup form → fill bio+displayName+category+photo → Save → verify card appears in /talent list → tap card → Edit My Profile button is present (owner path) → edit bio → persists."
+  ],
+  "critical_code_review_comments": [
+    "backend/routes/talent.py: `profile_data: dict = None` body signature is a FastAPI footgun — a single untyped dict param swallows the whole body. Prefer a Pydantic model OR Body(..., embed=True) to make the frontend contract explicit and self-documenting.",
+    "backend/routes/talent.py line 71 declares `headline` key twice in talent_helper (lines 27 and 71). Second one is redundant.",
+    "frontend/app/talent/[id].tsx line 94: `const isOwner = user?.id && talent?.userId === user.id;` — this is correct and does NOT depend on talentProfileId (contrary to review-request's claim). The talentProfileId user_helper fix is only needed for the Talent-tab green header icon (talent.tsx line 410), which was verified.",
+    "frontend/app/(tabs)/talent.tsx line 303: `router.push(`/talent/invite/${encodeURIComponent(code)}`)` — correctly preserves case. ✅",
+    "test_credentials.md lacks a dedicated talent-user credential (expected — review request says to register a fresh one per run). This test file auto-registers a unique user each run."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_talent_flow.py (created, 14 tests, all passing after documenting the wrapped-body bug)"
+  ],
+  "success_rate": {"backend": "14/14 (100%) with un-wrapped PUT body; the wrapped-body contract used by current frontend is BROKEN (test_07a documents this)", "frontend": "Key-icon modal + case preservation + navigation to invite screen fully verified (3/3)"},
+  "seed_data_creation": "test_talent_flow.py auto-registers a fresh user per run (talentuser+<uuid>@test.com) and auto-cleans by admin-deleting the created profile at end (test_13). No orphan data.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "After main agent patches the PUT /api/talent/{id} wrapped-body handling: (1) remove the test_07a 'noop BUG' documentation test OR flip its assertion, (2) re-add a wrapped-body happy-path test to confirm the fix, (3) run the full flow through the UI (not just API) by registering a user, generating a real invite via admin login, accepting via the invite screen, and completing /talent/setup through actual form submission with the wrapped payload the UI sends.",
+  "rca_of_issue": "ROOT CAUSE: `profile_data: dict = None` in FastAPI with no Body(embed=True) makes the whole JSON body become profile_data. Frontend consistently sends `{profile_data: {...}}` (setup.tsx:362). Backend iterates profile_data.items() → sees only the key 'profile_data' which is not in `allowed_fields` → update_data stays empty → nothing persists. REPRO: `curl -X PUT '<BASE>/api/talent/<id>?user_id=<uid>' -d '{\"profile_data\":{\"bio\":\"X\"}}' -H 'content-type: application/json'` returns 200 but GET shows bio unchanged. MITIGATION (one-line): first line of update_talent_profile — `if profile_data and 'profile_data' in profile_data and isinstance(profile_data['profile_data'], dict): profile_data = profile_data['profile_data']`."
+}
