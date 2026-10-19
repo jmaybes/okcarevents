@@ -10,6 +10,9 @@ import {
   ActivityIndicator,
   RefreshControl,
   Dimensions,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -287,8 +290,18 @@ export default function TalentScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [showSearch, setShowSearch] = useState(false);
+  const [showCodeModal, setShowCodeModal] = useState(false);
+  const [codeInput, setCodeInput] = useState('');
   
   const isAdmin = user?.isAdmin || false;
+
+  const submitInviteCode = () => {
+    const code = codeInput.trim().toUpperCase();
+    if (!code) return;
+    setShowCodeModal(false);
+    setCodeInput('');
+    router.push(`/talent/invite/${code}`);
+  };
 
   const fetchTalent = useCallback(async () => {
     try {
@@ -385,6 +398,13 @@ export default function TalentScreen() {
               onPress={() => setShowSearch(!showSearch)}
             >
               <Ionicons name={showSearch ? "close" : "search"} size={22} color="#fff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.headerBtn}
+              onPress={() => setShowCodeModal(true)}
+            >
+              <Ionicons name="key" size={22} color="#FFD700" />
             </TouchableOpacity>
             
             {isAdmin && (
@@ -523,6 +543,54 @@ export default function TalentScreen() {
           <View style={{ height: 100 }} />
         </ScrollView>
       )}
+
+      {/* Invite Code Entry Modal */}
+      <Modal
+        visible={showCodeModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowCodeModal(false)}
+      >
+        <KeyboardAvoidingView
+          style={styles.modalOverlay}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <View style={styles.codeModal}>
+            <View style={styles.codeModalIcon}>
+              <Ionicons name="key" size={32} color="#FFD700" />
+            </View>
+            <Text style={styles.codeModalTitle}>Enter Invite Code</Text>
+            <Text style={styles.codeModalSubtitle}>
+              Got an invite from an admin? Enter your code below to set up your talent listing.
+            </Text>
+            <TextInput
+              style={styles.codeInput}
+              placeholder="e.g. ABC12345"
+              placeholderTextColor="#666"
+              value={codeInput}
+              onChangeText={setCodeInput}
+              autoCapitalize="characters"
+              autoCorrect={false}
+              returnKeyType="go"
+              onSubmitEditing={submitInviteCode}
+              autoFocus
+            />
+            <TouchableOpacity
+              style={[styles.codeSubmitBtn, !codeInput.trim() && styles.codeSubmitBtnDisabled]}
+              onPress={submitInviteCode}
+              disabled={!codeInput.trim()}
+            >
+              <Text style={styles.codeSubmitText}>Continue</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.codeCancelBtn}
+              onPress={() => { setShowCodeModal(false); setCodeInput(''); }}
+            >
+              <Text style={styles.codeCancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }
@@ -531,6 +599,84 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  codeModal: {
+    width: '100%',
+    maxWidth: 380,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#333',
+  },
+  codeModalIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(255,215,0,0.12)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  codeModalTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 8,
+  },
+  codeModalSubtitle: {
+    color: '#999',
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  codeInput: {
+    width: '100%',
+    backgroundColor: '#000',
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 2,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  codeSubmitBtn: {
+    width: '100%',
+    backgroundColor: '#FF5500',
+    borderRadius: 10,
+    paddingVertical: 15,
+    alignItems: 'center',
+  },
+  codeSubmitBtnDisabled: {
+    backgroundColor: '#444',
+  },
+  codeSubmitText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  codeCancelBtn: {
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  codeCancelText: {
+    color: '#888',
+    fontSize: 15,
+    fontWeight: '600',
   },
   header: {
     backgroundColor: '#111',

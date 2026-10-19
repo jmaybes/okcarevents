@@ -158,7 +158,7 @@ export default function TalentInvitesScreen() {
   const shareInvite = async (code: string) => {
     try {
       await Share.share({
-        message: `You've been invited to join StreetMotion as a Talent!\n\nUse this code to set up your profile: ${code}\n\nDownload the app and enter this code to get started.`,
+        message: `You've been invited to join StreetMotion as a Talent!\n\nYour invite code: ${code}\n\nTo set up your profile:\n1. Open the StreetMotion app\n2. Go to the Talent tab\n3. Tap the gold key icon at the top right\n4. Enter your code: ${code}`,
         title: 'StreetMotion Talent Invite',
       });
     } catch (error) {
