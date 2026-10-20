@@ -220,6 +220,29 @@ export default function HomeScreen() {
     }
   };
 
+  const handleDeleteEvent = (eventId: string, title: string) => {
+    Alert.alert(
+      'Delete Event',
+      `Permanently delete "${title}"? This cannot be undone.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await api.delete(`/events/${eventId}`);
+              setEvents(prev => prev.filter(e => e.id !== eventId));
+            } catch (error) {
+              console.error('Error deleting event:', error);
+              Alert.alert('Error', 'Could not delete the event. Please try again.');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   useEffect(() => {
     filterEvents();
   }, [events, selectedType, freeOnly, userLocation, sortBy, showAllEvents]);
@@ -670,20 +693,34 @@ export default function HomeScreen() {
                       {item.attendeeCount > 0 ? item.attendeeCount : '??'} attending
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      toggleFavorite(item.id);
-                    }}
-                    style={styles.favoriteButton}
-                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                  >
-                    <Ionicons
-                      name={favoriteIds.has(item.id) ? 'heart' : 'heart-outline'}
-                      size={24}
-                      color={favoriteIds.has(item.id) ? '#E91E63' : '#888'}
-                    />
-                  </TouchableOpacity>
+                  <View style={styles.cardActions}>
+                    {user?.isAdmin && (
+                      <TouchableOpacity
+                        onPress={(e) => {
+                          e.stopPropagation();
+                          handleDeleteEvent(item.id, item.title);
+                        }}
+                        style={styles.favoriteButton}
+                        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      >
+                        <Ionicons name="trash-outline" size={22} color="#E53935" />
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(item.id);
+                      }}
+                      style={styles.favoriteButton}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                      <Ionicons
+                        name={favoriteIds.has(item.id) ? 'heart' : 'heart-outline'}
+                        size={24}
+                        color={favoriteIds.has(item.id) ? '#E91E63' : '#888'}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
@@ -1604,6 +1641,11 @@ const styles = StyleSheet.create({
   },
   favoriteButton: {
     padding: 4,
+  },
+  cardActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   emptyContainer: {
     alignItems: 'center',

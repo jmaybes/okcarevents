@@ -279,6 +279,30 @@ export default function AddEventScreen() {
       return;
     }
 
+    // Validate date format (YYYY-MM-DD) and that it's not in the past.
+    // Recurring events use a weekly day, so a one-off past date check is skipped for them.
+    if (!isRecurring) {
+      const dateMatch = /^\d{4}-\d{2}-\d{2}$/.test(formData.date.trim());
+      if (!dateMatch) {
+        Alert.alert('Invalid Date', 'Please enter the date as YYYY-MM-DD (e.g. 2026-10-25).');
+        return;
+      }
+      const parsed = new Date(`${formData.date.trim()}T23:59:59`);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (isNaN(parsed.getTime())) {
+        Alert.alert('Invalid Date', 'That date doesn\'t look right. Please check and try again.');
+        return;
+      }
+      if (parsed < today) {
+        Alert.alert(
+          'Date In The Past',
+          `The date you entered (${formData.date.trim()}) is in the past, so the event won\'t appear on the Events page. Please double-check the year and enter an upcoming date.`
+        );
+        return;
+      }
+    }
+
     // Validate recurring event fields
     if (isRecurring && recurrenceDay === null) {
       Alert.alert('Error', 'Please select which day of the week this event repeats');
