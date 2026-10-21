@@ -200,13 +200,28 @@ async def create_talent_invite(
     result = await db.talent_invites.insert_one(invite_doc)
     created_invite = await db.talent_invites.find_one({"_id": result.inserted_id})
     
-    # TODO: Send email notification if email provided
-    # For now, just return the invite details
+    # Send the invite email if an email address was provided
+    email_sent = False
+    if email:
+        try:
+            from email_service import send_email, build_talent_invite_email
+            subject, html = build_talent_invite_email(invite_code)
+            email_id = await send_email(to=email, subject=subject, html=html)
+            email_sent = bool(email_id)
+        except Exception as e:
+            logger.error(f"Failed to send talent invite email: {e}")
+    
+    msg = f"Invite created. Code: {invite_code}"
+    if email:
+        msg += f" for {email}" + (" (email sent)" if email_sent else " (email NOT sent — check logs)")
+    else:
+        msg += " (shareable)"
     
     return {
         "success": True,
         "invite": invite_helper(created_invite),
-        "message": f"Invite created. Code: {invite_code}" + (f" for {email}" if email else " (shareable)")
+        "emailSent": email_sent,
+        "message": msg
     }
 
 

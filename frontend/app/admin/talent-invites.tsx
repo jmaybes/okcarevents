@@ -97,11 +97,17 @@ export default function TalentInvitesScreen() {
       
       if (response.ok) {
         const inviteCode = data.invite.code;
-        const inviteUrl = `streetmotion://talent/invite/${inviteCode}`;
+        
+        let emailLine = 'Shareable code created';
+        if (withEmail) {
+          emailLine = data.emailSent
+            ? `📧 Email sent to: ${email}`
+            : `⚠️ Could NOT email ${email}. Share the code manually below.`;
+        }
         
         Alert.alert(
           'Invite Created!',
-          `Code: ${inviteCode}\n\n${withEmail ? `Sent to: ${email}` : 'Shareable code created'}`,
+          `Code: ${inviteCode}\n\n${emailLine}`,
           [
             { text: 'Copy Code', onPress: () => copyToClipboard(inviteCode) },
             { text: 'Share', onPress: () => shareInvite(inviteCode) },

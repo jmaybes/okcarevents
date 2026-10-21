@@ -52,6 +52,22 @@ with no coords, 138 of those hidden by the old whitelist.
 Fix: in filterEvents(), events without coordinates now stay visible by default; the radius
 filter only excludes events that genuinely have far-away coordinates. (Frontend-only, OTA-eligible.)
 
+## Talent invite EMAIL sending (June 2026)
+
+Admin "email invite" previously did nothing (backend had a literal TODO; only a code
+was created, no email sent). Built real sending via Emergent-managed email:
+- NEW: backend/email_service.py (send_email + guardrail gate + build_talent_invite_email
+  template). Uses EMAIL_BASE_URL constant https://integrations.emergentagent.com, auth via
+  X-Email-Key header -> works from the self-hosted VPS too.
+- backend/routes/talent.py create_invite: if email provided, sends the invite email with
+  the code + in-app instructions (no links/forms; passes the gate). Response now returns emailSent.
+- frontend/app/admin/talent-invites.tsx: alert shows whether the email actually sent.
+- Env vars required in backend .env: EMERGENT_EMAIL_KEY and EMAIL_FROM_NAME="StreetMotion Official".
+Tested locally: POST invite with email -> emailSent True.
+DEPLOY: backend changes need VPS redeploy (new file email_service.py + talent.py) AND the two
+.env vars added on the VPS (.env is gitignored so it won't arrive via git pull). Frontend alert
+change ships via OTA.
+
 ## Standing constraints
 - Frontend API base is hardcoded to production api.okccarmeets.com (utils/api.ts).
 - Native/launcher/store icon changes require a fresh binary build (not OTA).
