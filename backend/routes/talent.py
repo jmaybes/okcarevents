@@ -250,6 +250,40 @@ async def get_talent_invites(
     }
 
 
+@router.post("/admin/talent/invite/{invite_id}/resend")
+async def resend_talent_invite(invite_id: str, admin_id: str = Query(...)):
+    """Resend the invite email for a pending invite (admin only)."""
+    if not ObjectId.is_valid(admin_id) or not ObjectId.is_valid(invite_id):
+        raise HTTPException(status_code=400, detail="Invalid ID")
+    
+    admin = await db.users.find_one({"_id": ObjectId(admin_id)})
+    if not admin or not admin.get("isAdmin", False):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    invite = await db.talent_invites.find_one({"_id": ObjectId(invite_id)})
+    if not invite:
+        raise HTTPException(status_code=404, detail="Invite not found")
+    if invite.get("status") != "pending":
+        raise HTTPException(status_code=400, detail="Only pending invites can be resent")
+    if not invite.get("email"):
+        raise HTTPException(status_code=400, detail="This invite has no email address to resend to")
+    
+    email_sent = False
+    try:
+        from email_service import send_email, build_talent_invite_email
+        subject, html = build_talent_invite_email(invite["code"])
+        email_id = await send_email(to=invite["email"], subject=subject, html=html)
+        email_sent = bool(email_id)
+    except Exception as e:
+        logger.error(f"Failed to resend talent invite email: {e}")
+    
+    return {
+        "success": email_sent,
+        "emailSent": email_sent,
+        "message": f"Email resent to {invite['email']}" if email_sent else "Email could NOT be sent — check logs"
+    }
+
+
 @router.delete("/admin/talent/invite/{invite_id}")
 async def delete_talent_invite(invite_id: str, admin_id: str = Query(...)):
     """Delete/revoke a talent invite"""

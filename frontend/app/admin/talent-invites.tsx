@@ -156,6 +156,24 @@ export default function TalentInvitesScreen() {
     );
   };
 
+  const resendInvite = async (inviteId: string, inviteEmail: string) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/api/admin/talent/invite/${inviteId}/resend?admin_id=${user?.id}`,
+        { method: 'POST' }
+      );
+      const data = await response.json();
+      if (response.ok && data.emailSent) {
+        Alert.alert('Email Sent', `The invite was re-sent to ${inviteEmail}.`);
+      } else {
+        Alert.alert('Not Sent', data.message || data.detail || 'Could not resend the email.');
+      }
+    } catch (error) {
+      console.error('Error resending invite:', error);
+      Alert.alert('Error', 'Could not resend the email. Please try again.');
+    }
+  };
+
   const copyToClipboard = (code: string) => {
     Clipboard.setString(code);
     Alert.alert('Copied!', 'Invite code copied to clipboard');
@@ -368,6 +386,16 @@ export default function TalentInvitesScreen() {
                       <Text style={[styles.actionText, { color: '#2196F3' }]}>Share</Text>
                     </TouchableOpacity>
                   )}
+                  
+                  {invite.status === 'pending' && invite.email ? (
+                    <TouchableOpacity 
+                      style={styles.actionBtn}
+                      onPress={() => resendInvite(invite.id, invite.email!)}
+                    >
+                      <Ionicons name="mail-outline" size={18} color="#4CAF50" />
+                      <Text style={[styles.actionText, { color: '#4CAF50' }]}>Resend</Text>
+                    </TouchableOpacity>
+                  ) : null}
                   
                   <TouchableOpacity 
                     style={styles.actionBtn}
