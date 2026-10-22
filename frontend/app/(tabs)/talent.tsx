@@ -465,10 +465,10 @@ export default function TalentScreen() {
         )}
       </View>
 
-      {/* TEMP OTA DIAGNOSTICS LINE — remove after confirmation */}
-      <View style={styles.otaDiag}>
-        <Text style={styles.otaDiagText}>{otaDiagText()}</Text>
-      </View>
+      {/* TEMP OTA DIAGNOSTICS LINE — tap to open full diagnostics */}
+      <TouchableOpacity style={styles.otaDiag} onPress={() => router.push('/ota-debug')} activeOpacity={0.7}>
+        <Text style={styles.otaDiagText}>{otaDiagText()}  ›</Text>
+      </TouchableOpacity>
       
       {/* Prominent invite-code banner — impossible to miss for invited talent */}
       <TouchableOpacity

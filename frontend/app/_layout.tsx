@@ -18,8 +18,11 @@ async function checkForUpdates() {
     const update = await Updates.checkForUpdateAsync();
     if (update.isAvailable) {
       await Updates.fetchUpdateAsync();
-      // Apply immediately — do not depend on the user tapping "Restart"
-      await Updates.reloadAsync();
+      // The update is applied automatically on the next cold start
+      // (checkAutomatically: ON_LOAD in app.json).
+      // We intentionally do NOT call Updates.reloadAsync() here:
+      // reloading during first startup is a known iOS crash trigger
+      // (expo/expo#21347) and would itself get the update quarantined.
     }
   } catch (e) {
     // Silent fail - don't bother user
