@@ -13,14 +13,27 @@ const isExpoGo = Constants.appOwnership === 'expo';
 // Only import and configure notifications if NOT in Expo Go
 let Notifications: any = null;
 if (!isExpoGo) {
-  Notifications = require('expo-notifications');
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-    }),
-  });
+  // Wrapped so a failure here can NEVER throw at module-load time.
+  // A module-scope throw crashes the JS bundle before first render, which on
+  // iOS makes expo-updates quarantine the OTA update and silently roll back to
+  // the embedded (store) bundle — i.e. "OTA never applies on iOS".
+  try {
+    Notifications = require('expo-notifications');
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        // New required shape (expo-notifications 54+). Keep deprecated keys too
+        // for safety across versions.
+        shouldShowBanner: true,
+        shouldShowList: true,
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+  } catch (e) {
+    Notifications = null;
+    console.log('expo-notifications init failed:', e);
+  }
 }
 
 interface User {
