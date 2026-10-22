@@ -7,7 +7,7 @@ import * as Updates from 'expo-updates';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts } from 'expo-font';
 import * as Font from 'expo-font';
-import { Alert, Platform, View } from 'react-native';
+
 
 // Prevent splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -18,14 +18,8 @@ async function checkForUpdates() {
     const update = await Updates.checkForUpdateAsync();
     if (update.isAvailable) {
       await Updates.fetchUpdateAsync();
-      Alert.alert(
-        'Update Available',
-        'A new version has been downloaded. Restart to apply?',
-        [
-          { text: 'Later', style: 'cancel' },
-          { text: 'Restart', onPress: () => Updates.reloadAsync() },
-        ]
-      );
+      // Apply immediately — do not depend on the user tapping "Restart"
+      await Updates.reloadAsync();
     }
   } catch (e) {
     // Silent fail - don't bother user
