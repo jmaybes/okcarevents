@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.velocityvisualcrew.okcarmeets",
-      "buildNumber": "5",
+      "buildNumber": "7",
       "usesAppleSignIn": true,
       "config": {
         "googleMapsApiKey": "AIzaSyDekipz2kW6nfOpd_c6Ku_NLwgc5N9AsUI"
@@ -32,7 +32,7 @@
     },
     "android": {
       "package": "com.velocityvisualcrew.oklahomacarmeets",
-      "versionCode": 211,
+      "versionCode": 212,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
