@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi.responses import Response
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime, timedelta
@@ -11,11 +12,56 @@ import logging
 from database import db
 from models import EventCreate, EventUpdate, OCRRequest, FavoriteCreate, CommentCreate
 from helpers import event_helper, get_ocr_reader, parse_event_details, send_push_notification, _sid, _isodate
+from storage import normalize_photos
 from PIL import Image
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+def _base_url(request: Request) -> str:
+    """Absolute public base URL from proxy headers, env fallback."""
+    forwarded = request.headers.get("x-forwarded-host") or request.headers.get("host")
+    scheme = request.headers.get("x-forwarded-proto", "https")
+    if forwarded and "localhost" not in forwarded and "0.0.0.0" not in forwarded:
+        return f"{scheme}://{forwarded}"
+    env_url = os.environ.get("PUBLIC_BASE_URL") or os.environ.get("EXPO_PUBLIC_BACKEND_URL")
+    if env_url:
+        return env_url.rstrip("/")
+    return str(request.base_url).rstrip("/")
+
+
+# 1x1 gray placeholder JPEG (prevents 404/500 from breaking the app)
+PLACEHOLDER_JPEG = base64.b64decode("/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8AKwA//9k=")
+
+
+@router.get("/events/{event_id}/photo/{index}/image.jpg")
+async def get_event_photo_image(event_id: str, index: int):
+    """Serve a single event photo as a JPEG (fallback for not-yet-migrated base64)."""
+    original_id = event_id.split("__")[0] if "__" in event_id else event_id
+    if not ObjectId.is_valid(original_id):
+        return Response(content=PLACEHOLDER_JPEG, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=60"})
+
+    doc = await db.events.find_one(
+        {"_id": ObjectId(original_id)},
+        {"photos": {"$slice": [index, 1]}, "_id": 0}
+    )
+    if not doc or not doc.get("photos"):
+        return Response(content=PLACEHOLDER_JPEG, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=60"})
+
+    photo = doc["photos"][0] if doc["photos"] else None
+    if not photo or not isinstance(photo, str) or len(photo) < 100 or photo.startswith("http"):
+        return Response(content=PLACEHOLDER_JPEG, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=60"})
+
+    if "," in photo and photo.startswith("data:"):
+        photo = photo.split(",", 1)[1]
+    try:
+        image_bytes = base64.b64decode(photo)
+    except Exception:
+        return Response(content=PLACEHOLDER_JPEG, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=60"})
+
+    return Response(content=image_bytes, media_type="image/jpeg", headers={"Cache-Control": "public, max-age=3600"})
 
 
 @router.get("/")
@@ -27,6 +73,11 @@ async def root():
 async def create_event(event: EventCreate):
     event_dict = event.dict()
     event_dict["createdAt"] = datetime.utcnow().isoformat()
+
+    # Migrate any incoming base64 photos to R2 URLs (backward compatible)
+    if event_dict.get("photos"):
+        from fastapi.concurrency import run_in_threadpool
+        event_dict["photos"] = await run_in_threadpool(normalize_photos, event_dict["photos"])
 
     # Duplicate check: same title + same date = duplicate
     existing = await db.events.find_one({
@@ -230,11 +281,13 @@ If you cannot determine a field, use an empty string. Extract ALL visible text r
 
 @router.get("/events")
 async def get_events(
+    request: Request,
     city: Optional[str] = Query(None),
     eventType: Optional[str] = Query(None),
     date: Optional[str] = Query(None),
     search: Optional[str] = Query(None)
 ):
+    base_url = _base_url(request)
     query = {"isApproved": True}
 
     if city:
@@ -262,7 +315,7 @@ async def get_events(
 
     for event in events:
         try:
-            event_data = event_helper(event)
+            event_data = event_helper(event, base_url)
 
             if event.get("isRecurring") and event.get("recurrenceDay") is not None:
                 frontend_day = event.get("recurrenceDay")
@@ -329,13 +382,14 @@ async def get_events(
 
 
 @router.get("/events/user/{user_id}")
-async def get_user_events(user_id: str):
+async def get_user_events(user_id: str, request: Request):
     """Get all events created by a specific user (approved or pending)."""
+    base_url = _base_url(request)
     events = await db.events.find({"userId": user_id}).sort("date", -1).to_list(1000)
     result = []
     for event in events:
         try:
-            result.append(event_helper(event))
+            result.append(event_helper(event, base_url))
         except Exception:
             continue
     return result
@@ -344,7 +398,7 @@ async def get_user_events(user_id: str):
 
 
 @router.get("/events/{event_id}")
-async def get_event(event_id: str):
+async def get_event(event_id: str, request: Request):
     instance_date = None
     original_id = event_id
     if "__" in event_id:
@@ -359,7 +413,7 @@ async def get_event(event_id: str):
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
-    result = event_helper(event)
+    result = event_helper(event, _base_url(request))
 
     if instance_date:
         try:
@@ -379,6 +433,10 @@ async def update_event(event_id: str, event_update: EventUpdate):
         raise HTTPException(status_code=400, detail="Invalid event ID")
 
     update_data = {k: v for k, v in event_update.dict().items() if v is not None}
+
+    if update_data.get("photos"):
+        from fastapi.concurrency import run_in_threadpool
+        update_data["photos"] = await run_in_threadpool(normalize_photos, update_data["photos"])
 
     if update_data:
         await db.events.update_one(
@@ -425,7 +483,8 @@ async def add_favorite(favorite: FavoriteCreate):
 
 
 @router.get("/favorites/user/{user_id}")
-async def get_user_favorites(user_id: str):
+async def get_user_favorites(user_id: str, request: Request):
+    base_url = _base_url(request)
     favorites = await db.favorites.find({"userId": user_id}).to_list(1000)
     event_ids = [ObjectId(fav["eventId"]) for fav in favorites if ObjectId.is_valid(fav["eventId"])]
 
@@ -433,7 +492,7 @@ async def get_user_favorites(user_id: str):
     result = []
     for event in events:
         try:
-            result.append(event_helper(event))
+            result.append(event_helper(event, base_url))
         except Exception:
             continue
     return result

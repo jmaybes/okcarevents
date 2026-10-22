@@ -72,3 +72,35 @@ change ships via OTA.
 - Frontend API base is hardcoded to production api.okccarmeets.com (utils/api.ts).
 - Native/launcher/store icon changes require a fresh binary build (not OTA).
 - Do not change slug away from oklahoma-city-car-meets (linked EAS project).
+
+
+## [Update] iOS OTA root cause + Image→R2 migration + scaling (this session)
+
+### iOS OTA never applied — ROOT CAUSE FOUND & FIXED
+- Dashboard proof: iOS OTA = 100% crash on boot (0 launches, 2 crashes); Android fine. iOS silently quarantines a crashing OTA and rolls back to embedded bundle.
+- Root cause: stale `resolutions: { "react-native-worklets": "0.5.1" }` in package.json (from reanimated 4.1.1 era) while reanimated@4.5.1 needs worklets 0.10.x. Reanimated's startup JS↔native version check threw a fatal → OTA quarantine.
+- Fix: removed the stale resolution; cleaned yarn.lock to only worklets 0.10.1; hardened module-scope notification handler in AuthContext (try/catch + new shouldShowBanner/List shape); removed startup Updates.reloadAsync() (iOS crash risk); fallbackToCacheTimeout 0→30000.
+- Added temp OTA diagnostics: app/ota-debug.tsx (reads Updates.readLogEntriesAsync + checkForUpdateAsync) and a tappable green marker line on the Talent tab. REMOVE after confirmation.
+- Requires a NEW iOS build (native worklets must be recompiled). Build # auto-incremented 7→8 via eas.json autoIncrement (store had 6) — expected.
+
+### Image storage migration: base64-in-Mongo → Cloudflare R2 (public CDN)
+- Reason: /api/events returned ~16.7MB (base64 photos inline) → timed out for users on weak networks; won't survive the hundreds× traffic spike the user expects.
+- Backend (DONE, 13/13 backend tests pass):
+  - backend/storage.py: R2 (boto3) upload helpers + normalize_photo(s) (base64→R2 URL, http passthrough, fail-safe). Env: R2_ACCOUNT_ID/ACCESS_KEY_ID/SECRET_ACCESS_KEY/BUCKET/PUBLIC_BASE_URL (set in workspace .env; MUST also be set on VPS).
+  - routes/media.py: POST /api/upload (multipart→R2→{url}).
+  - events.py: create/update normalize base64→R2; reads pass base_url; new serve fallback GET /api/events/{id}/photo/{i}/image.jpg for legacy base64.
+  - helpers.py event_helper: _event_photo_urls never returns base64 (R2 URL passthrough or serve-endpoint URL).
+  - server.py ensure_indexes(): indexes on users.email, events(isApproved,date)/userId/city, favorites, user_cars, messages, notifications, crews.members, clubs, rsvps, talent_invites.
+  - migrate_events_to_r2.py: idempotent one-off to move existing base64 → R2 (run on VPS).
+- Backward compatible: old clients still POST base64 (backend converts); reads return URLs that both old & new clients render. No frontend changes required for correctness.
+- NOTE: R2_PUBLIC_BASE_URL is currently an r2.dev dev URL (rate-limited). For the traffic spike, recommend a Cloudflare custom domain.
+- TODO (fast-follow, NOT yet done): apply same R2 pattern to talent profile photos, event_gallery, user avatars; optional frontend direct-upload via src/utils/upload.ts (write-side efficiency); infra: multiple uvicorn workers + larger Mongo pool + async push fan-out.
+
+### VPS deploy steps for this session's backend work
+1. Save to GitHub; on VPS git pull.
+2. Add R2_* vars to /opt/okcarevents/backend/.env (same values entered in the secure card).
+3. venv active: pip install -r requirements.txt (boto3).
+4. Restart okcarevents.service.
+5. Run: python migrate_events_to_r2.py (moves existing base64 events to R2).
+6. Verify /api/events payload is now small.
+

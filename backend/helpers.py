@@ -159,7 +159,31 @@ def _isodate(val):
     return str(val)
 
 
-def event_helper(event) -> dict:
+def _event_photo_urls(event, base_url: str = "") -> list:
+    """Return photo URLs for an event, never raw base64.
+
+    - http(s) URLs (R2 CDN / already migrated) pass through unchanged.
+    - base64 values are replaced with a backend serve URL (fallback for
+      not-yet-migrated data) so list/detail responses stay tiny.
+    """
+    raw = event.get("photos", []) or []
+    if not isinstance(raw, list):
+        return []
+    eid = str(event["_id"])
+    base = (base_url or "").rstrip("/")
+    out = []
+    for i, p in enumerate(raw):
+        if not p or not isinstance(p, str):
+            continue
+        if p.startswith("http://") or p.startswith("https://"):
+            out.append(p)
+        elif base:
+            out.append(f"{base}/api/events/{eid}/photo/{i}/image.jpg")
+        # if base64 and no base_url available, omit (never ship base64)
+    return out
+
+
+def event_helper(event, base_url: str = "") -> dict:
     return {
         "id": str(event["_id"]),
         "title": event["title"],
@@ -175,7 +199,7 @@ def event_helper(event) -> dict:
         "entryFee": event.get("entryFee", ""),
         "carTypes": event.get("carTypes", []),
         "eventType": event.get("eventType", "Car Meet"),
-        "photos": event.get("photos", []),
+        "photos": _event_photo_urls(event, base_url),
         "attendeeCount": event.get("attendeeCount", 0),
         "userId": _sid(event.get("userId")),
         "isApproved": event.get("isApproved", True),

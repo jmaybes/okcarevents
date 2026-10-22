@@ -27,6 +27,7 @@ from routes.crews import router as crews_router
 from routes.websocket import router as websocket_router
 from routes.flyers import router as flyers_router
 from routes.talent import router as talent_router
+from routes.media import router as media_router
 
 # Configure logging
 logging.basicConfig(
@@ -72,6 +73,7 @@ api_router.include_router(feeds_router)
 api_router.include_router(crews_router)
 api_router.include_router(flyers_router)
 api_router.include_router(talent_router)
+api_router.include_router(media_router)
 
 # Include the API router in the main app
 app.include_router(api_router)
@@ -237,8 +239,35 @@ async def startup_scheduler():
     
     # Run photo migration to fix cars missing photoCount/thumbnail
     await migrate_photo_counts()
+
+    # Ensure critical indexes exist (fast no-op if already present)
+    await ensure_indexes()
     
     logger.info("App started successfully (RSVP scheduler disabled for stability)")
+
+
+async def ensure_indexes():
+    """Create indexes that matter at scale. Idempotent; safe to run every boot."""
+    from database import db
+    try:
+        await db.users.create_index("email", background=True)
+        await db.users.create_index("isAdmin", background=True)
+        await db.events.create_index([("isApproved", 1), ("date", 1)], background=True)
+        await db.events.create_index("userId", background=True)
+        await db.events.create_index("city", background=True)
+        await db.favorites.create_index([("userId", 1), ("eventId", 1)], background=True)
+        await db.user_cars.create_index([("isPublic", 1), ("likes", -1)], background=True)
+        await db.user_cars.create_index("userId", background=True)
+        await db.messages.create_index([("senderId", 1), ("createdAt", -1)], background=True)
+        await db.messages.create_index([("recipientId", 1), ("createdAt", -1)], background=True)
+        await db.notifications.create_index([("userId", 1), ("isRead", 1)], background=True)
+        await db.crews.create_index("members", background=True)
+        await db.clubs.create_index("isApproved", background=True)
+        await db.rsvps.create_index([("eventDate", 1), ("reminderSent", 1)], background=True)
+        await db.talent_invites.create_index("code", background=True)
+        logger.info("Indexes ensured")
+    except Exception as e:
+        logger.error(f"ensure_indexes error (non-fatal): {e}")
 
 
 async def cleanup_corrupted_cars():
