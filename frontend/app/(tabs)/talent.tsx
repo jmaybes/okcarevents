@@ -394,17 +394,17 @@ export default function TalentScreen() {
           
           <View style={styles.headerActions}>
             <TouchableOpacity 
-              style={styles.headerBtn}
-              onPress={() => setShowSearch(!showSearch)}
+              style={[styles.headerBtn, styles.keyBtn]}
+              onPress={() => setShowCodeModal(true)}
             >
-              <Ionicons name={showSearch ? "close" : "search"} size={22} color="#fff" />
+              <Ionicons name="key" size={22} color="#000" />
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.headerBtn}
-              onPress={() => setShowCodeModal(true)}
+              onPress={() => setShowSearch(!showSearch)}
             >
-              <Ionicons name="key" size={22} color="#FFD700" />
+              <Ionicons name={showSearch ? "close" : "search"} size={22} color="#fff" />
             </TouchableOpacity>
 
             {(user?.isTalent || user?.talentProfileId) && (
@@ -449,6 +449,17 @@ export default function TalentScreen() {
           </View>
         )}
       </View>
+      
+      {/* Prominent invite-code banner — impossible to miss for invited talent */}
+      <TouchableOpacity
+        style={styles.inviteBanner}
+        onPress={() => setShowCodeModal(true)}
+        activeOpacity={0.85}
+      >
+        <Ionicons name="key" size={20} color="#000" />
+        <Text style={styles.inviteBannerText}>Have an invite code? Tap to set up your listing</Text>
+        <Ionicons name="chevron-forward" size={18} color="#000" />
+      </TouchableOpacity>
       
       {/* Category tabs */}
       <View style={styles.categoryContainer}>
@@ -719,6 +730,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  inviteBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: '#FFD700',
+    marginHorizontal: 16,
+    marginTop: 10,
+    marginBottom: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+  },
+  inviteBannerText: {
+    flex: 1,
+    color: '#000',
+    fontSize: 14,
+    fontWeight: '700',
+  },
   headerBtn: {
     width: 40,
     height: 40,
@@ -726,6 +755,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#222',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  keyBtn: {
+    backgroundColor: '#FFD700',
   },
   searchContainer: {
     flexDirection: 'row',
