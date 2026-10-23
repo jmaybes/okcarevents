@@ -19,22 +19,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Constants from 'expo-constants';
-import * as Updates from 'expo-updates';
 import { useAuth } from '../../contexts/AuthContext';
-
-// TEMP OTA DIAGNOSTICS — remove once root cause confirmed
-const BUILD_MARKER = 'key-banner-v2';
-function otaDiagText() {
-  try {
-    const id = Updates.updateId ? String(Updates.updateId).slice(0, 8) : 'none';
-    const embedded = Updates.isEmbeddedLaunch ? 'EMBEDDED' : 'OTA';
-    const ch = Updates.channel || '?';
-    const rt = Updates.runtimeVersion || '?';
-    return `BUILD:${BUILD_MARKER} | ${embedded} | id:${id} | ch:${ch} | rt:${rt}`;
-  } catch (e) {
-    return `BUILD:${BUILD_MARKER} | diag-error`;
-  }
-}
 
 const { width } = Dimensions.get('window');
 
@@ -464,11 +449,6 @@ export default function TalentScreen() {
           </View>
         )}
       </View>
-
-      {/* TEMP OTA DIAGNOSTICS LINE — tap to open full diagnostics */}
-      <TouchableOpacity style={styles.otaDiag} onPress={() => router.push('/ota-debug')} activeOpacity={0.7}>
-        <Text style={styles.otaDiagText}>{otaDiagText()}  ›</Text>
-      </TouchableOpacity>
       
       {/* Prominent invite-code banner — impossible to miss for invited talent */}
       <TouchableOpacity
@@ -749,18 +729,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-  },
-  otaDiag: {
-    backgroundColor: '#1a1a1a',
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  otaDiagText: {
-    color: '#0f0',
-    fontSize: 10,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
   },
   inviteBanner: {
     flexDirection: 'row',
