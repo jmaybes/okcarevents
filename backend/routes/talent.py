@@ -660,8 +660,10 @@ async def update_talent_profile(
     update_data["profileCompletion"] = profile_completion
     update_data["updatedAt"] = datetime.utcnow().isoformat()
     
-    # If setup is complete and isActive not explicitly set, activate
-    if setup_complete and "isActive" not in update_data and not profile.get("setupComplete"):
+    # First time setup completes -> auto-publish (go live), regardless of the
+    # client's isActive default. After the first completion, the user's explicit
+    # show/hide toggle is respected.
+    if setup_complete and not profile.get("setupComplete"):
         update_data["isActive"] = True
     
     await db.talent_profiles.update_one(

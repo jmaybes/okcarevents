@@ -150,7 +150,7 @@ export default function TalentSetupScreen() {
   const [ctaLink, setCtaLink] = useState('');
   
   // ===== STATUS =====
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(true);
   const [profileCompletion, setProfileCompletion] = useState(0);
 
   useEffect(() => {
